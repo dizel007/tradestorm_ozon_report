@@ -1,0 +1,44 @@
+.fl-table {
+    width: 80%;
+	margin: 0 auto;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
+    white-space: nowrap;
+    background-color: white;
+	box-shadow: 0px 10px 10px rgba( 0, 0, 0, 0.4 );
+}
+
+.fl-table td, .fl-table th {
+    text-align: center;
+    padding: 5px;
+
+}
+
+.fl-table td {
+    margin:0 auto;
+    border: 1px solid #746c6c;
+    font-size: 12px;
+	font-weight: 500;
+
+}
+
+.fl-table th {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Чтобы заголовки были четко видны против контента */
+    color: #ffffff;
+    background: #55917f;
+    margin:0 auto;
+    border: 1px solid #746c6c;
+}
+
+
+
+
+.fl-table tr:nth-child(even) {
+    background: #d8cece;
+}
+
