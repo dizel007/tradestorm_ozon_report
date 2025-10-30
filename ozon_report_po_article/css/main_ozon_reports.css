@@ -27,7 +27,7 @@
     border-collapse: collapse;
     width: 100%;
     
-    white-space: nowrap;
+    /* white-space: nowrap; */
     background-color: white;
 	box-shadow: 0px 10px 10px rgba( 0, 0, 0, 0.4 );
 }
@@ -65,6 +65,18 @@
     background: #d8cece;
 }
 
+
+
+.td_logistika {
+  width: 200px; /* Фиксированная ширина */
+  max-width: 200px; /* Максимальная ширина */
+  word-wrap: break-word; /* Перенос длинных слов */
+  word-break: break-word; /* Перенос слов */
+  white-space: normal; /* Разрешить перенос строк */
+  overflow-wrap: break-word; /* Современная альтернатива word-wrap */
+}
+
+
 .real_money th {
     background: #dd9c39;
    
@@ -80,7 +92,9 @@
 }
 .bad_desired_price {
     color:#ff1919;
-    font-weight: 300;
+    font-weight: 800;
+    margin: 0;
+    padding: 0;
 }
 .instran {
     background-color: #1db0c4;

@@ -1,385 +1,159 @@
 <?PHP
 
 // $ozon_sebest = get_catalog_tovarov_v_mp($ozon_shop, $pdo, 'all');
-
-
-
-// echo "<pre>";
-// print_r($res);
+// print_r($arr_type_items_WITH_POSTING_NUMBER);
 // die();
-
-
 /**************************************************************************************************************
  **************************************  ЗАКАЗЫ ************************************************************
  *************************************************************************************************************/
-if (isset($arr_orders)) {
-require_once "parts_article/orders_article.php";
-}
-
-/**************************************************************************************************************
- **************************************  ЗАКАЗЫ ЗА ГРАНИЦУ ************************************************************
- *************************************************************************************************************/
-// if (isset($arr_orders_ino)) {
-//     require_once "parts_article/orders_ino_article.php";
-//     }
-
-    
+$i_orders = 0;
+if (isset($arr_type_items_WITH_POSTING_NUMBER['orders'])) {require_once "parts_article/orders_article.php";}
+echo "i_orders = $i_orders. <br>";
 /**************************************************************************************************************
  **************************************  ВОЗВРАТЫ
  *************************************************************************************************************/
 //06675399-0372-4
-if (isset($arr_returns)) {
+$i_returns = 0;
+if (isset($arr_type_items_WITH_POSTING_NUMBER['returns'])) {
     require_once "parts_article/returns_article.php";
 }
-
+echo "i_returns = $i_returns. <br>";
 /**************************************************************************************************************
  **************************************  Эквайринг 
  *************************************************************************************************************/
-if (isset($arr_other)) {
+$i_other = 0;
+if (isset($arr_type_items_WITH_POSTING_NUMBER['other'])) {
 require_once "parts_article/other_article.php";
 }
+echo "i_i_other = $i_other. <br>";
+
+
+ /***********************  Сервисы ******************************************************
+ *************************************************************************************************************/
+$i_services  = 0;
+if (isset($arr_type_items_WITH_POSTING_NUMBER['services'])) {
+require_once "parts_article/servici_article.php";
+}
+echo "i_services = $i_services. <br>";
+
+
 
 /**************************************************************************************************************
  ************************************** Удержание за недовложение товара
  *************************************************************************************************************/
+$i_compensation  = 0;
+if (isset($arr_type_items_WITH_POSTING_NUMBER['compensation'])) {
 require_once "parts_article/uderzhania_article.php";
-/**************************************************************************************************************
- ***********************  Сервисы ******************************************************
- *************************************************************************************************************/
-
-require_once "parts_article/servici_article.php";
+}
+echo "i_compensation = $i_compensation. <br>";
+echo "количество элементов = ". count($arr_article). "<br>";
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// print_r($arr_article);
-
-// 
-// ОСтавляем только те заказы, по которым есть движение
-$all_count = count($arr_article);
+// ОСтавляем только те заказы, по которым есть движение 
+// их пометили тегом WORK
 
 //  ******* убираем все заказы, где нет ПРОДАЖИ И ВОЗВРАТОВ () 
-foreach ($arr_article as $key => &$item) {
-    if (!isset($item['SELL']) && (!isset($item['RETURN']))) 
-    {
-         
-        unset ($arr_article[$key]);
-     } else {
-        // сформируем массив существующих артикулов ПОКУПОК И ВОЗВРАТОВ
-        if (isset($item['items_buy'])) 
-        {
-            foreach ($item['items_buy'] as $find_article) 
-                {
-                    $arr_real_article[mb_strtolower($find_article['c_1c_article'])] = mb_strtolower($find_article['c_1c_article']);
-                }
-        } elseif (isset($item['items_returns'])) {
-             foreach ($item['items_returns'] as $find_article) 
-                {
-                    $arr_real_article[mb_strtolower($find_article['c_1c_article'])] = mb_strtolower($find_article['c_1c_article']);
-                }
-        }
-    }
+// print_r($arr_services_types);
+// print_r($arr_article);
+
+
+// die();
+foreach ($arr_article as $key=>$items_x) {
+    if (isset($items_x['post_info'])) {
+
+        foreach ($items_x['post_info'] as $key_x=>$item) {
+                // print_R($item);
+                // echo "<br>*****************";
+            if (isset($item['WORK'])) 
+                {$arr_article_WORK[$key] = $items_x;
+                } 
+            else {
+                $arr_article_NOT_WORK[$key] = $items_x;
+            } 
+
+            }
+    
+} else {
+
+    $arr_without_post_info[$key] = $items_x;
+}
 }
 unset ($item); // 
+unset ($items_x);
 
-//********************************************************* */
-// Формируем GET параметры для сыслок артикулов 
-//********************************************************* */
+echo "количество элементов WORK = ". count($arr_article_WORK). "<br>";
+echo "количество элементов NOT_WORK = ". count($arr_article_NOT_WORK). "<br>";
+echo "количество элементов BEZ post INfo = ". count($arr_without_post_info). "<br>";
 
-foreach ($_GET as $key => &$value) {
-    if ($key == 'article') {continue;}
-      if ($key == 'need_update') {$value = 0;}
-    $get_array[$key] = $value;
-}
-$queryString = http_build_query($get_array);
+// print_r($arr_article_WORK);
 
-
-///**************************  Формируем перечень артикулов для вывода ******************************************/
-/************************************************************************************************************* */
-echo "<div class=\"checkbox-flex\">"; 
-echo "<link rel=\"stylesheet\" href=\"css/filtr_article.css\">";
-    foreach ($arr_real_article as $real_article) {
-        if ($real_article == $need_article) {
-    // Выделяем Ячейку с выбранным артикулом
-        echo "<label class=\"checkes\"><a href=\"?$queryString&article=$real_article\">$real_article</a><br></label>";
-        } else {
-        echo "<label><a href=\"?$queryString&article=$real_article\">$real_article</a><br></label>";      
-        }
-    }
-echo "</div>";
+// die();
+// 0139816056-0030
+// 05949135-0273-21 
 /*******************************************************************************/
+$need_SKU = '2544935988';
+// print_r($arr_article_WORK);
 
-// Оставляем только нужный артикул
-foreach ($arr_article as $key => &$item) {
-   if (isset($item['items_buy'])) 
-
+// Оставляем только нужный SKU
+foreach ($arr_article_WORK as $key => &$item) {
+   if (isset($item['post_info'])) 
         {
-            foreach ($item['items_buy'] as $key_item => &$find_article) 
+            foreach ($item['post_info'] as $key_item_d => &$find_article) 
                 {
-                   if (mb_strtolower($find_article['c_1c_article']) != $need_article) {
-                         unset ($arr_article[$key]['items_buy'][$key_item]);
-                    }
+                  if ((isset($find_article['sku'])) AND ($find_article['sku'] == $need_SKU) ) {
+                       $arr_article_WORK_need_article[$key_item_d] = $find_article;
+
+                       foreach ($arr_article_WORK[$key] as $key_x=>$data_x) {
+                        if ($key_x == 'post_info') {continue;}
+                        if ($key_x == 'type') {continue;}
+                        if ($key_x == 'operation_id') {continue;}
+                         $arr_article_WORK_need_article[$key_item_d][$key_x] = $data_x;
+                       }
+                    //    $arr_article_WORK_need_article[$key_item_d]['delivery_schema'] = $item['delivery_schema'];
+                    //    $arr_article_WORK_need_article[$key_item_d]['order_date'] = $item['order_date'];
+                    //    $arr_article_WORK_need_article[$key_item_d]['warehouse_id'] = $item['warehouse_id'];
+                    //    $arr_article_WORK_need_article[$key_item_d]['operation_id'] = $item['operation_id'];
+                    //    $arr_article_WORK_need_article[$key_item_d]['count'] = $item['count'];
+                    //    $arr_article_WORK_need_article[$key_item_d]['amount_ecvairing'] = $item['amount_ecvairing'];
+
+                 }
+              }         
+      } 
+}
+
+// print_r($arr_article_WORK_need_article);
 
 
-                }
-        } elseif (isset($item['items_returns'])) {
-             foreach ($item['items_returns'] as $key_item => &$find_article)
-                {
-                      if (mb_strtolower($find_article['c_1c_article']) != $need_article) {
-                         unset ($arr_article[$key]['items_returns'][$key_item]);
-                    }
-                }
-        }
+// die();
+echo "количество элементов WORK(нужного артикула) = ". count($arr_article_WORK_need_article). "<br>";
+
+//  Нцжно удалить все элементы массива, которые оказались пустые 
+foreach ($arr_article_WORK as $key => &$item) {
+   if ((isset($item['post_info'])) AND (count($item['post_info']) == 0)) {
+     unset($arr_article_WORK[$key]); 
+    }
 }
 // 
-// print_r($arr_article);
-
-
+echo "количество элементов WORK(нужного актикула) = ". count($arr_article_WORK). "<br>";
 
 // die();
 
-$RF_count = count($arr_article);
-$INO_count = $all_count - $RF_count;
-
-echo "<br>Количество элементов С продажами или возвратами--". $RF_count;
-echo "<br>Количество элементов  без продаж и возвратов --". $INO_count ."<br>";
-
-// die();
-
-// if (isset($viplata_na_konec)) {
-//     echo "<br><h3>К ВЫПЛАТЕ : $viplata_na_konec</h3><br>";
-// }
-// if (isset($viplata_na_konec)){echo "<br><h3>KkkkkkkkkkkkkkkkkЕ : $dop_uslugi</h3><br>";}
-
-echo "Кол-во обработанных Строк : $i<br>";
-
-// Если вдруг появились новые данные, которые не учитываются в разборе
-if (isset($arr_index_job)) {
-    $temp = count($arr_index_job);
-    echo "<br> <b>Кол-во неразобранных товаров (ОЗОН Добавил новые данные в отчет </b>: $temp<br>";
-}
-if (isset($arr_nerazjbrannoe_222)) {
-    $temp = count($arr_nerazjbrannoe_222);
-    echo "<br> <b>Кол-во неразобранных товаров (ОЗОН Добавил новые данные в отчет </b>: $temp<br>";
-}
-
-
-
-
-echo "<br><br>";
-
-/*******************************************************************************************
- ******************************* ДОПОЛНИТЕЛЬНЫЙ РАЗБОР ДАННЫХ *******************************
- *****************************************************************************************/
-// доставаем всю номенклатуру
-// $arr_all_nomenklatura = select_all_nomenklaturu($pdo);
-// foreach ($arr_all_nomenklatura as $nomenklatura) {
-//     $arr_prices[mb_strtolower($nomenklatura['main_article_1c'])]['min_price']  = $nomenklatura['min_price'];
-//     $arr_prices[mb_strtolower($nomenklatura['main_article_1c'])]['main_price']  = $nomenklatura['main_price'];
-// }
-
-
-
-// echo "<pre>";
-// print_r($arr_article);
-// die();
-
-//*****************************************************************************************************
-// Получеам список всех складов ФБО по РОССИИ
-//*****************************************************************************************************
-$ozon_link = 'v1/cluster/list';
-$send_data = array("cluster_type" => "CLUSTER_TYPE_OZON");
-$send_data = json_encode($send_data);
-$warehouse_clusters = send_injection_on_ozon($token, $client_id, $send_data, $ozon_link );
-
-foreach ($warehouse_clusters['clusters'] as $clusters) {
-    foreach ($clusters['logistic_clusters'] as $logistic_clusters) {
-        foreach ($logistic_clusters['warehouses'] as $warehouses) {
-          $arr_warehouses[$warehouses['warehouse_id']] = $warehouses['name'];
-        }
-    }
-}
-//*****************************************************************************************************
-// Получеам список всех складов ФБО по СНГ
-//*****************************************************************************************************
-
-$ozon_link = 'v1/cluster/list';
-$send_data = array("cluster_type" => "CLUSTER_TYPE_CIS");
-$send_data = json_encode($send_data);
-$warehouse_clusters = send_injection_on_ozon($token, $client_id, $send_data, $ozon_link );
-
-foreach ($warehouse_clusters['clusters'] as $clusters) {
-    foreach ($clusters['logistic_clusters'] as $logistic_clusters) {
-        foreach ($logistic_clusters['warehouses'] as $warehouses) {
-          $arr_warehouses[$warehouses['warehouse_id']] = "_ИНО_".$warehouses['name'];
-        }
-    }
-}
-
-//*****************************************************************************************************
-// Добавляем наши склады по ФБС 
-//*****************************************************************************************************
-
-$ozon_link = 'v1/warehouse/list';
-$our_FBS_warehouse = send_injection_on_ozon($token, $client_id, '', $ozon_link );
-foreach ($our_FBS_warehouse['result'] as $warehouses) {
-       $arr_warehouses[$warehouses['warehouse_id']] = 'НАШ СКЛАД_'.$warehouses['name'];
-}
 
 
 //*****************************************************************************************************
 // перебираем все заказы, и перебираем все проданные товары по штукчно и
 // и будем формировать все расходы по каждому товару в заказе 
 //*****************************************************************************************************
-
-foreach ($arr_article as $items_in_order) {
-    // если есть проданные товары 
-    if (isset($items_in_order['items_buy'])) {
-    foreach ($items_in_order['items_buy'] as $gruz_key => &$one_tovar) {
-        $article_good_format = mb_strtolower($one_tovar['c_1c_article']);
+// print_r($arr_article_WORK);
+require_once "make_array_for_print.php";
 
 
- // находим себестоимость и хорошую цену для нашего артикула
-        if (isset($arr_prices[$article_good_format])) {
-            $one_tovar['min_price'] = $arr_prices[mb_strtolower($one_tovar['c_1c_article'])]['min_price'];
-            $one_tovar['main_price'] = $arr_prices[mb_strtolower($one_tovar['c_1c_article'])]['main_price'];
-        } else {
-            // когда не нашли цену по ску (Какие то разобвые продажи)
-            $one_tovar['min_price'] = 0;
-            $one_tovar['main_price'] = 0;
-        }
-// Цепояем какие типы операций были в этом заказе 
-            if (isset($items_in_order['SELL'])) {
-                $one_tovar['SELL'] = $items_in_order['SELL'];
-            } 
-            if (isset($items_in_order['RETURN'])){
-                $one_tovar['RETURN'] = $items_in_order['RETURN'];
-            }
-            if (isset($items_in_order['ACQUIRING'])){
-                $one_tovar['ACQUIRING'] = $items_in_order['ACQUIRING'];
-            }
-            if (isset($items_in_order['SERVICES'])){
-                $one_tovar['SERVICES'] = $items_in_order['SERVICES'];
-            }
-            if (isset($items_in_order['UDERZHANIA'])){
-                $one_tovar['UDERZHANIA'] = $items_in_order['UDERZHANIA'];
-            }
-
-// Цепляем информацию по месту отгрузке
-        $one_tovar['post_number'] = $items_in_order['post_number']; 
-        if (isset($items_in_order['warehouse_id'])) {
-            $one_tovar['warehouse_id'] = $items_in_order['warehouse_id'];
-            if (isset($arr_warehouses[$items_in_order['warehouse_id']])) {
-                $one_tovar['warehouse_name'] = $arr_warehouses[$items_in_order['warehouse_id']];
-            } else {
-                $one_tovar['warehouse_name'] = 'Не нашли склад';
-            }
-        } else {
-            $one_tovar['warehouse_id'] = 'Non_sklad';
-            $one_tovar['warehouse_name'] = 'НЕ НАШЛИ СКЛАД(ПРОДАЖА)';
-        }
-// цепляем дату заказа и номер грузоместа        
-        $one_tovar['order_date'] = $items_in_order['order_date'];
-        $one_tovar['post_number_gruzomesto'] = $gruz_key;
-// цепляем эквайринг 1,1%
-$one_tovar['acquiring'] = - round(($one_tovar['accruals_for_sale']/100) * 1.1,2) ;
-
-// цепляем поздннюю отгрузку
-if (isset($items_in_order['pozdniaa_otgruzka'])) {
-$one_tovar['pozdniaa_otgruzka'] =  $items_in_order['pozdniaa_otgruzka']/$items_in_order['count']; 
-}
-// цепляем затраты на рекламу_ продвижение брэнда
-if (isset($items_in_order['pozdniaa_otgruzka'])) {
-    $one_tovar['prodvizenie_branda'] =  $items_in_order['prodvizenie_branda']/$items_in_order['count']; 
-}
-// Формируем новый массив
-        $article_strTolower = mb_strtolower($one_tovar['c_1c_article']); // артикул в нижнем регитсре
-        $one_tovar_reestr[$article_strTolower][$items_in_order['delivery_schema']][] = $one_tovar;
-
-
-    }
-    }
-
-    // цепляем возраты 
-
-        // если есть проданные товары 
-    elseif (isset($items_in_order['items_returns'])) {
-    foreach ($items_in_order['items_returns'] as $gruz_key => &$one_tovar) {
-        $article_good_format = mb_strtolower($one_tovar['c_1c_article']);
-
-
- // находим себестоимость и хорошую цену для нашего артикула
- // *************************************************************
-        if (isset($arr_prices[$article_good_format])) {
-           
-
-            $one_tovar['min_price'] = $arr_prices[mb_strtolower($one_tovar['c_1c_article'])]['min_price'];
-            $one_tovar['main_price'] = $arr_prices[mb_strtolower($one_tovar['c_1c_article'])]['main_price'];
-        } else {
-            // когда не нашли цену по ску (Какие то разобвые продажи)
-            $one_tovar['min_price'] = 0;
-            $one_tovar['main_price'] = 0;
-        }
-
-// Цепояем какие типы операций были в этом заказе 
-            if (isset($items_in_order['SELL'])) {
-                $one_tovar['SELL'] = $items_in_order['SELL'];
-            } 
-            if (isset($items_in_order['RETURN'])){
-                $one_tovar['RETURN'] = $items_in_order['RETURN'];
-            }
-            if (isset($items_in_order['ACQUIRING'])){
-                $one_tovar['ACQUIRING'] = $items_in_order['ACQUIRING'];
-            }
-            if (isset($items_in_order['SERVICES'])){
-                $one_tovar['SERVICES'] = $items_in_order['SERVICES'];
-            }
-            if (isset($items_in_order['UDERZHANIA'])){
-                $one_tovar['UDERZHANIA'] = $items_in_order['UDERZHANIA'];
-            }
-
-// Цепляем дополнительную информацию
-        $one_tovar['post_number'] = $items_in_order['post_number']; 
-        if (isset($items_in_order['warehouse_id'])) {
-            $one_tovar['warehouse_id'] = $items_in_order['warehouse_id'];
-            if (isset($arr_warehouses[$items_in_order['warehouse_id']])) {
-                $one_tovar['warehouse_name'] = $arr_warehouses[$items_in_order['warehouse_id']];
-            } else {
-                $one_tovar['warehouse_name'] = 'Не нашли склад';
-            }
-        } else {
-            $one_tovar['warehouse_id'] = 'Non_sklad_return';
-            $one_tovar['warehouse_name'] = 'НЕ НАШЛИ СКЛАД(ВОЗВРАТ)';
-        }
-
-
-        $one_tovar['order_date'] = $items_in_order['order_date'];
-        $one_tovar['post_number_gruzomesto'] = $gruz_key;
-// цепляем эквайринг 1,1%
-if (isset($one_tovar['accruals_for_sale'])) {
-    $one_tovar['acquiring'] = - round(($one_tovar['accruals_for_sale']/100) * 1.1,2) ;
-} else {
-   $one_tovar['acquiring'] = 0; 
-   $one_tovar['accruals_for_sale'] = 0;
-}
-
-// Формируем новый массив
-        $article_strTolower = mb_strtolower($one_tovar['c_1c_article']); // артикул в нижнем регитсре
-        $one_tovar_reestr[$article_strTolower][$items_in_order['delivery_schema']][] = $one_tovar;
-
-    }
-    }
-// echo "<br> *********************************";
-}
-
-
-// print_r($one_tovar);
-// die();
 
 ///  Выводим таблицу с дополнительными сервисами, которые не смогли привязать к заказам
-require_once "print_article/table_services_without_postnumbers.php";
+// require_once "print_article/table_services_without_postnumbers.php";
 
 // Выводим таблицу со всеми заказами 
 require_once "print_article/real_money_article.php";
 
+die();
+// 0153247992-0053

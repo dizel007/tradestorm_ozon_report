@@ -14,11 +14,11 @@ echo <<<HTML
 HTML;
 
 if ((isset($_POST['token'])) && (isset($_POST['client_id']))) {
- $token = $_POST['token'];
- $client_id = $_POST['client_id'];
+ $token = htmlspecialchars($_POST['token']);
+ $client_id =  htmlspecialchars($_POST['client_id']);
  $date_now = date('Y-m-d');
-$ozon_link = 'v3/finance/transaction/list';
-$send_data = array(
+ $ozon_link = 'v3/finance/transaction/list';
+ $send_data = array(
     "filter" => array(
         "date" => array (
             "from" => $date_now."T00:00:00.000Z",

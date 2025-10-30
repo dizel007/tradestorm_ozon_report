@@ -71,10 +71,28 @@ if ($priznak_date == 0)  {
 echo "</form></div>";
 
 
+
+// формируем название папки и файла
 $file_name_ozon = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")".".json";
 
+// Непосредственный запрос данных с озона и сохранение данных в файл
+$prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
+file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
 
-// echo "Период запроса с ($date_from) по  ($date_to)<br>";
+// берем данные из файла
+$prod_array = json_decode(file_get_contents($file_name_ozon) ,true);
+
+echo "<pre>";
+// print_r ($prod_array);
+
+// die(); ///////////////////////// DELETEE ********* 1597373292 ***********
+
+require_once "razbor_dannih.php";
+
+die();
+
+function query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to) {
+    // echo "Период запроса с ($date_from) по  ($date_to)<br>";
 $ozon_link = 'v3/finance/transaction/list';
 $send_data = array(
     "filter" => array(
@@ -102,7 +120,7 @@ if (isset($res['message'])) {
 }
 
 $page_count = $res['result']['page_count'];
-$row_count = $res['result']['row_count'];
+// $row_count = $res['result']['row_count'];
 for ($i=1; $i <=$page_count; $i ++) {
     $send_data = array(
         "filter" => array(
@@ -122,21 +140,5 @@ for ($i=1; $i <=$page_count; $i ++) {
     $prod_array[] = $res['result']['operations'];
 
 }
-file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
-
-
-
-
-$prod_array = json_decode(file_get_contents($file_name_ozon) ,true);
-
-
-echo "<pre>";
-// print_r ($prod_array);
-
-// die(); ///////////////////////// DELETEE ********* 1597373292 ***********
-
-require_once "razbor_dannih.php";
-
-die();
-
-
+return  $prod_array;
+}

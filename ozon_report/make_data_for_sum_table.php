@@ -39,15 +39,15 @@ foreach ($arr_razbor_logistiki as $key_log=>&$summa_logistiki) {
             unset($arr_razbor_logistiki['MarketplaceServiceItemReturnFlowLogistic']);
     }
     elseif  ($key_log == 'MarketplaceServiceItemDropoffSC') {
-             $arr_for_sum_table['Услуги доставки']['Обработка отправления Drop-off'] = @ $arr_for_sum_table['Услуги доставки']['Обработка отправления Drop-off'] + $summa_logistiki;
+             $arr_for_sum_table['Услуги доставки']['Обработка отправления Drop-off'] = @$arr_for_sum_table['Услуги доставки']['Обработка отправления Drop-off'] + $summa_logistiki;
             unset($arr_razbor_logistiki['MarketplaceServiceItemDropoffSC']);
     }
     elseif  ($key_log == 'MarketplaceServiceItemRedistributionLastMileCourier') {
-            $arr_for_sum_table['Услуги агентов']['Доставка до места выдачи'] = @$ $arr_for_sum_table['Услуги агентов']['Доставка до места выдачи'] + $summa_logistiki;
+            $arr_for_sum_table['Услуги агентов']['Доставка до места выдачи'] = @$arr_for_sum_table['Услуги агентов']['Доставка до места выдачи'] + $summa_logistiki;
             unset($arr_razbor_logistiki['MarketplaceServiceItemRedistributionLastMileCourier']);
     }
     elseif  ($key_log == 'MarketplaceServiceItemRedistributionReturnsPVZ') {
-            $arr_for_sum_table['Услуги агентов']['Обработка возвратов, отмен и невыкупов партнёрами']  = @  $arr_for_sum_table['Услуги агентов']['Обработка возвратов, отмен и невыкупов партнёрами'] + $summa_logistiki;
+            $arr_for_sum_table['Услуги агентов']['Обработка возвратов, отмен и невыкупов партнёрами']  = @$arr_for_sum_table['Услуги агентов']['Обработка возвратов, отмен и невыкупов партнёрами'] + $summa_logistiki;
             unset($arr_razbor_logistiki['MarketplaceServiceItemRedistributionReturnsPVZ']);
     }
     elseif  ($key_log == 'MarketplaceServiceItemDelivToCustomer') {
@@ -62,7 +62,7 @@ foreach ($arr_razbor_logistiki as $key_log=>&$summa_logistiki) {
  
 }
 
-unset($arr_for_sum_table['Услуги доставки']['delete']);
+unset($arr_for_sum_table['Услуги доставки']['delete']); // костыль, чтобы это строка выше услуг агенотов была
 
 
 //*******************************************************************************************   ** */

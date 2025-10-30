@@ -174,13 +174,6 @@ if (isset($arr_nerazjbrannoe)) {
 }
 
 
-
-
-
-
-
-
-
 /****************************************************************************************************
  ******************************* ДОПОЛНИТЕЛЬНЫЙ РАЗБОР ДАННЫХ ( распределяем сумму без артикулов)
  ***************************************************************************************************/
@@ -237,12 +230,6 @@ require_once "print_sum_table.php";
 require_once "print_table_real_ozon.php";
 
 
-print_r($arr_orders);
-// ВЫВОД  ТАБЛИЦЫ FBO FBS////////////////////////////////////////////////////
-
-// require_once "print/fbo_fbs_table.php";
-
-
 /***************** ФУНКЦИИ ПОШЛИ **********************************************************************************************
  **********************************************************************************************************************/
 function print_one_string_in_table($print_item, $parametr, $color_class = '')
@@ -270,7 +257,7 @@ function print_two_strings_in_table_two_parametrs($parametr1, $parametr2, $color
 // Выводит две строки с данными из массива
 {
     if (isset($parametr1) AND isset($parametr2)) {
-        echo "<td class=\"$color_class\"><b>" .  number_format(round($parametr1, 0),0 ,',',' ') . "<br>" .  number_format(round($parametr2, 0),0 ,',',' ') . "</b></td>";
+        echo "<td class=\"$color_class\">" .  number_format(round($parametr1, 0),0 ,',',' ') . "<hr>(" .  number_format(round($parametr2, 0),0 ,',','') ." шт)". "</td>";
     } else {
         echo "<td>" . "-" . "</td>";
     }
