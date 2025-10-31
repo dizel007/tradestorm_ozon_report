@@ -20,9 +20,9 @@ if (isset($_GET['file_name_ozon'])) {
 }
 
 if (isset($_GET['article'])) {
-    $need_article = mb_strtolower($_GET['article']);
+    $need_SKU = $_GET['article'];
 } else {
-    $need_article = '';
+    $need_SKU = '';
 }
 
 echo <<<HTML
@@ -31,9 +31,16 @@ echo <<<HTML
 </head>
 HTML;
 
+
+
+
 /*******************************************************************************************
  *  ***** ДАННЫЕ ПОЛУЧЕНЫ ОТСЮДА НАЧИНАЕМ ИХ ОБРАБАТЫВАТЬ ******************************
  *******************************************************************************************/
+
+// echo "<pre>";
+// print_r($prod_array);
+// die();
 // Формируем скозвной массив из элеметов для разбора (убираем вложенность)
 foreach ($prod_array as $arr_temp) {
     foreach ($arr_temp as $add) 
@@ -51,11 +58,21 @@ foreach ($array_MINI as $item) {
         
     } else {
     // создаем массив, где есть номер заказа
+
+
+    // if      (($item['type']) == 'orders') {require "parts_article/orders_article.php";}
+    // elseif  (($item['type']) == 'returns') {require "parts_article/returns_article.php";}
+    // elseif  (($item['type']) == 'other')    {require "parts_article/other_article.php";}
+    // elseif  (($item['type']) == 'services') {require "parts_article/servici_article.php";}
+    // elseif  (($item['type']) == 'compensation') {require "parts_article/uderzhania_article.php";}
+
+
     $arr_type_items_WITH_POSTING_NUMBER[$item['type']][] = $item;
     }
 }
 
-echo "<pre>";
+
+// echo "<pre>";
 
 // print_r($arr_type_items_WITH_POSTING_NUMBER);
 

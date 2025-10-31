@@ -1,17 +1,26 @@
 <?php
 
   
-    $arr_type_logistik = array('MarketplaceServiceItemDirectFlowLogistic' => 'Услуги доставки Прямая логистика',
-                                'MarketplaceServiceItemReturnFlowLogistic' => 'Услуги доставки Обратная логистика',
-                                'MarketplaceServiceItemDropoffSC' => 'Услуги доставки Обработка отправления Drop-off',
-                                'MarketplaceServiceItemRedistributionLastMileCourier' => 'Услуги агентов Доставка до места выдачи',
-                                'MarketplaceServiceItemRedistributionReturnsPVZ' => 'Услуги агентов Обработка возвратов, отмен и невыкупов партнёрами',
-                                'MarketplaceServiceItemDelivToCustomer' => 'Услуги агентов Выдача товара',
-                                'MarketplaceServiceItemRedistributionLastMilePVZ' => 'Услуги агентов Выдача товара_'
-                                ) ;
-            
+    $arr_type_find_servives['Услуги доставки'] = array('MarketplaceServiceItemDirectFlowLogistic' => 'Прямая логистика',
+                                'MarketplaceServiceItemReturnFlowLogistic' => 'Обратная логистика',
+                                'MarketplaceServiceItemDropoffSC' => 'Обработка отправления Drop-off',
+                                );
 
-// print_r($arr_services_types);
+
+    $arr_type_find_servives['Услуги агентов'] = array('MarketplaceServiceItemRedistributionLastMileCourier' => 'Доставка до места выдачи',
+                                     'MarketplaceServiceItemRedistributionReturnsPVZ' => 'Обработка возвратов, отмен и невыкупов партнёрами',
+                                     'MarketplaceServiceItemDelivToCustomer' => 'Выдача товара',
+                                     'MarketplaceServiceItemRedistributionLastMilePVZ' => 'Выдача товара_'
+                                ) ;
+
+  // добавляем эту трату вручную, потому что в озон она в типе операуии и в типах сервисах разные  
+  // MarketplaceReturnStorageServiceAtThePickupPointFbsItem -> OperationMarketplaceReturnStorageServiceAtThePickupPointFbs  
+    $arr_services_types['MarketplaceReturnStorageServiceAtThePickupPointFbsItem'] = 'Начисление за хранение/утилизацию возвратов';       
+    $arr_type_find_servives['сервисы'] =  $arr_services_types;
+     
+                                
+// print_r($arr_type_find_servives);
+// die();
 
 foreach ($arr_article_WORK_need_article as $key=>&$one_tovar) {
    // если есть проданные товары 
@@ -60,82 +69,51 @@ foreach ($arr_article_WORK_need_article as $key=>&$one_tovar) {
                
 
         if (isset($one_tovar['services'])){
+             $one_tovar['services_history'] =  $one_tovar['services']; // Делаем копию сервисов // для отладки
+            raspredelenie_servicnih_rashodov ($one_tovar, $arr_type_find_servives);
+            // find_type_logistika($one_tovar);
             
-            find_type_logistika($one_tovar);
-            
-            find_type_services($one_tovar, $arr_services_types);
+            // find_type_services($one_tovar, $arr_services_types);
         }
 
-if (count($one_tovar['services']) > 0) {
-    print_r($one_tovar);
-}
+        if (isset($one_tovar['services']) AND (count($one_tovar['services']) > 0)) {
+            print_r($one_tovar);
+        }
         $one_sku_in_reestr[] =  $one_tovar;
              // конец перебора всех отправлений в item_buy        
     }
 
-print_r($one_sku_in_reestr[0]);
-
-// 31706044-0231-1
+// print_r($one_sku_in_reestr[0]);
 
 
-
-function find_type_logistika(&$one_tovar) {
-// print_r($one_tovar);
-foreach ($one_tovar['services'] as $key_log=>$summa_logistiki) {
-    // Удаляем нулевые статьи затрат
-    if ($summa_logistiki == 0) {
-         unset($one_tovar['services'][$key_log]);  
-    }
-    // остальные разбираем
-    if ($key_log == 'MarketplaceServiceItemDirectFlowLogistic') {
-            @$one_tovar['логистика']['Услуги доставки']['Прямая логистика'] = $summa_logistiki;
-             unset($one_tovar['services'][$key_log]);
-        }
-    elseif  ($key_log == 'MarketplaceServiceItemReturnFlowLogistic') {
-             @$one_tovar['логистика']['Услуги доставки']['Обратная логистика'] + $summa_logistiki;
-             unset($one_tovar['services'][$key_log]);
-      }
-    elseif  ($key_log == 'MarketplaceServiceItemDropoffSC') {
-             @$one_tovar['логистика']['Услуги доставки']['Обработка отправления Drop-off'] = $summa_logistiki;
-             unset($one_tovar['services'][$key_log]);
-           
-    }
-    elseif  ($key_log == 'MarketplaceServiceItemRedistributionLastMileCourier') {
-            @$one_tovar['логистика']['Услуги агентов']['Доставка до места выдачи'] = $summa_logistiki;
-            unset($one_tovar['services'][$key_log]);
-           
-    }
-    elseif  ($key_log == 'MarketplaceServiceItemRedistributionReturnsPVZ') {
-            @$one_tovar['логистика']['Услуги агентов']['Обработка возвратов, отмен и невыкупов партнёрами']  =  $summa_logistiki;
-            unset($one_tovar['services'][$key_log]);
-          
-    }
-    elseif  ($key_log == 'MarketplaceServiceItemDelivToCustomer') {
-            @$one_tovar['логистика']['Услуги агентов']['Выдача товара']  =  $summa_logistiki;
-            unset($one_tovar['services'][$key_log]);
-           
-    }
-    elseif  ($key_log == 'MarketplaceServiceItemRedistributionLastMilePVZ') {
-            @$one_tovar['логистика']['Услуги агентов']['Выдача товара_']  = $summa_logistiki;
-            unset($one_tovar['services'][$key_log]);
-    } 
+/*****************************************************************************
+ * функция ищет в массиве сервисов к какому типа расходов она относится,
+ * затем в массив заносит русское название расходов и его сумму
+ * затем удаляет разнесенные сервисы
+ *****************************************************************************/
+function raspredelenie_servicnih_rashodov (&$one_tovar, $arr_type_find_servives) {
+    $nashi_tovar = 0;
+    foreach ($one_tovar['services'] as $service=>$service_summa) {
+         // Удаляем нулевые статьи затрат
+    if ($service_summa == 0) {
+         unset($one_tovar['services'][$service]);
+         continue; 
+    }   
+        foreach ($arr_type_find_servives as $category=>$service_type_spisok){
+            foreach ($service_type_spisok as $ozon_type_service=>$rus_name_service){
+                if ($ozon_type_service == $service ) {
+                   $one_tovar[$category][$rus_name_service] = $service_summa;
+                   unset($one_tovar['services'][$service]);
+                   $nashi_tovar =1;
+                }
+            
+            }
 
  
-}
-
-return $one_tovar;
-}
-
-function find_type_services(&$one_tovar, $arr_services_types) {
-
-    foreach ($one_tovar['services'] as $our_type_service=>$summa_service) {
-        foreach ($arr_services_types as $docs_type_service=>$docs_name_service) {
-            if ($our_type_service == $docs_type_service) {
-              @$one_tovar['сервисы'][$docs_name_service] =  $summa_service;
-               unset($one_tovar['services'][$our_type_service]);
-            }
-        }
+     }
+     if ($nashi_tovar == 0) {echo "$service = $service_summa<br>";}
     }
-return $one_tovar;
 
+
+return $one_tovar;
 }

@@ -62,25 +62,6 @@ if (isset($arr_compensation)) {require_once "_parts_razbor/uderzhania.php";}
 if (isset($arr_services))     {require_once "_parts_razbor/servici.php";}
 /***********************************************************************************************************/
 
-// echo "<br>ZAJKAZI ******************************************************* <br>";
-// print_r($arr_orders[0]);
-
-
-// echo "<br> Доп услуги без СКУ *******************************************************<br>";
-// print_r($arr_sum_services_payment);
-
-// echo "<br> Доп услуги где есть СКУ *******************************************************<br>";
-// print_r($arr_sum_services_payment_with_SKU);
-
-//  if (isset ($arr_returns_bez_tovara)) {
-//         echo "<br> Возвраты без СКУ  *******************************************************<br>";
-//         print_r($arr_returns_bez_tovara);
-//         $dop_zatrati_s_vozvratov = array_sum($arr_returns_bez_tovara);
-//  }
-
-// echo "<br>Отбратная логистика === *******************************************************<br>";
-// print_r($arr_article[1620789328]);
-
 // суммируем все данные 
 foreach  ($arr_article as &$one_article_data) {
 // просуммируем всю логистику прямую и обратную для ФБО и ФБС

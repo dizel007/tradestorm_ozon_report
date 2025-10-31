@@ -1,12 +1,16 @@
 <?php
-// echo "</pre>";
+// echo "<pre>";
 // print_r($arr_services);
-
+// die();
 
 if (isset ($arr_services)) {
     foreach ($arr_services as $items) {
         $i++;
         $service_obrabotan = 0;
+        // создаем массивы с сервисами и их описанием
+           $arr_services_types[$items['operation_type']] = $items['operation_type_name'];
+           $arr_services_types_rus[$items['operation_type_name']] = $items['operation_type_name'];
+
         $our_item = $items['items'];
     // перебираем список товаров в этом заказе (Там где одиночные борды. Остальные отправления мы разбиваем по 1 штуке)
             foreach ($our_item as $item) {

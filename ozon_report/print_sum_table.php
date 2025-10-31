@@ -1,5 +1,5 @@
 <?php
-
+// print_r($arr_for_sum_table);
 // CSS цепляем
 echo "<link rel=\"stylesheet\" href=\"css/sum_table..css\">";
 

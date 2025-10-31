@@ -52,13 +52,16 @@ foreach ($one_sku_in_reestr as $key => $one_string_data) {
     echo "<td>" . $one_string_data['post_number_gruzomesto'] . "<hr>". $one_string_data['order_date'] . "</td>";
     echo "<td>" . $one_string_data['delivery_schema'] . "</td>";
     echo "<td>" . $one_string_data['accruals_for_sale'] . "</td>";
+    $summa_accruals_for_sale = @$summa_accruals_for_sale + $one_string_data['accruals_for_sale'];
     echo "<td>" . $one_string_data['amount'] . "</td>";
+    $summa_amount = @$summa_amount + $one_string_data['amount'];
     echo "<td  class= \"bad_desired_price\">" . $one_string_data['sale_commission']." (".$one_string_data['ozon_procent_commition']."%)" . "</td>";
+     $summa_sale_commission = @$summa_sale_commission + $one_string_data['sale_commission'];
 
 // выводим логистику
     echo "<td>";
-    if (isset($one_string_data['логистика']['Услуги доставки'])){
-        foreach ($one_string_data['логистика']['Услуги доставки'] as $type_dost=>$summa_dost) {
+    if (isset($one_string_data['Услуги доставки'])){
+        foreach ($one_string_data['Услуги доставки'] as $type_dost=>$summa_dost) {
             echo "$type_dost: $summa_dost<br>";
             $dost_sum = @$dost_sum + $summa_dost;
         }
@@ -71,21 +74,23 @@ foreach ($one_sku_in_reestr as $key => $one_string_data) {
               $procent_stoimosti_logistiki = 0;  
             }
         echo "<hr><p class= \"bad_desired_price\" >".$dost_sum." (". $procent_stoimosti_logistiki . "%)"."</p>";
-
+$summa_logistika = @$summa_logistika + $dost_sum;
     } else {
         echo " ----  ";
     }
       echo "</td>";
 // выводим усулги агента
     echo "<td>";
-    if (isset($one_string_data['логистика']['Услуги агентов'])){
-        foreach ($one_string_data['логистика']['Услуги агентов'] as $type_agent=>$summa_agent) {
+    if (isset($one_string_data['Услуги агентов'])){
+        foreach ($one_string_data['Услуги агентов'] as $type_agent=>$summa_agent) {
             echo "$type_agent: $summa_agent<br>";
         }
-
+          echo "<hr><p class= \"bad_desired_price\" >".$summa_agent." (". "X" . "%)"."</p>";
+    $summa_all_agent = @$summa_all_agent + $summa_agent;
     } else {
         echo " ----  ";
     }
+   
       echo "</td>";
 // выводим сервисы
     echo "<td>";
@@ -93,14 +98,24 @@ foreach ($one_sku_in_reestr as $key => $one_string_data) {
         foreach ($one_string_data['сервисы'] as $type_service=>$summa_service) {
             echo "$type_service: $summa_service<br>";
         }
-
-
+  echo "<hr><p class= \"bad_desired_price\" >".$summa_service." (". "Я" . "%)"."</p>";
+ $summa_all_service = @$summa_all_service + $summa_service;  
     } else {
         echo " ----  ";
     }
+ 
       echo "</td>";
 
 echo "</tr>";
 
 }
 echo "</table>";
+
+
+echo $summa_accruals_for_sale."<br>";
+echo $summa_amount."<br>";
+echo $summa_sale_commission."<br>";
+echo "Логистика=".$summa_logistika."<br>";
+echo "Агента=".$summa_all_agent."<br>";
+$gg = $summa_logistika + $summa_all_agent;
+echo "ИТОГО=".$gg."<br>";
