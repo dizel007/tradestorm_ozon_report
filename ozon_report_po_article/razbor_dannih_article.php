@@ -82,9 +82,9 @@ foreach ($arr_article as $key=>$items_x) {
 unset ($item); // 
 unset ($items_x);
 
-echo "количество элементов WORK = ". count($arr_article_WORK). "<br>";
-echo "количество элементов NOT_WORK = ". count($arr_article_NOT_WORK). "<br>";
-echo "количество элементов BEZ post INfo = ". count($arr_without_post_info). "<br>";
+echo "количество элементов WORK = ". count(@$arr_article_WORK). "<br>";
+echo "количество элементов NOT_WORK = ". count(@$arr_article_NOT_WORK). "<br>";
+echo "количество элементов BEZ post INfo = ". count(@$arr_without_post_info). "<br>";
 
 // print_r($arr_article_WORK);
 

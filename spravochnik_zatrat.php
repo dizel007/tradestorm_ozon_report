@@ -1,6 +1,7 @@
 <?php
     $arr_type_find_servives['Услуги доставки'] = 
-                          array('MarketplaceServiceItemDirectFlowLogistic' => 'Прямая логистика',
+                          array(
+                                'MarketplaceServiceItemDirectFlowLogistic' => 'Прямая логистика',
                                 'MarketplaceServiceItemReturnFlowLogistic' => 'Обратная логистика',
                                 'MarketplaceServiceItemDropoffSC' => 'Обработка отправления Drop-off',
                                
@@ -8,7 +9,8 @@
 
 
     $arr_type_find_servives['Услуги агентов'] = 
-                               array('MarketplaceServiceItemRedistributionLastMileCourier' => 'Доставка до места выдачи',
+                               array(
+                                     'MarketplaceServiceItemRedistributionLastMileCourier' => 'Доставка до места выдачи',
                                      'MarketplaceServiceItemRedistributionReturnsPVZ' => 'Обработка возвратов, отмен и невыкупов партнёрами',
                                      'MarketplaceServiceItemDelivToCustomer' => 'Выдача товара',
                                      'MarketplaceServiceItemRedistributionLastMilePVZ' => 'Выдача товара_',
@@ -27,8 +29,10 @@
             'Продвижение в поиске'=> 'Продвижение в поиске',
             'Подписка Premium'=> 'Подписка Premium',
             'Подписка Premium Plus'=> 'Подписка Premium Plus',
+
+            'Продвижение с оплатой за заказ'=> 'Продвижение с оплатой за заказ',
         
-            'Продвижение бренда' =>'Продвижение бренда'
+            'Продвижение бренда' =>'Продвижение бренда',
         );
 
 
@@ -41,7 +45,7 @@
             'Обработка брака с приемки' => 'Обработка брака с приемки',
             'Вывоз товара со Склада силами Ozon: Доставка до ПВЗ' => 'Вывоз товара со Склада силами Ozon: Доставка до ПВЗ',
             'Кросс-докинг' => 'Кросс-докинг',
-            'Услуга по бронированию места и персонала для поставки с неполным составом' => 'Услуга по бронированию места и персонала для поставки с неполным составом');
+            'Услуга по бронированию места и персонала для поставки с неполным составом' => 'Услуга по бронированию места и персонала для поставки с неполным составом',);
       
             
  $arr_type_find_servives['Другие услуги']  = array(
@@ -56,13 +60,13 @@
     'Утилизация товара: Повреждённые из-за упаковки'=> 'Утилизация товара: Повреждённые из-за упаковки',
     'Упаковка товара партнёрами'=> 'Упаковка товара партнёрами',
     'Услуга за обработку операционных ошибок продавца: просроченная отгрузка'=> 'Услуга за обработку операционных ошибок продавца: просроченная отгрузка',
-    'Услуга за обработку операционных ошибок продавца: просроченная отгрузка - отмена начисления '=> 'Услуга за обработку операционных ошибок продавца: просроченная отгрузка - отмена начисления'
+    'Услуга за обработку операционных ошибок продавца: просроченная отгрузка - отмена начисления'=> 'Услуга за обработку операционных ошибок продавца: просроченная отгрузка - отмена начисления',
                            );
 
 
    
 $arr_type_find_servives['Прочие начисления'] = array(
-    'Корректировки стоимости услуг' =>'Корректировки стоимости услуг'
+    'Корректировки стоимости услуг' =>'Корректировки стоимости услуг',
 );                            
     
 
@@ -78,9 +82,10 @@ $arr_type_find_servives['Прочие начисления'] = array(
  * затем в массив заносит русское название расходов и его сумму
  * затем удаляет разнесенные сервисы
  *****************************************************************************/
-function raspredelenie_servicnih_rashodov (&$arr_for_sum_table, &$array_with_data ,  $arr_type_find_servives) {
-    $nashli_tratu = 0;
+function raspredelenie_servicnih_rashodov_ozon_report (&$arr_for_sum_table, &$array_with_data ,  $arr_type_find_servives) {
+    // $nashli_tratu = 0;
     foreach ($array_with_data as $service=>$service_summa) {
+        $nashli_tratu = 0;
          // Удаляем нулевые статьи затрат
     if ($service_summa == 0) {
          unset($array_with_data[$service]);
@@ -90,7 +95,7 @@ function raspredelenie_servicnih_rashodov (&$arr_for_sum_table, &$array_with_dat
             foreach ($service_type_spisok as $ozon_type_service=>$rus_name_service){
                 if ($ozon_type_service == $service ) {
                    $arr_for_sum_table[$category][$rus_name_service] = $service_summa;
-                        //  unset($array_with_data[$service]);
+                         unset($array_with_data[$service]);
                    $nashli_tratu = 1;
                 }
             
@@ -98,7 +103,7 @@ function raspredelenie_servicnih_rashodov (&$arr_for_sum_table, &$array_with_dat
 
  
      }
-     if ($nashli_tratu == 0) {echo "$service = $service_summa<br>";}
+     if (($service == 'summa ') AND ($nashli_tratu == 0)) {echo "$service = $service_summa<br>";}
     }
 
 

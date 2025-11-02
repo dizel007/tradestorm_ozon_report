@@ -1,9 +1,9 @@
 <?php
 // print_r($arr_for_sum_table);
 // CSS цепляем
-echo "<link rel=\"stylesheet\" href=\"css/sum_table..css\">";
+echo "<link rel=\"stylesheet\" href=\"css/sum_table.css\">";
 
-echo "<h1><a href=\"https://seller.ozon.ru/app/finances/balance?tab=IncomesExpenses\" target=\"_blank\"> Ссылка на выплаты озона </a></h1>";
+// echo "<h1><a href=\"https://seller.ozon.ru/app/finances/balance?tab=IncomesExpenses\" target=\"_blank\"> Ссылка на выплаты озона </a></h1>";
 // Начинаем отрисовывать таблицу 
 echo "<table class=\"sum-table\">";
 echo "<tr>";
