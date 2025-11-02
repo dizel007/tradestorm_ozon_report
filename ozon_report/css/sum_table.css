@@ -60,3 +60,11 @@
   white-space: normal; /* Разрешить перенос строк */
   overflow-wrap: break-word; /* Современная альтернатива word-wrap */
 }
+
+/* Для ALARM таблица  */
+.alarm_table th{
+    background: #be6805 !important;
+}
+.alarm_table {
+    border: #be6805 2px solid;
+    }

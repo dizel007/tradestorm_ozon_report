@@ -214,6 +214,10 @@ require_once "print_sum_table.php";
 // если нашли неразобранные массивы то выводим алармную талицу
 
 if ($summa_ne_naidennih_statei != 0) {
+   $file_name_ozon_alarm = "../!cache" ."/".$client_id."/".$client_id."_alarm_index_(".date('Y-m-d').")".".json";
+
+ file_put_contents($file_name_ozon_alarm,json_encode($alarm_index_array, JSON_UNESCAPED_UNICODE));
+
     require_once "print_alarm_table.php";
 }
 

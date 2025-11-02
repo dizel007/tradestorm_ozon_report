@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Редирект с URL без расширения на версию с .php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !\.php$
+RewriteRule ^(.*)$ /$1.php [R=301,L]

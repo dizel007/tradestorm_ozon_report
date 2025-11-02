@@ -8,17 +8,19 @@
 echo "<link rel=\"stylesheet\" href=\"css/sum_table.css\">";
 
 // Начинаем отрисовывать таблицу 
-echo "<table class=\"sum-table\">";
-echo "<tr>";
-    echo "<th>пп</th>";
-    echo "<th>Тип массива</th>";
+echo <<<HTML
+<table class="alarm_table sum-table">
+<tr class ="alarm_table">
+    <th >пп</th>
+    <th>Тип массива</th>
 
-    echo "<th>Индекс списания</th>";
-    echo "<th>Сумма(руб)</th>";
-    echo "<th>Общая сумма</th>";
+    <th>Индекс списания</th>
+    <th>Сумма(руб)</th>
+    <th>Общая сумма</th>
     
  
-echo "</tr>";
+</tr>
+HTML;
 
 $string_munber=0;
 foreach ($alarm_index_array as $key=>$data_for_print){
