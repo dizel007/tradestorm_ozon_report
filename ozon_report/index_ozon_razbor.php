@@ -112,7 +112,9 @@ $file_name_ozon = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').
 // Непосредственный запрос данных с озона и сохранение данных в файл
 $prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
 file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
+if ($prod_array === false) {die('НЕТ ДАННЫХ для выдачи');} // Если нам ничего ОЗон не вернул
 
+require_once "get_sebestoimost.php";
 
 
 
@@ -177,5 +179,6 @@ for ($i=1; $i <=$page_count; $i ++) {
     $prod_array[] = $res['result']['operations'];
 
 }
-return  $prod_array;
+if (isset($prod_array)) {return  $prod_array;}
+else {return false;}
 }

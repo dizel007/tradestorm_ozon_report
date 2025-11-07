@@ -173,15 +173,15 @@ $dop_uslugi = 0;
 
  
 foreach ($arr_article as $key => $item) {
-    $one_proc_ot_vsey_summi = round($arr_sum_all_data['sum_accruals_for_sale'] / 100, 2);
+    $one_proc_ot_vsey_summi = round($arr_sum_all_data['sum_accruals_for_sale'] / 100, 4);
 if (isset($item['count']['summa'])) {
-    $arr_article[$key]['proc_item_ot_vsey_summi'] = round($arr_article[$key]['accruals_for_sale']['summa'] / $one_proc_ot_vsey_summi, 2);
+    $arr_article[$key]['proc_item_ot_vsey_summi'] = round($arr_article[$key]['accruals_for_sale']['summa'] / $one_proc_ot_vsey_summi, 4);
 } else {
      $arr_article[$key]['proc_item_ot_vsey_summi'] = 0;
 }
     // Распределяем сумму дополнительных услуг в процентоном соотношении
     if ($arr_article[$key]['proc_item_ot_vsey_summi'] > 0.01) {
-        $arr_article[$key]['dop_uslugi'] = round(((@$dop_uslugi + @$dop_compensation) / 100 * $arr_article[$key]['proc_item_ot_vsey_summi']), 2);
+        $arr_article[$key]['dop_uslugi'] = round(((@$dop_uslugi + @$dop_compensation) / 100 * $arr_article[$key]['proc_item_ot_vsey_summi']), 4);
        
     } else {
         $arr_article[$key]['dop_uslugi'] = 0;
@@ -221,10 +221,17 @@ if ($summa_ne_naidennih_statei != 0) {
     require_once "print_alarm_table.php";
 }
 
+
+
+// print_r($arr_sum_services_payment);
+// $summa_servoceov_bez_sku = array_sum($arr_sum_services_payment_with_SKU);
+
 /************************************************************************************************************ */
 // ВЫВОД ОСНОВНОЙ ТАБЛИЦЫ ////////////////////////////////////////////////////
 require_once "print_table_real_ozon.php";
 
+
+require_once "print_rashozhdenia_table.php";
 
 /***************** ФУНКЦИИ ПОШЛИ **********************************************************************************************
  **********************************************************************************************************************/
@@ -232,28 +239,41 @@ function print_one_string_in_table($print_item, $parametr, $color_class = '')
 // Выводит одну строку с данными из массива
 {
     if (isset($print_item[$parametr])) {
-        echo "<td class=\"$color_class\"><b>" . round($print_item[$parametr], 0) . "</b></td>";
+        echo "<td class=\"$color_class\"><b>" . round($print_item[$parametr], 2) . "</b></td>";
     } else {
         echo "<td>" . "" . "</td>";
     }
 }
 
-function print_two_strings_in_table($print_item, $parametr1, $parametr2, $color_class = '')
+function print_two_strings_in_table_two_parametrs($parametr1, $parametr2, $color_class = '')
 // Выводит две строки с данными из массива
 {
-    if (isset($print_item[$parametr1])) {
-        echo "<td class=\"$color_class\"><b>" .  round($print_item[$parametr1], 0) . "<br>" .  round($print_item[$parametr2], 2) . "</b></td>";
+    if (isset($parametr1) AND isset($parametr2)) {
+        // echo "<td class=\"$color_class\">" .  number_format(round($parametr1, 0),0 ,',',' ') . "<hr>(" .  number_format(round($parametr2, 0),0 ,',','') ." шт)". "</td>";
+        echo "<td class=\"$color_class\"><p class=\"big_font\">" .  number_format(round($parametr1, 0),0 ,',',' ') . "</p><hr><p class = \"small_font\">" .  number_format(round($parametr2, 0),0 ,',','') ." шт". "</p></td>";
+
     } else {
         echo "<td>" . "-" . "</td>";
     }
 }
 
+function print_summa_in_table($print_item, $parametr, $color_class = '')
+// Выводит одну строку с данными из массива
+{
+    if (isset($print_item[$parametr])) {
+        echo "<td class=\"$color_class\"><b>" . number_format(round($print_item[$parametr], 0),0 ,',',' ')."</b></td>";
+    } else {
+        echo "<td>" . "" . "</td>";
+    }
+}
 
-function print_two_strings_in_table_two_parametrs($parametr1, $parametr2, $color_class = '')
+
+function print_two_strings_for_table($data1, $data2, $color_class = '')
 // Выводит две строки с данными из массива
 {
-    if (isset($parametr1) AND isset($parametr2)) {
-        echo "<td class=\"$color_class\">" .  number_format(round($parametr1, 0),0 ,',',' ') . "<hr>(" .  number_format(round($parametr2, 0),0 ,',','') ." шт)". "</td>";
+    if (isset($data1) AND isset($data2)) {
+        echo "<td class=\"$color_class\"><p class=\"big_font\">" .  $data1 . "</p><hr><p class = \"small_font\">" .  number_format(round($data2, 0),0 ,',','') ." шт". "</p></td>";
+
     } else {
         echo "<td>" . "-" . "</td>";
     }

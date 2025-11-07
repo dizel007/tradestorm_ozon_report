@@ -18,8 +18,9 @@ require_once "../spravochnik_zatrat.php";
  $arr_for_sum_table['Прочие начисления']['delete'] = 0;
 
  // сделаем копию массива, чтобы убирать оттуда выбарнные статть затрат 
-$arr_sum_services_payment_copy  = $arr_sum_services_payment; 
-$arr_sum_services_payment_with_SKU_copy  = $arr_sum_services_payment_with_SKU; 
+ if (isset($arr_sum_services_payment)) {$arr_sum_services_payment_copy  = $arr_sum_services_payment;}
+ if (isset($arr_sum_services_payment_with_SKU)) {$arr_sum_services_payment_with_SKU_copy  = $arr_sum_services_payment_with_SKU;}
+ 
 //// разбираем логистику ///////////////
 
 foreach ($arr_article as $sku=>$data_sku ) {
@@ -32,12 +33,6 @@ foreach ($arr_article as $sku=>$data_sku ) {
          }
        }
      }
-
-    //  print_r($arr_razbor_logistiki);
-     $arr_razbor_logistiki_copy = $arr_razbor_logistiki;
-    raspredelenie_servicnih_rashodov_ozon_report ($arr_for_sum_table, $arr_razbor_logistiki_copy ,  $arr_type_find_servives);
-
-unset($arr_for_sum_table['Услуги доставки']['delete']); // костыль, чтобы это строка выше услуг агенотов была 
   }
   
 // начинаем формировать массив Услуги агентов (эквайринг цепляем если он есть)
@@ -47,7 +42,18 @@ unset($arr_for_sum_table['Услуги доставки']['delete']); // кос�
 }
 
 
+//********************************************************************************************* */
+/// ******************** Разбираем массив с логистикой, и добавляем ее в arr_for_sum_table
+//********************************************************************************************* */
 
+
+//  print_r($arr_razbor_logistiki);
+
+if (isset($arr_razbor_logistiki)){
+$arr_razbor_logistiki_copy = $arr_razbor_logistiki;
+raspredelenie_servicnih_rashodov_ozon_report ($arr_for_sum_table, $arr_razbor_logistiki_copy ,  $arr_type_find_servives);
+}
+unset($arr_for_sum_table['Услуги доставки']['delete']); // костыль, чтобы это строка выше услуг агенотов была 
 
 //********************************************************************************************* */
 /// ********************************* Продвижение и реклама, Услуги ФБО, Другие услуги 
@@ -65,6 +71,7 @@ unset($arr_for_sum_table['Услуги доставки']['delete']); // кос�
 /// ************* Компенсации и декомпенсации
 //********************************************************************************************* */
      if (isset($arr_for_compensation)) {
+      $arr_for_compensation_copy_for_check_table = $arr_for_compensation;
             foreach ($arr_for_compensation as $compensation_and_decompensation =>$summa_compensation) {
             $arr_for_sum_table['Компенсации и декомпенсации'][$compensation_and_decompensation] = $summa_compensation;
             unset($arr_for_compensation[$compensation_and_decompensation]);
@@ -99,24 +106,30 @@ $summa_k_nachisleniu = round($summa_k_nachisleniu,0);
 
 /* у массива логистики удалим элемент с индексов summa, который раньше зачем то цепляли
 это расчетный элемент удалияем не ссым */
-unset ($arr_razbor_logistiki_copy['summa']); 
+if (isset($arr_razbor_logistiki_copy['summa'])) {unset ($arr_razbor_logistiki_copy['summa']); }
 
 /// Теперь проверяем остались ли какие то необработанные индексы, т.е. те,
 // которые у нас не прописаны и мы не знаем что они списываею
 
 $summa_ne_naidennih_statei = 0; // сумма затрап котоорые на нашли в нашем перпеесене
 $alarm_index_array =[]; // массив куда будем складывать необработанные индексы сервисов
-$summa_ne_naidennih_statei += check_count_elements_in_array($alarm_index_array, $arr_razbor_logistiki_copy, 'логистика');
-$summa_ne_naidennih_statei += check_count_elements_in_array($alarm_index_array, $arr_sum_services_payment_copy, 'сервисы БЕЗ SKU');
-$summa_ne_naidennih_statei += check_count_elements_in_array($alarm_index_array, $arr_sum_services_payment_with_SKU_copy, 'сервисы с SKU');
 
+if (isset($arr_razbor_logistiki_copy)) {
+  $summa_ne_naidennih_statei += check_count_elements_in_array($alarm_index_array, $arr_razbor_logistiki_copy, 'логистика');
+}
+if (isset($arr_sum_services_payment_copy)) {
+  $summa_ne_naidennih_statei += check_count_elements_in_array($alarm_index_array, $arr_sum_services_payment_copy, 'сервисы БЕЗ SKU');
+}
+if (isset($arr_sum_services_payment_with_SKU_copy)) {
+  $summa_ne_naidennih_statei += check_count_elements_in_array($alarm_index_array, $arr_sum_services_payment_with_SKU_copy, 'сервисы с SKU');
+}
 
 /*******************************************************************************************
 * Функция проверяем есть ли эелменты в массиве, и если есть, то копирует их индексы и сумму начислений
 ********************************************************************************************/
 function check_count_elements_in_array(&$alarm_index_array, $checking_array, $description_array) {
-$all_summa =0;
-  if (count($checking_array) >0) {
+$all_summa = 0;
+  if (count($checking_array) > 0) {
     foreach ($checking_array as $index=>$summa) {
       $alarm_index_array[$description_array][$index] = $summa;
       $all_summa += $summa;

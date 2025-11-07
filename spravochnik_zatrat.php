@@ -4,6 +4,7 @@
                                 'MarketplaceServiceItemDirectFlowLogistic' => 'Прямая логистика',
                                 'MarketplaceServiceItemReturnFlowLogistic' => 'Обратная логистика',
                                 'MarketplaceServiceItemDropoffSC' => 'Обработка отправления Drop-off',
+                                'MarketplaceServiceItemDropoffPVZ' => 'Обработка отправления Drop-off',
                                
                                 );
 
@@ -13,13 +14,15 @@
                                      'MarketplaceServiceItemRedistributionLastMileCourier' => 'Доставка до места выдачи',
                                      'MarketplaceServiceItemRedistributionReturnsPVZ' => 'Обработка возвратов, отмен и невыкупов партнёрами',
                                      'MarketplaceServiceItemDelivToCustomer' => 'Выдача товара',
-                                     'MarketplaceServiceItemRedistributionLastMilePVZ' => 'Выдача товара_',
+                                     'MarketplaceServiceItemRedistributionLastMilePVZ' => 'Выдача товара',
 
                                      
                                 ) ;
 
     $arr_type_find_servives['Продвижение и реклама'] =  array(
-        'Закрепление отзыва' => 'Закрепление отзыва', 
+            'Закрепление отзыва' => 'Закрепление отзыва', 
+            'Генерация видеообложки' => 'Генерация видеообложки',
+            'Услуги продвижения товаров' => 'Услуги продвижения товаров',
             'Баллы за отзывы'=> 'Баллы за отзывы',
             'Оплата за клик'=> 'Оплата за клик',
             'Иные электронные услуги'=> 'Иные электронные услуги',
@@ -27,11 +30,10 @@
             'Вывод в топ'=> 'Вывод в топ',
             'Трафареты'=> 'Трафареты',
             'Продвижение в поиске'=> 'Продвижение в поиске',
+            'Premium-подписка'=> 'Premium-подписка',
             'Подписка Premium'=> 'Подписка Premium',
             'Подписка Premium Plus'=> 'Подписка Premium Plus',
-
             'Продвижение с оплатой за заказ'=> 'Продвижение с оплатой за заказ',
-        
             'Продвижение бренда' =>'Продвижение бренда',
         );
 
@@ -94,7 +96,7 @@ function raspredelenie_servicnih_rashodov_ozon_report (&$arr_for_sum_table, &$ar
         foreach ($arr_type_find_servives as $category=>$service_type_spisok){
             foreach ($service_type_spisok as $ozon_type_service=>$rus_name_service){
                 if ($ozon_type_service == $service ) {
-                   $arr_for_sum_table[$category][$rus_name_service] = $service_summa;
+                   $arr_for_sum_table[$category][$rus_name_service] =  @$arr_for_sum_table[$category][$rus_name_service] + $service_summa;
                          unset($array_with_data[$service]);
                    $nashli_tratu = 1;
                 }
