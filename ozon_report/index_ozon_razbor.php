@@ -50,15 +50,13 @@ echo <<<HTML
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeStorm - контролируй свои продажы</title>
+    <title>TradeStorm</title>
     
 </head>
 <body>
+    <div class="table-container">
     <div class="form-container">
-        <!-- <h1 class="form-title">Выберите период</h1> -->
         <form id="dateForm">
-          <!-- <form id="dateForm" > -->
-
             <div class="form-content">
                 <div class="date-fields">
                     <div class="date-group">
@@ -87,16 +85,8 @@ echo <<<HTML
         </form>
     </div>
 
-    <!-- Дополнительный контент для демонстрации -->
-    <!-- <div class="content">
-        <h2>Остальной контент страницы</h2>
-        <p>Форма с кнопкой и ссылкой сбоку, адаптированная для монитора и телефона</p>
-    </div> -->
-
- 
+    </div>
  <script src="css/script.js" type="text/javascript"></script>
-</body>
-</html>
 
 HTML;
 
@@ -153,7 +143,7 @@ $res = send_injection_on_ozon($token, $client_id, $send_data, $ozon_link );
 
 // если ошибка при обмене то выводим е
 if (isset($res['message'])) {
-    echo "<pre>";
+    // echo "<pre>";
     print_r($res);
     die('ОШИБКА ПРИ ЗАПРОСЕ');
 }

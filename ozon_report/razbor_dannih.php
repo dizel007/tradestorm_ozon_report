@@ -62,6 +62,7 @@ if (isset($arr_compensation)) {require_once "_parts_razbor/uderzhania.php";}
 if (isset($arr_services))     {require_once "_parts_razbor/servici.php";}
 /***********************************************************************************************************/
 
+
 // суммируем все данные 
 foreach  ($arr_article as &$one_article_data) {
 // просуммируем всю логистику прямую и обратную для ФБО и ФБС
@@ -114,7 +115,6 @@ foreach  ($arr_article as &$one_article_data) {
 
 }
 /****************************************************************************************************** */
-
 
 /************************************************************************************************
  * Подсчитываем все рассчетные суммы аз период
@@ -250,7 +250,7 @@ function print_two_strings_in_table_two_parametrs($parametr1, $parametr2, $color
 {
     if (isset($parametr1) AND isset($parametr2)) {
         // echo "<td class=\"$color_class\">" .  number_format(round($parametr1, 0),0 ,',',' ') . "<hr>(" .  number_format(round($parametr2, 0),0 ,',','') ." шт)". "</td>";
-        echo "<td class=\"$color_class\"><p class=\"big_font\">" .  number_format(round($parametr1, 0),0 ,',',' ') . "</p><hr><p class = \"small_font\">" .  number_format(round($parametr2, 0),0 ,',','') ." шт". "</p></td>";
+        echo "<td class=\"$color_class\"><p class=\"big_font\">" .  number_format(round($parametr1, 0),0 ,',',' ') . "</p><br><p class = \"small_font\">" .  number_format(round($parametr2, 0),0 ,',','') ." шт". "</p></td>";
 
     } else {
         echo "<td>" . "-" . "</td>";
@@ -272,9 +272,31 @@ function print_two_strings_for_table($data1, $data2, $color_class = '')
 // Выводит две строки с данными из массива
 {
     if (isset($data1) AND isset($data2)) {
-        echo "<td class=\"$color_class\"><p class=\"big_font\">" .  $data1 . "</p><hr><p class = \"small_font\">" .  number_format(round($data2, 0),0 ,',','') ." шт". "</p></td>";
+        echo "<td class=\"$color_class\">
+        <p class=\"big_font \">".  $data1 ."</p>
+        <p class = \"small_font\">" .  number_format(round($data2, 0),0 ,',','') ." шт". "</p>
+        </td>";
 
     } else {
         echo "<td>" . "-" . "</td>";
     }
 }
+
+
+
+
+function print_three_strings_for_table($data1, $data2, $data3)
+// Выводит две строки с данными из массива
+{
+    if (isset($data1) AND isset($data2) AND isset($data3)) {
+        echo "<td>
+        <p class=\"big_font red_color\">".  $data1 ."</p>
+        <p class = \"small_font\">" .  $data2.  "</p>
+        <p class = \"small_font red_color\">" .  number_format(round($data3, 0),0 ,',','') ." шт". "</p>
+        </td>";
+
+    } else {
+        echo "<td>" . "-" . "</td>";
+    }
+}
+

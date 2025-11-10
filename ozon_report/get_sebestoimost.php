@@ -14,23 +14,22 @@ require_once '../pdo_functions/pdo_functions.php'; // подключаем фу�
         }
 
     $arr_sebes_temp = select_all_nomenklaturu($pdo);
-    $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_ip_zel', $pdo, 'active') ;
+    // $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_ip_zel', $pdo, 'active') ;
+    $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_anmaks', $pdo, 'active') ;
 
-// echo "<pre>";
-//  print_r($arr_tovar_in_MP);
+// если есть данные из базы даннх
+if ((isset ( $arr_sebes_temp)) and (isset ($arr_tovar_in_MP))) {
 foreach ($arr_tovar_in_MP as $tovar) {
-   
   foreach ($arr_sebes_temp  as $nomenklatura) {
-  
-    if (mb_strtolower($tovar['mp_article'] == mb_strtolower($nomenklatura['main_article_1c']))) {
-      $arr_sebestoimost[$tovar['sku']]['mp_article'] = mb_strtolower($nomenklatura['main_article_1c']);
-      $arr_sebestoimost[$tovar['sku']]['min_price'] = $nomenklatura['min_price'];
-      $arr_sebestoimost[$tovar['sku']]['main_price'] = $nomenklatura['main_price'];
-      break 1;
+    if (mb_strtolower($tovar['mp_article']) == mb_strtolower($nomenklatura['main_article_1c'])) {
+        $arr_sebestoimost[$tovar['sku']]['mp_article'] = mb_strtolower($nomenklatura['main_article_1c']);
+        $arr_sebestoimost[$tovar['sku']]['min_price'] = $nomenklatura['min_price'];
+        $arr_sebestoimost[$tovar['sku']]['main_price'] = $nomenklatura['main_price'];
+        $priznak_nashli_sebestoimost = 1;
+        break 1;
     }
-
   }
 }
 
-    
-    
+} 
+  // die();
