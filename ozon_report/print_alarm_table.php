@@ -5,12 +5,13 @@
  */
 
 // CSS цепляем
-echo "<link rel=\"stylesheet\" href=\"css/sum_table.css\">";
+echo "<link rel=\"stylesheet\" href=\"css/alarm_table.css\">";
 
 // Начинаем отрисовывать таблицу 
 echo <<<HTML
-<table class="alarm_table sum-table">
-<tr class ="alarm_table">
+<div class="table-container">
+<table class="not_find_data_table">
+<tr class ="">
     <th >пп</th>
     <th>Тип массива</th>
 
@@ -60,7 +61,7 @@ echo "<td>". number_format(round($summa_ne_naidennih_statei,0),0,'.',',')."</td>
 echo "</tr>";
 
 echo "</table>";
-
+echo "</div>";
 // die();
 
 

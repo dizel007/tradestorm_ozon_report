@@ -1,6 +1,11 @@
 <?php 
 // print_r($arr_article[1620789328]);
+// echo "<pre>";
 // print_r($arr_article);
+
+
+
+// die();
 // echo "<pre>";
 // print_r($arr_sebestoimost); 
 
@@ -14,17 +19,17 @@ echo "<table class=\"real_money fl-table\">";
 echo <<<HTML
 <tr>
     <th class ="name_row">Наименование</th>
-    <th>SKU<br>Артикл</th>
+    <th>SKU<br>Артикул</th>
     
     <th>К-во<br>Заказ<br>(шт)</th>
     <th>К-во<br>Возвр<br>(шт)</th>
     <th>К-во<br>продн<br>(шт)</th>
-    
-    <th>Цена<br>для пок-ля<br>(руб)</th>
+   
+    <th>Сумма<br>продаж<br>(руб)</th>
     <th>Комиссия <br>озон<br>(руб)</th>
     <th>Стоимость<br>логистики<br>(руб)</th>
 
-    <th>Сумма<br>продаж<br>(руб)</th>
+    <th>Сумма<br>продаж без<br>комис и логис<br>(руб)</th>
 
     <th>Стоимость<br>сервисов<br>(руб)</th>
     <th>Эквайринг<br>(руб)<br>(9)</th>
@@ -75,6 +80,9 @@ HTML;
 // echo "<pre>";
 // print_r($arr_article);
 foreach ($arr_article as $key=>$print_item) {   
+   $data1 = 0;
+   $data2 = 0;
+
 $link_for_report_article = "../ozon_report_po_article/index_ozon_razbor_article.php?file_name_ozon=$file_name_ozon&article=".$print_item['sku']."&clt=$client_id";
 $link_for_site_ozon = "https://www.ozon.ru/product/".$print_item['sku'];
 
@@ -82,7 +90,7 @@ echo "<tr>";
 // 
 
 // Название товара
-   echo "<td>". " <a href =\"$link_for_site_ozon\" target=\"_blank\">". $print_item['name']."</a><hr>". "</td>";
+   echo "<td>". " <a href =\"$link_for_site_ozon\" target=\"_blank\">". $print_item['name']."</a>". "</td>";
 
    if (isset( $arr_sebestoimost[$print_item['sku']]['mp_article'])) {
    echo "<td>"." <a href =\"$link_for_report_article\" target=\"_blank\">". $print_item['sku']."</a><hr>". 
@@ -108,16 +116,17 @@ else {echo "<td>" . "0" . "</td>";}
 // Цена для покупателя (стоимость товара в личном кабинете)
 /**************************************************************************************/
 
-   if (isset($print_item['accruals_for_sale']['summa']) ) {
-   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
+if (isset($print_item['accruals_for_sale']['summa']) ) {
+  if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'])!=0)  {
        $temp = round ($print_item['accruals_for_sale']['summa']/$print_item['count']['summa'],0);
        $one_procent_from_accruals_for_sale = round($print_item['accruals_for_sale']['summa']/100,4);
+       print_two_strings_in_table_two_parametrs(round($print_item['accruals_for_sale']['summa'],0), $temp, $color_class = '');
    } else  {
-    $temp=0;
-    
+      $temp = 0;
+      echo "<td>" . "+" . "</td>"; 
    }
-   print_two_strings_in_table_two_parametrs(round($print_item['accruals_for_sale']['summa'],0), $temp, $color_class = '');
    $arr_summ['Цена для покупателя'] = @$arr_summ['Цена для покупателя'] + $print_item['accruals_for_sale']['summa'];
+
 } else {
     echo "<td>" . "-" . "</td>"; 
 }
@@ -126,18 +135,20 @@ else {echo "<td>" . "0" . "</td>";}
 /**************************************************************************************/
 
  if (isset($print_item['sale_commission']['summa'])) {
-   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
-   $temp = round ($print_item['sale_commission']['summa']/$print_item['count']['summa'],0);
-   $sale_commission_procent = abs(round(($print_item['sale_commission']['summa']/$one_procent_from_accruals_for_sale),1));
-   $data1 = number_format(round($print_item['sale_commission']['summa'],0),0 ,',',' ');
-   $data2 = "($sale_commission_procent%)";
+   if (isset($print_item['count']['summa'])  AND ($print_item['count']['summa']!=0)) {
+        $temp = round ($print_item['sale_commission']['summa']/$print_item['count']['summa'],0);
+        $sale_commission_procent = abs(round(($print_item['sale_commission']['summa']/$one_procent_from_accruals_for_sale),1));
+        $data1 = number_format(round($print_item['sale_commission']['summa'],0),0 ,',',' ');
+        $data2 = "($sale_commission_procent%)";
+
+        print_three_strings_for_table($data1, $data2, $temp);
+
    } else  {
     $temp=0;
+      echo "<td>" . $print_item['sale_commission']['summa'] . "</td>"; 
    }
-   
-    print_three_strings_for_table($data1, $data2, $temp);
+  $arr_summ['Комиссия озона'] = $arr_summ['Комиссия озона'] + $print_item['sale_commission']['summa'];
 
-   $arr_summ['Комиссия озона'] = $arr_summ['Комиссия озона'] + $print_item['sale_commission']['summa'];
  } else {
      echo "<td>" . "-" . "</td>"; 
  }
@@ -147,16 +158,17 @@ else {echo "<td>" . "0" . "</td>";}
 /**************************************************************************************/
 
  if (isset($print_item['logistika']['summa'])) {
-   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
-   $temp = round ($print_item['logistika']['summa']/$print_item['count']['summa'],0);
-   $logistik_procent = abs(round(($print_item['logistika']['summa']/$one_procent_from_accruals_for_sale),1));
-   $data1 = number_format(round($print_item['logistika']['summa'],0),0 ,',',' ');
-   $data2 = "($logistik_procent%)";
-
+   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa']!=0)) {
+      $temp = round ($print_item['logistika']['summa']/$print_item['count']['summa'],0);
+      $logistik_procent = abs(round(($print_item['logistika']['summa']/$one_procent_from_accruals_for_sale),1));
+      $data1 = number_format(round($print_item['logistika']['summa'],0),0 ,',',' ');
+      $data2 = "($logistik_procent%)";
+      print_three_strings_for_table($data1, $data2, $temp);
    } else  {
     $temp=0;
+      echo "<td>" . $print_item['logistika']['summa'] . "</td>"; 
    }
-       print_three_strings_for_table($data1, $data2, $temp);
+      
 
 //    print_two_strings_for_table($data1, $temp, $color_class = 'red_color');
 
@@ -167,12 +179,14 @@ else {echo "<td>" . "0" . "</td>";}
 
 // ************************** Цена продажи *******************************************************************
  if (isset($print_item['amount']['summa']) ) {
-   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
-   $temp = round ($print_item['amount']['summa']/$print_item['count']['summa'],0);
+   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa']!=0)) {
+     $temp = round ($print_item['amount']['summa']/$print_item['count']['summa'],0);
+     print_two_strings_in_table_two_parametrs(round($print_item['amount']['summa'],0), $temp, $color_class = '');
    } else  {
     $temp=0;
+     echo "<td>" . $print_item['amount']['summa'] . "</td>"; 
    }
-   print_two_strings_in_table_two_parametrs(round($print_item['amount']['summa'],0), $temp, $color_class = '');
+   
    $arr_summ['Сумма продаж'] = @$arr_summ['Сумма продаж'] + $print_item['amount']['summa'];
  } else {
      echo "<td>" . "-" . "</td>"; 
@@ -180,41 +194,38 @@ else {echo "<td>" . "0" . "</td>";}
 
   /// *******************  Сервисы  **************************
    if (isset($print_item['services']['summa'])) {
-   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
-   $temp = round ($print_item['services']['summa']/$print_item['count']['summa'],0);
-   $services_procent = abs(round(($print_item['services']['summa']/$one_procent_from_accruals_for_sale),1));
-   $data1 = number_format(round($print_item['services']['summa'],0),0 ,',',' ');
-   $data2 = "($services_procent%)";
+   if (isset($print_item['count']['summa']) ) {
+            $temp = round ($print_item['services']['summa']/$print_item['count']['summa'],0);
+            $services_procent = abs(round(($print_item['services']['summa']/$one_procent_from_accruals_for_sale),1));
+            $data1 = number_format(round($print_item['services']['summa'],0),0 ,',',' ');
+            $data2 = "($services_procent%)";
+              print_three_strings_for_table($data1, $data2, $temp);
+
    } else  {
     $temp=0;
+      echo "<td>" . $print_item['services']['summa'] . "</td>"; 
    }
-    print_three_strings_for_table($data1, $data2, $temp);
-
+  
     $arr_summ['Сервисы'] = $arr_summ['Сервисы'] + $print_item['services']['summa'];
  } else {
      echo "<td>" . "-" . "</td>"; 
  }
 
   /// ******************* Эквайринг  **************************
-   if (isset($print_item['amount_ecvairing'])) {
+if (isset($print_item['amount_ecvairing'])) {
    if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
-   $temp = round ($print_item['amount_ecvairing']/$print_item['count']['summa'],0);
-   $amount_ecvairing_procent = abs(round(($print_item['amount_ecvairing']/$one_procent_from_accruals_for_sale),1));
+        $temp = round ($print_item['amount_ecvairing']/$print_item['count']['summa'],0);
+        $amount_ecvairing_procent = abs(round(($print_item['amount_ecvairing']/$one_procent_from_accruals_for_sale),1));
+        $data1 = number_format(round($print_item['amount_ecvairing'],0),0 ,',',' ');
+        $data2 = "($amount_ecvairing_procent%)";
 
-   $data1 = number_format(round($print_item['amount_ecvairing'],0),0 ,',',' ');
-  $data2 = "($amount_ecvairing_procent%)";
-
-
-//    $data1 = number_format(round($print_item['amount_ecvairing'],0),0 ,',',' ')."($amount_ecvairing_procent%)";
-
+   print_three_strings_for_table($data1, $data2, $temp);
 
    } else  {
     $temp=0;
+         echo "<td>" . $print_item['amount_ecvairing'] . "</td>"; 
    }
-    print_three_strings_for_table($data1, $data2, $temp);
 
-    //   print_two_strings_for_table($data1, $temp, $color_class = 'red_color');
-//    print_two_strings_in_table_two_parametrs(round($print_item['amount_ecvairing'],0), $temp, 'red_color');
     $arr_summ['Эквайринг'] = $arr_summ['Эквайринг'] + $print_item['amount_ecvairing'];
 
  } else {
@@ -223,7 +234,7 @@ else {echo "<td>" . "0" . "</td>";}
 
  // Цена за вычетом всего где есть артикул
 
-    if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
+    if (isset($print_item['count']['summa'])) {
    $temp = round ($print_item['summa_bez_vsego_gde_est_artikul']/$print_item['count']['summa'],0);
    } else  {
     $temp=0;
@@ -235,69 +246,88 @@ else {echo "<td>" . "0" . "</td>";}
    print_one_string_in_table($print_item,  'proc_item_ot_vsey_summi');
    $arr_summ['Процент распределения стоимости'] = $arr_summ['Процент распределения стоимости'] + $print_item['proc_item_ot_vsey_summi'];
  // Дополнительные услуги   
-   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
-   $temp = round ($print_item['dop_uslugi']/$print_item['count']['summa'],0);
-   $dop_uslugi_procent = abs(round(($print_item['dop_uslugi']/$one_procent_from_accruals_for_sale),1));
-   
-   
-   
-      $data1 = number_format(round($print_item['dop_uslugi'],0),0 ,',',' ');
-   $data2 = "($dop_uslugi_procent%)";
+   if (isset($print_item['count']['summa']) AND ($print_item['count']['summa']!=0)) {
+        $temp = round ($print_item['dop_uslugi']/$print_item['count']['summa'],0);
+        $dop_uslugi_procent = abs(round(($print_item['dop_uslugi']/$one_procent_from_accruals_for_sale),1));
+        $data1 = number_format(round($print_item['dop_uslugi'],0),0 ,',',' ');
+        $data2 = "($dop_uslugi_procent%)";
+            print_three_strings_for_table($data1, $data2, $temp);
    } else  {
     $temp=0;
+      echo "<td>" . $print_item['dop_uslugi'] . "</td>"; 
    }
-    print_three_strings_for_table($data1, $data2, $temp);
    
-
+   
 //    print_two_strings_in_table_two_parametrs(round($print_item['dop_uslugi'],0), $temp, 'red_color');
    $arr_summ['Сумма распределения доп.услуг'] = $arr_summ['Сумма распределения доп.услуг'] + $print_item['dop_uslugi'];
 
-   // Цена за вычетом всех расходов 
+////////////////////////////////////////////////////////////////////////////////////////
+// Цена за вычетом всех расходов 
+////////////////////////////////////////////////////////////////////////////////////////
 
-    if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
-   $price_for_one_tovar = round ($print_item['summa_bez_vsego']/$print_item['count']['summa'],0);
+if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
+      $price_for_one_tovar = round ($print_item['summa_bez_vsego']/$print_item['count']['summa'],0);
+      print_two_strings_in_table_two_parametrs(round($print_item['summa_bez_vsego'],0), $price_for_one_tovar, '');
    } else  {
-    $price_for_one_tovar=0;
+    $price_for_one_tovar = 0;
+      echo "<td>" . $print_item['summa_bez_vsego'] . "</td>"; 
    }
-   print_two_strings_in_table_two_parametrs(round($print_item['summa_bez_vsego'],0), $price_for_one_tovar, '');
+   
    $arr_summ['Сумма без всего'] = @$arr_summ['Сумма без всего'] + $print_item['summa_bez_vsego'];
 
+/////////////////////////////////////////////////////////////////////////////////////////////
 // Хорошая цена и разница от цена продажи после всех вычетов
+/////////////////////////////////////////////////////////////////////////////////////////////
 
-    if (isset($arr_sebestoimost[$print_item['sku']]['main_price']) ) {
-       $diff_price = round(($price_for_one_tovar - $arr_sebestoimost[$print_item['sku']]['main_price']) ,0 );
- $diff_price >=0? $color_class = 'green_color':$color_class = 'red_color';
-          print_two_strings_in_table_two_parametrs($arr_sebestoimost[$print_item['sku']]['main_price'], $diff_price, $color_class);
-   } else  {
+if (isset($arr_sebestoimost[$print_item['sku']]['main_price'])  and ($arr_sebestoimost[$print_item['sku']]['main_price'] !=0)) {
+     if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
+        $diff_price = round(($price_for_one_tovar - $arr_sebestoimost[$print_item['sku']]['main_price']) ,0 );
+        $diff_price >=0? $color_class = 'green_color':$color_class = 'red_color';
+        print_two_strings_in_table_two_parametrs($arr_sebestoimost[$print_item['sku']]['main_price'], $diff_price, $color_class);
+   } else {
+    echo "<td>" . $arr_sebestoimost[$print_item['sku']]['main_price']. "</td>";
+   }
+ 
+ 
+ 
+        } else  {
     $temp=0;
+    echo "<td>" . "0" . "</td>";
    }
 
 
 
 
 // Себестоимость и разница от цена продажи после всех вычетов
-
-    if (isset($arr_sebestoimost[$print_item['sku']]['min_price']) ) {
+ if (isset($arr_sebestoimost[$print_item['sku']]['min_price']) AND ($arr_sebestoimost[$print_item['sku']]['min_price']!=0) ) {
+    if (isset($print_item['count']['summa']) AND ($print_item['count']['summa'] !=0)) {
        $arr_summ['Сумма себестоимость'] = @$arr_summ['Сумма себестоимость'] + $arr_sebestoimost[$print_item['sku']]['min_price']*@$print_item['count']['summa']; 
-       $diff_price = round(($price_for_one_tovar - $arr_sebestoimost[$print_item['sku']]['min_price']) ,0 );
-       $diff_price >=0? $color_class = 'green_color':$color_class = 'red_color';
-          print_two_strings_in_table_two_parametrs($arr_sebestoimost[$print_item['sku']]['min_price'], $diff_price, $color_class);
-   } else  {
+       $diff_min_price = round(($price_for_one_tovar - $arr_sebestoimost[$print_item['sku']]['min_price']) ,0 );
+       $diff_min_price >=0? $color_class = 'green_color':$color_class = 'red_color';
+          print_two_strings_in_table_two_parametrs($arr_sebestoimost[$print_item['sku']]['min_price'], $diff_min_price, $color_class);
+    } else {
+         echo "<td>" . $arr_sebestoimost[$print_item['sku']]['min_price']. "</td>";  
+    }
+   
+        } else  {
+
     $temp=0;
+   echo "<td>" . "0" . "</td>";
    }
 // Прибыль считается от себестоимости
-if ((isset($print_item['count']['summa'])) AND ($print_item['count']['summa'] != 0)) {
-    $pribil['pribil'] = round($print_item['count']['summa'] * $diff_price,0);
+if ((isset($print_item['count']['summa'])) AND ($print_item['count']['summa'] != 0) AND  ($arr_sebestoimost[$print_item['sku']]['min_price'] != 0)) {
+    $pribil['pribil'] = round($print_item['count']['summa'] * $diff_min_price,0);
     $pribil['pribil'] >=0? $color_class = 'green_color':$color_class = 'red_color';
     $arr_summ['Сумма прибыль'] = @$arr_summ['Сумма прибыль'] + $pribil['pribil'];
     print_summa_in_table($pribil, 'pribil', $color_class );
     // print_one_string_in_table($pribil,  'pribil' , $color_class);
 } 
-else {echo "<td>" . "0" . "</td>";}
+else {
+    echo "<td>" . $print_item['summa_bez_vsego'] . "</td>";
+     $arr_summ['Сумма прибыль'] = @$arr_summ['Сумма прибыль'] + $print_item['summa_bez_vsego'];
+    }
 
-
-
-  echo "</tr>";
+echo "</tr>";
 
 
 

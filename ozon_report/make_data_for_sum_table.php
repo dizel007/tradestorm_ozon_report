@@ -4,10 +4,10 @@
 // echo "***********************<br>";
 
 require_once "../spravochnik_zatrat.php";
-
- $arr_for_sum_table['Продажи']['-'] = $arr_sum_all_data['sum_accruals_for_sale_direct'];
- $arr_for_sum_table['Возвраты']['-'] = $arr_sum_all_data['sum_accruals_for_sale_return'];
- $arr_for_sum_table['Вознаграждение Ozon']['-'] = $arr_sum_all_data['sum_sale_commission'];
+$arr_for_sum_table =[];
+ $arr_for_sum_table['Продажи']['-'] = @$arr_sum_all_data['sum_accruals_for_sale_direct'];
+ $arr_for_sum_table['Возвраты']['-'] = @$arr_sum_all_data['sum_accruals_for_sale_return'];
+ $arr_for_sum_table['Вознаграждение Ozon']['-'] = @$arr_sum_all_data['sum_sale_commission'];
 
  $arr_for_sum_table['Услуги доставки']['delete'] = 0; // костыль, чтобы это строка выше услуг агенотов была
  $arr_for_sum_table['Услуги агентов']['delete'] = 0;

@@ -15,7 +15,8 @@ foreach ($prod_array as $items) {
 
 
 // $new_prod_array = json_decode(file_get_contents('xxx.json'),true);
-
+// print_r($new_prod_array);
+// die();
 foreach ($new_prod_array as $item) {
 
     if ($item['type'] == 'orders') {
@@ -46,7 +47,7 @@ if (isset($arr_index_job))   {echo "<br>Есть новые массивы ко�
 
 // echo "<pre>";
 // print_r( $arr_orders[0]);
-
+$arr_article = [];
 
 
 $i = 0;
@@ -194,12 +195,6 @@ if (isset($item['count']['summa']) AND ($item['count']['summa']) !=0) {
 }
 }
 
-// echo  "<pre>";
-// print_r($arr_sum_services_payment);
-/************************************************************************************************************ */
-/// КОНЕЦ формирования массива для екселя
-/************************************************************************************************************ */
-
 /************************************************************************************************************ */
 /**  Подготовка данных для озоновской таблицы */
 /************************************************************************************************************ */
@@ -215,12 +210,9 @@ require_once "print_sum_table.php";
 
 if ($summa_ne_naidennih_statei != 0) {
    $file_name_ozon_alarm = "../!cache" ."/".$client_id."/".$client_id."_alarm_index_(".date('Y-m-d').")".".json";
-
- file_put_contents($file_name_ozon_alarm,json_encode($alarm_index_array, JSON_UNESCAPED_UNICODE));
-
+     file_put_contents($file_name_ozon_alarm,json_encode($alarm_index_array, JSON_UNESCAPED_UNICODE));
     require_once "print_alarm_table.php";
 }
-
 
 
 // print_r($arr_sum_services_payment);
@@ -228,10 +220,28 @@ if ($summa_ne_naidennih_statei != 0) {
 
 /************************************************************************************************************ */
 // ВЫВОД ОСНОВНОЙ ТАБЛИЦЫ ////////////////////////////////////////////////////
-require_once "print_table_real_ozon.php";
+
+// посчитаем количество проданнные товаров, если их нет, то не будем выводить таблицу
+$sell_count_summa=0;
+foreach ($arr_article as $key=>$print_item) {   
+$sell_count_summa += @$print_item['count']['summa'];
+}
+// Если количество  больше нуля то выводим таблицу 
+if($sell_count_summa >0) {
+    require_once "make_data_for_table_real_ozon.php";
 
 
-require_once "print_rashozhdenia_table.php";
+
+
+
+    require_once "print_table_real_ozon.php";
+    die();
+    require_once "print_rashozhdenia_table.php";
+}
+
+
+
+
 
 /***************** ФУНКЦИИ ПОШЛИ **********************************************************************************************
  **********************************************************************************************************************/

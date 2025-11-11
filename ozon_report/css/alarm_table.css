@@ -1,0 +1,46 @@
+.table-container {
+    width: 70%;
+     margin: 0 auto;
+}   
+        .not_find_data_table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgb(0 0 0 / 72%);
+            border-radius: 8px;
+            border: 2px solid #5e3448;
+            overflow: hidden;
+            font-size: 14px;
+            margin: 50px 0 50px 0;
+
+        }
+        
+        .not_find_data_table th {
+            background-color: #f09d22;
+            color: white;
+            font-weight: 600;
+            padding: 12px 12px;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        .not_find_data_table td {
+            padding: 4px 12px;
+            border-bottom: 2px solid #bdccdb;
+            transition: background-color 0.2s ease;
+             text-align: center;
+        }
+       
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .not_find_data_table {
+                font-size: 12px;
+            }
+            
+            .not_find_data_table th,
+            .not_find_data_table td {
+                padding: 10px 8px;
+            }
+        }

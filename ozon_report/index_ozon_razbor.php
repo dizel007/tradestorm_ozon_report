@@ -100,10 +100,12 @@ echo "</form></div>";
 $file_name_ozon = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")".".json";
 
 // Непосредственный запрос данных с озона и сохранение данных в файл
-$prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
-file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
-if ($prod_array === false) {die('НЕТ ДАННЫХ для выдачи');} // Если нам ничего ОЗон не вернул
+// $prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
+// file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
+// if ($prod_array === false) {die('НЕТ ДАННЫХ для выдачи');} // Если нам ничего ОЗон не вернул
 
+
+// Берем из БД себестоимость и желаемую цену 
 require_once "get_sebestoimost.php";
 
 
