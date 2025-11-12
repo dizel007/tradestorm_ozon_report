@@ -77,6 +77,9 @@ HTML;
     $arr_summ['Процент распределения стоимости'] = 0;
     $arr_summ['Сумма распределения доп.услуг'] = 0;
     $arr_summ['Сумма без всего'] = 0;
+
+    $arr_summ['Сумма себестоимость'] = 0;
+    $arr_summ['Сумма прибыль'] = 0;
 // echo "<pre>";
 // print_r($arr_article);
 foreach ($arr_article as $key=>$print_item) {   

@@ -10,20 +10,21 @@ require_once "../_libs_ozon/function_ozon_reports.php"; // массив с се�
 require_once "../_libs_ozon/sku_fbo_na_fbs.php"; // массив с себестоимостью товаров
 // формируем признак принудительного обновления данных 
 
-if (isset($_GET['file_name_ozon'])) {
-    $file_name_ozon = $_GET['file_name_ozon'];
-    $client_id = $_GET['clt'];
-    $token = file_get_contents('../!cache/'.$client_id."/token.txt");
-    $prod_array = json_decode(file_get_contents($file_name_ozon), true);
+$need_SKU = '';
+if (isset($_GET['data'])) {
+    $decoded_data = base64_decode(urldecode($_GET['data']));
+     parse_str($decoded_data, $params);
+     $client_id = $params['clt'];
+     $need_SKU = $params['article'];
+     $file_name_ozon_small = $params['file_name_ozon_small'];
+     $file_name_ozon = "../!cache" ."/".$client_id."/".$client_id. $file_name_ozon_small.".json";
+     $token = file_get_contents('../!cache/'.$client_id."/token.txt");
+     $prod_array = json_decode(file_get_contents($file_name_ozon), true);
 } else {
     die('Не нашли файл с данными');
 }
 
-if (isset($_GET['article'])) {
-    $need_SKU = $_GET['article'];
-} else {
-    $need_SKU = '';
-}
+
 
 echo <<<HTML
 <head>

@@ -229,13 +229,13 @@ $sell_count_summa += @$print_item['count']['summa'];
 // Если количество  больше нуля то выводим таблицу 
 if($sell_count_summa >0) {
     require_once "make_data_for_table_real_ozon.php";
+    require_once "print_table_po_artikulam_ozon.php";
 
 
 
 
-
-    require_once "print_table_real_ozon.php";
-    die();
+    // require_once "print_table_real_ozon.php";
+    // die();
     require_once "print_rashozhdenia_table.php";
 }
 
@@ -300,7 +300,7 @@ function print_three_strings_for_table($data1, $data2, $data3)
 {
     if (isset($data1) AND isset($data2) AND isset($data3)) {
         echo "<td>
-        <p class=\"big_font red_color\">".  $data1 ."</p>
+        <p class=\"big_font red_color\">". number_format(round($data1, 0),0 ,',',' ') ."</p>
         <p class = \"small_font\">" .  $data2.  "</p>
         <p class = \"small_font red_color\">" .  number_format(round($data3, 0),0 ,',','') ." шт". "</p>
         </td>";
