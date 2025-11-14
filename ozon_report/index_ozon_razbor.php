@@ -5,51 +5,63 @@
 /// $toen = b4371bbd-08fa-4ce0-ab50-362dfa656c72
 require_once "../mp_functions/ozon_api_functions.php";
 
-if (isset($_GET['clt'])) {
-    $client_id = $_GET['clt'];
+
+$queryString = $_SERVER['QUERY_STRING'] ?? '';
+
+// Разобрать вручную
+parse_str($queryString, $params);
+echo "<pre>";
+print_r($params);
+// находим ID клиента
+if (isset($params['clt'])) {
+    $secret_client_id= $params['clt'];
+    $client_id = base64_decode($secret_client_id);
     $token = file_get_contents('../!cache/'.$client_id."/token.txt");
   
 } else {
     die('Не нашли файл с данными');
 }
 
-
-
-echo <<<HTML
-<head>
-    <link rel="stylesheet" href="css/form_dates.css">
-   
-</head>
-
-HTML;
-
 $priznak_date = 1; 
-
-if (isset($_GET['dateFrom'])) {
-    $date_from = $_GET['dateFrom'];
-} else {
+// Настраиваем дату начала отпроса
+if (isset($params['dateFrom'])) { $date_from = $params['dateFrom'];} 
+else {
     $date = date('Y-m-d');
     $day = '01';
     $month = date('m', strtotime($date));
     $year = date('Y', strtotime($date));
     $date_from = $year.'-'.$month.'-'.$day;
     $priznak_date = 0; 
-    // echo "$date_from";
+    
 }
 
-if (isset($_GET['dateTo'])) {
-    $date_to = $_GET['dateTo'];
+// Настраиваем дату окончания
+if (isset($params['dateTo'])) {$date_to = $params['dateTo'];} else {$date_to = date('Y-m-d');}
+
+// Настраиваем тип сортировки если он есть 
+if (isset($params['type_sort'])) {
+
+    $type_sort = base64_decode($params['type_sort']);
+ 
+    // Удаляем этот параметр
+    unset($params['type_sort']);
+    // формируем Query строку без этого парамаетра, чтобы он постоянно не прилипал к строке при кажой сортировке
+    $queryString = http_build_query($params);
+
+
+
 } else {
-    $date_to = date('Y-m-d');
+   $type_sort = ''; 
 }
 
-
+//// Отрисовываем форму вводы ДАТ
 echo <<<HTML
 
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/form_dates.css">
     <title>TradeStorm</title>
     
 </head>
@@ -62,10 +74,7 @@ echo <<<HTML
                     <div class="date-group">
                         <label for="startDate" class="date-label">Начальная дата</label>
                         <input type="date" id="startDate" class="date-input" value="$date_from" required >
-                    </div>
-
-                    
-
+                   </div>
                     <div class="date-group">
                         <label for="endDate" class="date-label">Конечная дата</label>
                         <input type="date" id="endDate" class="date-input" value="$date_to" required>
@@ -79,30 +88,38 @@ echo <<<HTML
                  <div class="actions">
                     <a href="https://seller.ozon.ru/app/finances/balance?tab=IncomesExpenses" target="_blank" class="link-btn">Ссылка Озон Выплаты</a>
                 </div>
-
-            </div>
-            <input hidden type="text" id = "clientId" value="$client_id">
+ 
+             </div>
+            <input hidden type="text" id = "clientId" value="$secret_client_id">
         </form>
-    </div>
-
+       </div>
     </div>
  <script src="css/script.js" type="text/javascript"></script>
 
 HTML;
 
+
 if ($priznak_date == 0)  {
     die ('');
  } 
 
-echo "</form></div>";
+// echo "</form></div>";
 
 // формируем название папки и файла
 $file_name_ozon = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")".".json";
 $file_name_ozon_small = "_(".date('Y-m-d').")";
+
+
 // Непосредственный запрос данных с озона и сохранение данных в файл
-// $prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
-// file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
-// if ($prod_array === false) {die('НЕТ ДАННЫХ для выдачи');} // Если нам ничего ОЗон не вернул
+//*********************************************************************************************************************** */
+// если вернулись сюда с параметров изменения типа сортировки массива, то новые данные не запрашиваем
+if ($type_sort == '') {
+    echo "<br> TIANEM DATA <br>";
+        // $prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
+        // file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
+        // if ($prod_array === false) {die('НЕТ ДАННЫХ для выдачи');} // Если нам ничего ОЗон не вернул
+}
+//*********************************************************************************************************************** */
 
 
 // Берем из БД себестоимость и желаемую цену 

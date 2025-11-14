@@ -67,6 +67,9 @@
 .oder_color {
     background-color: #f3e4f7; 
   }
+.center_text {
+    text-align: center;
+}
 
         /* Адаптивность */
         @media (max-width: 768px) {

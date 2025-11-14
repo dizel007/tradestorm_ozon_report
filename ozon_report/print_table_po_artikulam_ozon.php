@@ -7,7 +7,23 @@
 echo "<link rel=\"stylesheet\" href=\"css/main_ozon_reports.css\">";
 
 // Начинаем отрисовывать таблицу 
-echo "<table class=\"real_money fl-table\">";
+echo "<table id=\"ancor_table\" class=\"real_money fl-table\">";
+// ссылки для сртировкии 
+$link_sort_accruals_for_sale = $queryString."&type_sort=".base64_encode('sort_accruals_for_sale_ot_max_k_min')."#ancor_table";
+$link_sort_sale_commission = $queryString."&type_sort=".base64_encode('sort_sale_commission_ot_max_k_min')."#ancor_table";
+$link_sort_logistika = $queryString."&type_sort=".base64_encode('sort_logistika_ot_max_k_min')."#ancor_table";
+$link_sort_amount = $queryString."&type_sort=".base64_encode('sort_amount_ot_max_k_min')."#ancor_table";
+$link_sort_services = $queryString."&type_sort=".base64_encode('sort_services_ot_max_k_min')."#ancor_table";
+
+$link_sort_bez_vsego_gde_est_artikul = $queryString."&type_sort=".base64_encode('sort_bez_vsego_gde_est_artikul_ot_max_k_min')."#ancor_table";
+$link_sort_bez_vsego = $queryString."&type_sort=".base64_encode('sort_bez_vsego_ot_max_k_min')."#ancor_table";
+
+
+
+
+
+$link_pribil_for_sale = $queryString."&type_sort=".base64_encode('sort_pribil_ot_max_k_min')."#ancor_table";
+
 
 // ШАПКА ТАблицы
 echo <<<HTML
@@ -19,21 +35,21 @@ echo <<<HTML
     <th>К-во<br>Возвр<br>(шт)</th>
     <th>К-во<br>продн<br>(шт)</th>
    
-    <th>Сумма<br>продаж<br>(руб)</th>
-    <th>Комиссия <br>озон<br>(руб)</th>
-    <th>Стоимость<br>логистики<br>(руб)</th>
+    <th><a href="?$link_sort_accruals_for_sale">Сумма<br>продаж<br>(руб)</a></th>
+    <th><a href="?$link_sort_sale_commission">Комиссия> <br>озон<br>(руб)</a></th>
+    <th><a href="?$link_sort_logistika">Стоимость<br>логистики<br>(руб)</a></th>
 
-    <th>Сумма<br>продаж без<br>комис и логис<br>(руб)</th>
+    <th><a href="?$link_sort_amount">Сумма<br>продаж без<br>комис и логис<br>(руб)</a></th>
 
-    <th>Стоимость<br>сервисов<br>(руб)</th>
+    <th><a href="?$link_sort_services">Стоимость<br>сервисов<br>(руб)</a></th>
     <th>Эквайринг<br>(руб)<br>(9)</th>
-    <th>Цена за<br>вычетом<br>всего где<br> есть<br>арктикул<br>(руб)</th>
+    <th><a href="?$link_sort_bez_vsego_gde_est_artikul">Цена за<br>вычетом<br>всего где<br> есть<br>арктикул<br>(руб)</a></th>
     <th>% от общей<br>суммы<br>продаж<br>(руб)</th>
     <th>доп.услуги<br>(руб)</th>
-    <th>К начисле<br>нию<br>(руб)</th>
+    <th><a href="?$link_sort_bez_vsego">К начисле<br>нию<br>(руб)</a></th>
     <th>Хор.цена<br>(руб)</th>
     <th>Себест-сть<br>(руб)</th>
-    <th>Прибыль<br>(руб)</th>
+    <th><a href="?$link_pribil_for_sale">Прибыль<br>(руб)</a></th>
     
 </tr>
 
@@ -142,7 +158,7 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Хорошая цена и разница от цена продажи после всех вычетов
 /////////////////////////////////////////////////////////////////////////////////////////////
-  $item_for_print['diff_min_price'] >=0? $color_class = 'green_color':$color_class = 'red_color';
+  $item_for_print['diff_main_price'] >=0? $color_class = 'green_color':$color_class = 'red_color';
   echo "<td>
         <p class=\"big_font $color_class\">". "&#x200b" ."</p>
         <p class = \"small_font\">" .  $item_for_print['main_price']." руб".  "</p>
@@ -191,7 +207,8 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
         print_summa_in_table($arr_summ, 'Сумма без всего', $color_class = '');
         echo "<td>"."-"."</td>";
         print_summa_in_table($arr_summ, 'Сумма себестоимость', $color_class = '');
-        print_summa_in_table($arr_summ, 'Сумма прибыль', $color_class = '');
+        $arr_summ['Сумма прибыль'] >=0? $color_class = 'green_color':$color_class = 'red_color'; 
+        print_summa_in_table($arr_summ, 'Сумма прибыль', $color_class);
     echo "</tr>";
 echo "</table>";
 

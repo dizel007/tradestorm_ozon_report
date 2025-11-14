@@ -51,8 +51,8 @@ HTML;
             // кладем токен и ИД
         file_put_contents($file_client_path."/token.txt",$token);
         file_put_contents($file_client_path."/client_id.txt",$client_id);
-
-        header('Location: ozon_report/index_ozon_razbor.php?clt='.$client_id, true, 301);
+        $secret_client_id = base64_encode(''.$client_id);
+        header('Location: ozon_report/index_ozon_razbor.php?clt='.$secret_client_id, true, 301);
         exit();
     }
 }
