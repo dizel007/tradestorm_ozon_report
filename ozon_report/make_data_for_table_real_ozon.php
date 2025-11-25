@@ -73,34 +73,29 @@ if (isset($print_item['accruals_for_sale']['summa'])) {
 /// *******************   логистка  **************************
 /**************************************************************************************/
  $arr_real_ozon_data[$sku_ozon]['summa']['logistika']  =  get_data_sell_tovar(@$print_item['logistika']['summa']);
-
  $arr_summ['Логистика'] = $arr_summ['Логистика'] + $arr_real_ozon_data[$sku_ozon]['summa']['logistika'];
 
 /**************************************************************************************/
 // ************************** Цена продажи *******************************************************************
 /**************************************************************************************/
 $arr_real_ozon_data[$sku_ozon]['summa']['amount']  =  get_data_sell_tovar(@$print_item['amount']['summa']);
-
 $arr_summ['Сумма продаж'] = @$arr_summ['Сумма продаж'] + $arr_real_ozon_data[$sku_ozon]['summa']['amount'];
 
 /**************************************************************************************/
 /// *******************  Сервисы  **************************
 /**************************************************************************************/
  $arr_real_ozon_data[$sku_ozon]['summa']['services']  =  get_data_sell_tovar(@$print_item['services']['summa']);
- 
  $arr_summ['Сервисы'] = $arr_summ['Сервисы'] +   $arr_real_ozon_data[$sku_ozon]['summa']['services'];
 
 /**************************************************************************************/
 /// ******************* Эквайринг  **************************
 /**************************************************************************************/
 $arr_real_ozon_data[$sku_ozon]['summa']['amount_ecvairing']  =  get_data_sell_tovar(@$print_item['amount_ecvairing']);
-
 $arr_summ['Эквайринг'] = $arr_summ['Эквайринг'] + $arr_real_ozon_data[$sku_ozon]['summa']['amount_ecvairing'];
 /**************************************************************************************/
  // Цена за вычетом всего где есть артикул
 /**************************************************************************************/
 $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_gde_est_artikul']  =  get_data_sell_tovar(@$print_item['summa_bez_vsego_gde_est_artikul']);
-
 $arr_summ['Цена за вычетом с арктикулом'] = $arr_summ['Цена за вычетом с арктикулом'] + $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_gde_est_artikul'];
 
 /**************************************************************************************/
@@ -108,16 +103,13 @@ $arr_summ['Цена за вычетом с арктикулом'] = $arr_summ['�
 /**************************************************************************************/
 if (isset($print_item['proc_item_ot_vsey_summi'])) {
     $arr_real_ozon_data[$sku_ozon]['proc_item_ot_vsey_summi'] =  $print_item['proc_item_ot_vsey_summi'];
-} else {
-    $arr_real_ozon_data[$sku_ozon]['proc_item_ot_vsey_summi'] = 0;   
-}
+} else {$arr_real_ozon_data[$sku_ozon]['proc_item_ot_vsey_summi'] = 0;}
 $arr_summ['Процент распределения стоимости'] = $arr_summ['Процент распределения стоимости'] +  $arr_real_ozon_data[$sku_ozon]['proc_item_ot_vsey_summi'];
 
 /**************************************************************************************/
 // ****************Дополнительные услуги   
 /**************************************************************************************/
 $arr_real_ozon_data[$sku_ozon]['summa']['dop_uslugi']  =  get_data_sell_tovar(@$print_item['dop_uslugi']);
-
 $arr_summ['Сумма распределения доп.услуг'] = $arr_summ['Сумма распределения доп.услуг'] + $arr_real_ozon_data[$sku_ozon]['summa']['dop_uslugi'];
 
 
@@ -150,7 +142,6 @@ if ($arr_real_ozon_data[$sku_ozon]['count']['summa'] !=0) {
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego_gde_est_artikul']  =  round ($arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_gde_est_artikul']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
     $arr_real_ozon_data[$sku_ozon]['one_item']['dop_uslugi']  =  round($arr_real_ozon_data[$sku_ozon]['summa']['dop_uslugi']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego']  =  round($arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
- 
     $arr_real_ozon_data[$sku_ozon]['diff_min_price']   =   $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego'] - $arr_real_ozon_data[$sku_ozon]['min_price'] ;
     $arr_real_ozon_data[$sku_ozon]['diff_main_price']   =  $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego'] - $arr_real_ozon_data[$sku_ozon]['main_price'] ;
 
@@ -162,7 +153,6 @@ if ($arr_real_ozon_data[$sku_ozon]['count']['summa'] !=0) {
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego_gde_est_artikul']  = 0;
     $arr_real_ozon_data[$sku_ozon]['one_item']['dop_uslugi']  =  0;
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego']  =  0;
- 
     $arr_real_ozon_data[$sku_ozon]['diff_min_price']   = 0;
     $arr_real_ozon_data[$sku_ozon]['diff_main_price']  = 0;
 
@@ -208,40 +198,81 @@ $arr_summ['Сумма прибыль'] = @$arr_summ['Сумма прибыль']
 }
 
 
+// echo "<pre>";
+// print_r($arr_real_ozon_data);
 // Если не выбран тип сортировки, то не сортируем
 if ($type_sort != '') {uasort($arr_real_ozon_data, "$type_sort");}
 
 // Сортировка по сумме продаж )цена продавца)
-function sort_accruals_for_sale_ot_max_k_min ($a, $b) {return  $b['summa']['accruals_for_sale'] - $a['summa']['accruals_for_sale'];}
-function sort_accruals_for_sale_ot_min_k_max ($a, $b) {return  $a['summa']['accruals_for_sale'] - $b['summa']['accruals_for_sale'];}
+        function sort_accruals_for_sale_ot_max_k_min ($a, $b) {return  $b['summa']['accruals_for_sale'] - $a['summa']['accruals_for_sale'];}
+        function sort_accruals_for_sale_ot_min_k_max ($a, $b) {return  $a['summa']['accruals_for_sale'] - $b['summa']['accruals_for_sale'];}
+
+        function sort_accruals_for_sale_one_item_ot_max_k_min ($a, $b) {return  $b['one_item']['accruals_for_sale'] - $a['one_item']['accruals_for_sale'];}
+        function sort_accruals_for_sale_one_item_ot_min_k_max ($a, $b) {return  $a['one_item']['accruals_for_sale'] - $b['one_item']['accruals_for_sale'];}
 
 // Сортировка комиссии озон
-function sort_sale_commission_ot_max_k_min ($a, $b) {return  $b['summa']['sale_commission'] - $a['summa']['sale_commission'];}
-function sort_sale_commission_ot_min_k_max ($a, $b) {return  $a['summa']['sale_commission'] - $b['summa']['sale_commission'];}
+        function sort_sale_commission_ot_max_k_min ($a, $b) {return  $b['summa']['sale_commission'] - $a['summa']['sale_commission'];}
+        function sort_sale_commission_ot_min_k_max ($a, $b) {return  $a['summa']['sale_commission'] - $b['summa']['sale_commission'];}
+
+        function sort_sale_commission_one_procent_ot_max_k_min ($a, $b) {return  $b['one_procent']['sale_commission']*100 - $a['one_procent']['sale_commission']*100;}
+        function sort_sale_commission_one_procent_ot_min_k_max ($a, $b) {return  $a['one_procent']['sale_commission']*100 - $b['one_procent']['sale_commission']*100;}
+
+        function sort_sale_commission_one_item_ot_max_k_min ($a, $b) {return  $b['one_item']['sale_commission'] - $a['one_item']['sale_commission'];}
+        function sort_sale_commission_one_item_ot_min_k_max ($a, $b) {return  $a['one_item']['sale_commission'] - $b['one_item']['sale_commission'];}
 
 // Сортировка логистике 
-function sort_logistika_ot_max_k_min ($a, $b) {return  $b['summa']['logistika'] - $a['summa']['logistika'];}
-function sort_logistika_ot_min_k_max ($a, $b) {return  $a['summa']['logistika'] - $b['summa']['logistika'];}
+        function sort_logistika_ot_max_k_min ($a, $b) {return  $b['summa']['logistika'] - $a['summa']['logistika'];}
+        function sort_logistika_ot_min_k_max ($a, $b) {return  $a['summa']['logistika'] - $b['summa']['logistika'];}
+
+        function sort_logistika_one_procent_ot_max_k_min ($a, $b) {return  $b['one_procent']['logistika']*100 - $a['one_procent']['logistika']*100;}
+        function sort_logistika_one_procent_ot_min_k_max ($a, $b) {return  $a['one_procent']['logistika']*100 - $b['one_procent']['logistika']*100;}
+
+        function sort_logistika_one_item_ot_max_k_min ($a, $b) {return  $b['one_item']['logistika'] - $a['one_item']['logistika'];}
+        function sort_logistika_one_item_ot_min_k_max ($a, $b) {return  $a['one_item']['logistika'] - $b['one_item']['logistika'];}
+
 
 // Сортировка сумме продаж (цена озона)
-function sort_amount_ot_max_k_min ($a, $b) {return  $b['summa']['amount'] - $a['summa']['amount'];}
-function sort_amount_ot_min_k_max ($a, $b) {return  $a['summa']['amount'] - $b['summa']['amount'];}
+        function sort_amount_ot_max_k_min ($a, $b) {return  $b['summa']['amount'] - $a['summa']['amount'];}
+        function sort_amount_ot_min_k_max ($a, $b) {return  $a['summa']['amount'] - $b['summa']['amount'];}
+
+        function sort_amount_one_item_ot_max_k_min ($a, $b) {return  $b['one_item']['amount'] - $a['one_item']['amount'];}
+        function sort_amount_one_item_ot_min_k_max ($a, $b) {return  $a['one_item']['amount'] - $b['one_item']['amount'];}
+
 
 // Сортировка сумме продаж сервисам
-function sort_services_ot_max_k_min ($a, $b) {return  $b['summa']['services'] - $a['summa']['services'];}
-function sort_services_ot_min_k_max ($a, $b) {return  $a['summa']['services'] - $b['summa']['services'];}
+        function sort_services_ot_max_k_min ($a, $b) {return  $b['summa']['services'] - $a['summa']['services'];}
+        function sort_services_ot_min_k_max ($a, $b) {return  $a['summa']['services'] - $b['summa']['services'];}
+
+        function sort_services_one_procent_ot_max_k_min ($a, $b) {return  $b['one_procent']['services']*100 - $a['one_procent']['services']*100;}
+        function sort_services_one_procent_ot_min_k_max ($a, $b) {return  $a['one_procent']['services']*100 - $b['one_procent']['services']*100;}
+
+        function sort_services_one_item_ot_max_k_min ($a, $b) {return  $b['one_item']['services'] - $a['one_item']['services'];}
+        function sort_services_one_item_ot_min_k_max ($a, $b) {return  $a['one_item']['services'] - $b['one_item']['services'];}
+
+// Сортировка сумме продаж сервисам
+        function sort_ecvairing_ot_max_k_min ($a, $b) {return  $b['summa']['amount_ecvairing'] - $a['summa']['amount_ecvairing'];}
+        function sort_ecvairing_ot_min_k_max ($a, $b) {return  $a['summa']['amount_ecvairing'] - $b['summa']['amount_ecvairing'];}
+
+        function sort_ecvairing_one_procent_ot_max_k_min ($a, $b) {return  $b['one_procent']['ecvairing']*100 - $a['one_procent']['ecvairing']*100;}
+        function sort_ecvairing_one_procent_ot_min_k_max ($a, $b) {return  $a['one_procent']['ecvairing']*100 - $b['one_procent']['ecvairing']*100;}
+
+        function sort_ecvairing_one_item_ot_max_k_min ($a, $b) {return  $b['one_item']['ecvairing'] - $a['one_item']['ecvairing'];}
+        function sort_ecvairing_one_item_ot_min_k_max ($a, $b) {return  $a['one_item']['ecvairing'] - $b['one_item']['ecvairing'];}
 
 // Сортировка цене за вычетом всего  где есть артикул
-function sort_bez_vsego_gde_est_artikul_ot_max_k_min ($a, $b) {return  $b['summa']['bez_vsego_gde_est_artikul'] - $a['summa']['bez_vsego_gde_est_artikul'];}
-function sort_bez_vsego_gde_est_artikul_ot_min_k_max ($a, $b) {return  $a['summa']['bez_vsego_gde_est_artikul'] - $b['summa']['bez_vsego_gde_est_artikul'];}
+        function sort_bez_vsego_gde_est_artikul_ot_max_k_min ($a, $b) {return  $b['summa']['bez_vsego_gde_est_artikul'] - $a['summa']['bez_vsego_gde_est_artikul'];}
+        function sort_bez_vsego_gde_est_artikul_ot_min_k_max ($a, $b) {return  $a['summa']['bez_vsego_gde_est_artikul'] - $b['summa']['bez_vsego_gde_est_artikul'];}
+
+        function sort_bez_vsego_gde_est_artikul_one_item_ot_max_k_min ($a, $b) {return  $b['one_item']['bez_vsego_gde_est_artikul'] - $a['one_item']['bez_vsego_gde_est_artikul'];}
+        function sort_bez_vsego_gde_est_artikul_one_item_ot_min_k_max ($a, $b) {return  $a['one_item']['bez_vsego_gde_est_artikul'] - $b['one_item']['bez_vsego_gde_est_artikul'];}
 
 // Сортировка цене за вычетом всего 
-function sort_bez_vsego_ot_max_k_min ($a, $b) {return  $b['summa']['bez_vsego'] - $a['summa']['bez_vsego'];}
-function sort_bez_vsego_ot_min_k_max ($a, $b) {return  $a['summa']['bez_vsego'] - $b['summa']['bez_vsego'];}
+        function sort_bez_vsego_ot_max_k_min ($a, $b) {return  $b['summa']['bez_vsego'] - $a['summa']['bez_vsego'];}
+        function sort_bez_vsego_ot_min_k_max ($a, $b) {return  $a['summa']['bez_vsego'] - $b['summa']['bez_vsego'];}
 
 // Сортировка по прибыли
-function sort_pribil_ot_max_k_min ($a, $b) {return  $b['summa']['pribil'] - $a['summa']['pribil'];}
-function sort_pribil_ot_min_k_max ($a, $b) {return  $a['summa']['pribil'] - $b['summa']['pribil'];}
+        function sort_pribil_ot_max_k_min ($a, $b) {return  $b['summa']['pribil'] - $a['summa']['pribil'];}
+        function sort_pribil_ot_min_k_max ($a, $b) {return  $a['summa']['pribil'] - $b['summa']['pribil'];}
 
 
 

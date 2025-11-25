@@ -199,19 +199,15 @@ if (isset($item['count']['summa']) AND ($item['count']['summa']) !=0) {
 /**  Подготовка данных для озоновской таблицы */
 /************************************************************************************************************ */
 require_once "make_data_for_sum_table.php";
-
 /************************************************************************************************************ */
 // ВЫВОД Первой ТАБЛИЦЫ ////////////////////////////////////////////////////
 require_once "print_sum_table.php";
-
-
 // ВЫВОД АЛАРМ ТАБЛИЦЫ ////////////////////////////////////////////////////
 // если нашли неразобранные массивы то выводим алармную талицу
-
 if ($summa_ne_naidennih_statei != 0) {
-   $file_name_ozon_alarm = "../!cache" ."/".$client_id."/".$client_id."_alarm_index_(".date('Y-m-d').")".".json";
-     file_put_contents($file_name_ozon_alarm,json_encode($alarm_index_array, JSON_UNESCAPED_UNICODE));
-    require_once "print_alarm_table.php";
+    $file_name_ozon_alarm = "../!cache" ."/".$client_id."/".$client_id."_alarm_index_(".date('Y-m-d').")".".json";
+       file_put_contents($file_name_ozon_alarm,json_encode($alarm_index_array, JSON_UNESCAPED_UNICODE));
+     require_once "print_alarm_table.php";
 }
 
 
@@ -230,16 +226,14 @@ $sell_count_summa += @$print_item['count']['summa'];
 if($sell_count_summa >0) {
     require_once "make_data_for_table_real_ozon.php";
     require_once "print_table_po_artikulam_ozon.php";
-
-
-
-
-    // require_once "print_table_real_ozon.php";
-    // die();
     require_once "print_rashozhdenia_table.php";
 }
 
 
+
+
+
+// require_once "../returns_zakaz.php";
 
 
 
@@ -295,7 +289,7 @@ function print_two_strings_for_table($data1, $data2, $color_class = '')
 
 
 
-function print_three_strings_for_table($data1, $data2, $data3)
+function print_three_strings_for_table_red($data1, $data2, $data3)
 // Выводит две строки с данными из массива
 {
     if (isset($data1) AND isset($data2) AND isset($data3)) {

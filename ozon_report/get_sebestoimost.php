@@ -14,8 +14,8 @@ require_once '../pdo_functions/pdo_functions.php'; // подключаем фу�
         }
 
     $arr_sebes_temp = select_all_nomenklaturu($pdo);
-    $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_ip_zel', $pdo, 'active') ;
-    // $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_anmaks', $pdo, 'active') ;
+    // $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_ip_zel', $pdo, 'active') ;
+    $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_anmaks', $pdo, 'active') ;
 
 // если есть данные из базы даннх
 if ((isset ( $arr_sebes_temp)) and (isset ($arr_tovar_in_MP))) {

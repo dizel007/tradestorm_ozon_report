@@ -60,7 +60,10 @@
     background: #34495e;
   
 }
-
+.numbers_th {
+    background: #305c5f;
+    font-weight: 700;
+}
 .name_row {
     width: 250px;
 }
@@ -90,4 +93,10 @@
     margin: 0;
     padding: 0;
     color:  black;
+}
+.sort_setup {
+    margin: 1px;
+    padding: 1px;
+    font-size: 16px;
+    color: rgb(199, 224, 169);
 }

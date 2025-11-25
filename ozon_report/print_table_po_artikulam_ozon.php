@@ -9,21 +9,62 @@ echo "<link rel=\"stylesheet\" href=\"css/main_ozon_reports.css\">";
 // Начинаем отрисовывать таблицу 
 echo "<table id=\"ancor_table\" class=\"real_money fl-table\">";
 // ссылки для сртировкии 
-$link_sort_accruals_for_sale = $queryString."&type_sort=".base64_encode('sort_accruals_for_sale_ot_max_k_min')."#ancor_table";
-$link_sort_sale_commission = $queryString."&type_sort=".base64_encode('sort_sale_commission_ot_max_k_min')."#ancor_table";
-$link_sort_logistika = $queryString."&type_sort=".base64_encode('sort_logistika_ot_max_k_min')."#ancor_table";
-$link_sort_amount = $queryString."&type_sort=".base64_encode('sort_amount_ot_max_k_min')."#ancor_table";
-$link_sort_services = $queryString."&type_sort=".base64_encode('sort_services_ot_max_k_min')."#ancor_table";
 
+// 
+$link_sort_accruals_for_sale           = $queryString."&type_sort=".base64_encode('sort_accruals_for_sale_ot_max_k_min')."#ancor_table";
+$link_sort_accruals_for_sale_one_item  = $queryString."&type_sort=".base64_encode('sort_accruals_for_sale_one_item_ot_max_k_min')."#ancor_table";
+$link_sort_accruals_for_sale_procent   = $queryString."&type_sort=".base64_encode('sort_accruals_for_sale_procent_ot_max_k_min')."#ancor_table";
+
+// комиссия озона
+$link_sort_sale_commission             = $queryString."&type_sort=".base64_encode('sort_sale_commission_ot_max_k_min')."#ancor_table";
+$link_sort_sale_commission_one_procent = $queryString."&type_sort=".base64_encode('sort_sale_commission_one_procent_ot_max_k_min')."#ancor_table";
+$link_sort_sale_commission_one_item    = $queryString."&type_sort=".base64_encode('sort_sale_commission_one_item_ot_max_k_min')."#ancor_table";
+
+
+/// ссылки логистики
+$link_sort_logistika                 = $queryString."&type_sort=".base64_encode('sort_logistika_ot_max_k_min')."#ancor_table";
+$link_sort_logistika_one_procent     = $queryString."&type_sort=".base64_encode('sort_logistika_one_procent_ot_max_k_min')."#ancor_table";
+$link_sort_logistika_one_item        = $queryString."&type_sort=".base64_encode('sort_logistika_one_item_ot_max_k_min')."#ancor_table";
+
+// цена amount 
+$link_sort_amount                    = $queryString."&type_sort=".base64_encode('sort_amount_ot_max_k_min')."#ancor_table";
+$link_sort_amount_one_item           = $queryString."&type_sort=".base64_encode('sort_amount_one_item_ot_max_k_min')."#ancor_table";
+
+//// ссылки сервисы 
+$link_sort_services                  = $queryString."&type_sort=".base64_encode('sort_services_ot_max_k_min')."#ancor_table";
+$link_sort_services_one_procent      = $queryString."&type_sort=".base64_encode('sort_services_one_procent_ot_max_k_min')."#ancor_table";
+$link_sort_services_one_item         = $queryString."&type_sort=".base64_encode('sort_services_one_item_ot_max_k_min')."#ancor_table";
+
+/// Эквайринг
+$link_sort_ecvairing                  = $queryString."&type_sort=".base64_encode('sort_ecvairing_ot_max_k_min')."#ancor_table";
+$link_sort_ecvairing_one_procent      = $queryString."&type_sort=".base64_encode('sort_ecvairing_one_procent_ot_max_k_min')."#ancor_table";
+$link_sort_ecvairing_one_item         = $queryString."&type_sort=".base64_encode('sort_ecvairing_one_item_ot_max_k_min')."#ancor_table";
+
+/// Цена за вычетом всего где есть арктикул
 $link_sort_bez_vsego_gde_est_artikul = $queryString."&type_sort=".base64_encode('sort_bez_vsego_gde_est_artikul_ot_max_k_min')."#ancor_table";
-$link_sort_bez_vsego = $queryString."&type_sort=".base64_encode('sort_bez_vsego_ot_max_k_min')."#ancor_table";
+$link_sort_bez_vsego_gde_est_artikul_one_item = $queryString."&type_sort=".base64_encode('sort_bez_vsego_gde_est_artikul_one_item_ot_max_k_min')."#ancor_table";
+
+
+///
+
+
+$link_sort_bez_vsego                 = $queryString."&type_sort=".base64_encode('sort_bez_vsego_ot_max_k_min')."#ancor_table";
+$link_sort_pribil                    = $queryString."&type_sort=".base64_encode('sort_pribil_ot_max_k_min')."#ancor_table";
 
 
 
+if (strpos($type_sort, '_ot_max_k_min') !== false){
+  $temp_name_perem = "link_".str_replace('_ot_max_k_min', '' , $type_sort);
+  $temp_string = str_replace('_ot_max_k_min', '_ot_min_k_max', $type_sort);
 
+   echo "type_sort=".$type_sort."<br>";
+   echo "temp_name_perem=".$temp_name_perem."<br>";
+   echo "temp_string=".$temp_string."<br>";
 
-$link_pribil_for_sale = $queryString."&type_sort=".base64_encode('sort_pribil_ot_max_k_min')."#ancor_table";
+  $$temp_name_perem = $queryString."&type_sort=".base64_encode($temp_string)."#ancor_table";
+}
 
+  
 
 // ШАПКА ТАблицы
 echo <<<HTML
@@ -34,44 +75,95 @@ echo <<<HTML
     <th>К-во<br>Заказ<br>(шт)</th>
     <th>К-во<br>Возвр<br>(шт)</th>
     <th>К-во<br>продн<br>(шт)</th>
-   
-    <th><a href="?$link_sort_accruals_for_sale">Сумма<br>продаж<br>(руб)</a></th>
-    <th><a href="?$link_sort_sale_commission">Комиссия> <br>озон<br>(руб)</a></th>
-    <th><a href="?$link_sort_logistika">Стоимость<br>логистики<br>(руб)</a></th>
+<!-- Стоимость в ЛК  -->
+   <th>Стоимость<br>товара<br>в ЛК (руб)</th>
+<!-- Комиссия озон   -->
+    <th>Комиссия<br>озон<br>(руб)</th>
+<!-- Логистика  -->
+    <th>Стоимость<br>логистики<br>(руб)</th>
 
-    <th><a href="?$link_sort_amount">Сумма<br>продаж без<br>комис и логис<br>(руб)</a></th>
 
-    <th><a href="?$link_sort_services">Стоимость<br>сервисов<br>(руб)</a></th>
+<!-- Сумма продаж без комиссии и логистики  -->
+ <th>Сумма<br>продаж без<br>комис и логис<br>(руб)</th>
+
+
+<!-- Сервисы -->
+    <th>Стоимость<br>сервисов<br>(руб)</th>
+
+
+<!-- Эквайринг -->
     <th>Эквайринг<br>(руб)<br>(9)</th>
-    <th><a href="?$link_sort_bez_vsego_gde_est_artikul">Цена за<br>вычетом<br>всего где<br> есть<br>арктикул<br>(руб)</a></th>
-    <th>% от общей<br>суммы<br>продаж<br>(руб)</th>
+
+<!-- Цена за вычетом всего где есть арктикул -->
+    <th>Цена за<br>вычетом<br>всего<br>(руб)</th>
+
+<!-- <th>% от общей<br>суммы<br>продаж<br>(руб)</th> -->
     <th>доп.услуги<br>(руб)</th>
-    <th><a href="?$link_sort_bez_vsego">К начисле<br>нию<br>(руб)</a></th>
+    <th>К начисле<br>нию<br>(руб)</th>
     <th>Хор.цена<br>(руб)</th>
     <th>Себест-сть<br>(руб)</th>
-    <th><a href="?$link_pribil_for_sale">Прибыль<br>(руб)</a></th>
+    <th>Прибыль<br>(руб)</th>
     
 </tr>
 
 <tr>
-    <td></td>
-    <td></td>
-    <td>(1)</td>
-    <td>(2)</td>
-    <td>(3)=1-2</td>
-    <td>(4)</td>
-    <td>(5)</td>
-    <td>(6)</td>
-    <td>(7)=4+5+6</td>
-    <td>(8)</td>
-    <td>(9)</td>
-    <td>(10)=7+8+9</td>
-    <td>(11)</td>
-    <td>(12)</td>
-    <td>(13)=10+12</td>
-    <td>(14)</td>
-    <td>(15)</td>
-    <td>(16)15*3</td>
+    <td class="numbers_th"></td>
+    <td class="numbers_th"></td>
+    <td class="numbers_th">(1)<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(2)<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(3)=1-2<br>\xE2\x80\x8B</td>
+<!-- Цена в ЛК  -->
+    <td class="numbers_th">(4)<br>        
+        <a class="sort_setup" href="?$link_sort_accruals_for_sale">Σ</a>
+        <a class="sort_setup" href="?$link_sort_accruals_for_sale_one_item">шт</a>  
+    </td>
+<!-- Комиссия озон   -->
+    <td class="numbers_th">(5)<br> 
+        <a class="sort_setup" href="?$link_sort_sale_commission">Σ</a>
+        <a class="sort_setup" href="?$link_sort_sale_commission_one_procent">%</a>
+        <a class="sort_setup" href="?$link_sort_sale_commission_one_item">шт</a>  
+    </td>
+
+
+<!-- Логистика озон   -->
+    <td class="numbers_th">(6)<br>
+        <a class="sort_setup" href="?$link_sort_logistika">Σ</a>
+        <a class="sort_setup" href="?$link_sort_logistika_one_procent">%</a>
+        <a class="sort_setup" href="?$link_sort_logistika_one_item">шт</a>  
+    </td>
+<!-- Сумма продаж без комиссии и логистики  -->
+    <td class="numbers_th">(7)=4+5+6<br>
+        <a class="sort_setup" href="?$link_sort_amount">Σ</a>
+        <a class="sort_setup" href="?$link_sort_amount_one_item">шт</a>  
+    </td>
+
+<!--Стоимость сервисов  -->
+  <td class="numbers_th">(8)<br>
+        <a class="sort_setup" href="?$link_sort_services">Σ</a>
+        <a class="sort_setup" href="?$link_sort_services_one_procent">%</a>
+        <a class="sort_setup" href="?$link_sort_services_one_item">шт</a>  
+  </td>
+<!-- Эквайринг -->
+  <td class="numbers_th">(8)<br>
+        <a class="sort_setup" href="?$link_sort_ecvairing">Σ</a>
+        <a class="sort_setup" href="?$link_sort_ecvairing_one_procent">%</a>
+        <a class="sort_setup" href="?$link_sort_ecvairing_one_item">шт</a>  
+  </td>
+<!-- Цена за вычетом всего где есть арктикул -->
+    <td class="numbers_th">(10)=7+8+9<br>
+        <a class="sort_setup" href="?$link_sort_bez_vsego_gde_est_artikul">Σ</a>
+        <a class="sort_setup" href="?$link_sort_bez_vsego_gde_est_artikul_one_item">шт</a>  
+    </td>
+    <!-- <td>(11)</td> -->
+
+    <td class="numbers_th">(12)<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(13)=10+12<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(14)<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(15)<br>\xE2\x80\x8B</td>
+<!-- Прибыль -->    
+    <td class="numbers_th">(16)15*3<br>
+        <a class="sort_setup" href="?$link_sort_pribil">Σ</a>
+    </td>
     
 </tr>
 
@@ -101,21 +193,31 @@ print_one_string_in_table($item_for_print['count'],  'summa');
 /**************************************************************************************/
 // Цена для покупателя (стоимость товара в личном кабинете)
 /**************************************************************************************/
- print_two_strings_in_table_two_parametrs($item_for_print['summa']['accruals_for_sale'],
-                                          $item_for_print['one_item']['accruals_for_sale'], 
-                                          $color_class = '');
+
+    $color_class = 'green_color';
+  echo "<td>
+        <p class=\"big_font $color_class\">". number_format($item_for_print['summa']['accruals_for_sale'],0 ,',',' ') ."</p>
+        <p class = \"small_font\">" .  number_format($item_for_print['proc_item_ot_vsey_summi'],2 ,',',' ')." %"."</p>
+        <p class = \"small_font $color_class\">" .  number_format($item_for_print['one_item']['accruals_for_sale'],0 ,',','') ." руб". "</p>
+   </td>";
+
+
+
+//  print_two_strings_in_table_two_parametrs($item_for_print['summa']['accruals_for_sale'],
+//                                           $item_for_print['one_item']['accruals_for_sale'], 
+//                                           $color_class = '');
 /**************************************************************************************/
 /// *******************   Комиссия озона   **************************
 /**************************************************************************************/
-print_three_strings_for_table($item_for_print['summa']['sale_commission'],
+print_three_strings_for_table_red($item_for_print['summa']['sale_commission'],
                                 $item_for_print['one_procent']['sale_commission']."%", 
                                 $item_for_print['one_item']['sale_commission']);
  /**************************************************************************************/
 /// *******************   логистка  **************************
 /**************************************************************************************/
-print_three_strings_for_table($item_for_print['summa']['logistika'],
-                                $item_for_print['one_procent']['logistika']."%", 
-                                $item_for_print['one_item']['logistika']);
+print_three_strings_for_table_red($item_for_print['summa']['logistika'],
+                              $item_for_print['one_procent']['logistika']."%", 
+                              $item_for_print['one_item']['logistika']);
 
 // ************************** Цена продажи *******************************************************************
 print_two_strings_in_table_two_parametrs($item_for_print['summa']['amount'],
@@ -123,15 +225,15 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['amount'],
                                            $color_class = '');
 
   /// *******************  Сервисы  **************************
-print_three_strings_for_table($item_for_print['summa']['services'],
-                                $item_for_print['one_procent']['services']."%", 
-                                $item_for_print['one_item']['services']);
+print_three_strings_for_table_red($item_for_print['summa']['services'],
+                              $item_for_print['one_procent']['services']."%", 
+                              $item_for_print['one_item']['services']);
 
   /// ******************* Эквайринг  **************************
 
-print_three_strings_for_table($item_for_print['summa']['amount_ecvairing'],
-                                 $item_for_print['one_procent']['ecvairing']."%", 
-                                 $item_for_print['one_item']['ecvairing']);
+print_three_strings_for_table_red($item_for_print['summa']['amount_ecvairing'],
+                               $item_for_print['one_procent']['ecvairing']."%", 
+                               $item_for_print['one_item']['ecvairing']);
 
  // Цена за вычетом всего где есть артикул
 
@@ -141,10 +243,10 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego_gde
  
 
 // **************** Процент распределения стоимости *****************
-print_one_string_in_table($item_for_print,  'proc_item_ot_vsey_summi');
+// print_one_string_in_table($item_for_print,  'proc_item_ot_vsey_summi');
 
  // Дополнительные услуги   
-print_three_strings_for_table($item_for_print['summa']['dop_uslugi'],
+print_three_strings_for_table_red($item_for_print['summa']['dop_uslugi'],
                               $item_for_print['one_procent']['dop_uslugi']."%", 
                               $item_for_print['one_item']['dop_uslugi']);
 
@@ -202,7 +304,7 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
         print_summa_in_table($arr_summ, 'Сервисы', 'red_color');
         print_summa_in_table($arr_summ, 'Эквайринг', 'red_color');
         print_summa_in_table($arr_summ, 'Цена за вычетом с арктикулом', $color_class = '');
-        echo "<td>".round($arr_summ['Процент распределения стоимости'],2)."</td>";
+        // echo "<td>".round($arr_summ['Процент распределения стоимости'],2)."</td>";
         print_summa_in_table($arr_summ, 'Сумма распределения доп.услуг', 'red_color');
         print_summa_in_table($arr_summ, 'Сумма без всего', $color_class = '');
         echo "<td>"."-"."</td>";

@@ -10,8 +10,8 @@ $queryString = $_SERVER['QUERY_STRING'] ?? '';
 
 // Разобрать вручную
 parse_str($queryString, $params);
-echo "<pre>";
-print_r($params);
+// echo "<pre>";
+// print_r($params);
 // находим ID клиента
 if (isset($params['clt'])) {
     $secret_client_id= $params['clt'];
@@ -99,11 +99,7 @@ echo <<<HTML
 HTML;
 
 
-if ($priznak_date == 0)  {
-    die ('');
- } 
-
-// echo "</form></div>";
+if ($priznak_date == 0)  {die ('');} 
 
 // формируем название папки и файла
 $file_name_ozon = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")".".json";
@@ -114,10 +110,10 @@ $file_name_ozon_small = "_(".date('Y-m-d').")";
 //*********************************************************************************************************************** */
 // если вернулись сюда с параметров изменения типа сортировки массива, то новые данные не запрашиваем
 if ($type_sort == '') {
-    echo "<br> TIANEM DATA <br>";
-        // $prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
-        // file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
-        // if ($prod_array === false) {die('НЕТ ДАННЫХ для выдачи');} // Если нам ничего ОЗон не вернул
+   
+        $prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
+        file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
+        if ($prod_array === false) {die('НЕТ ДАННЫХ для выдачи');} // Если нам ничего ОЗон не вернул
 }
 //*********************************************************************************************************************** */
 

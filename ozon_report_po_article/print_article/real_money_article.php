@@ -1,6 +1,17 @@
 <?php
 
 
+// foreach ($one_sku_in_reestr as $key=>&$one_string_data) {
+//     if (!isset($one_string_data['type']['RETURN'])) {
+//         unset($one_sku_in_reestr[$key]);
+//     }
+
+// }
+
+// echo "<pre>";
+// print_r($one_sku_in_reestr);
+
+///////////// выше удлаить ///////////////////
 
 echo "<link rel=\"stylesheet\" href=\"css/main_ozon_reports.css\">";
 
@@ -45,11 +56,16 @@ foreach ($one_sku_in_reestr as $key => $one_string_data) {
         foreach ($one_string_data['type'] as $type_key=>$type) {
                 echo "$type_key<br>";
         }
+//  
+        // if ($one_string_data['delivery_schema'] == 'FBO') {
+            $link_for_post_delivery_finans_info = 'https://seller.ozon.ru/app/finances/accruals?search='.$one_string_data['post_number_gruzomesto'].'&tab=ACCRUALS_DETAILS';
+        // } elseif ()
+            // $link_for_post_delivery_finans_info = 'https://seller.ozon.ru/app/finances/accruals?search='.$one_string_data['post_number_gruzomesto'].'&tab=ACCRUALS_DETAILS';
     echo "</td>";
     // echo "<td>" . $one_string_data['name'] . "</td>";
     echo "<td>" . $one_string_data['sku'] . "</td>";
     echo "<td>" . $one_string_data['sku'] . "</td>";
-    echo "<td>" . $one_string_data['post_number_gruzomesto'] . "<hr>". $one_string_data['order_date'] . "</td>";
+    echo "<td>"."<a href=\"$link_for_post_delivery_finans_info\" target=\"_blank\">".$one_string_data['post_number_gruzomesto'] . "</a><hr>". $one_string_data['order_date'] . "</td>";
     echo "<td>" . $one_string_data['delivery_schema'] . "</td>";
     echo "<td>" . $one_string_data['accruals_for_sale'] . "</td>";
     $summa_accruals_for_sale = @$summa_accruals_for_sale + $one_string_data['accruals_for_sale'];

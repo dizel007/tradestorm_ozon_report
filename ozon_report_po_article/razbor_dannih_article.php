@@ -82,9 +82,9 @@ foreach ($arr_article as $key=>$items_x) {
 unset ($item); // 
 unset ($items_x);
 
-echo "количество элементов WORK = ". count(@$arr_article_WORK). "<br>";
-echo "количество элементов NOT_WORK = ". count(@$arr_article_NOT_WORK). "<br>";
-echo "количество элементов BEZ post INfo = ". count(@$arr_without_post_info). "<br>";
+// echo "количество элементов WORK = ". count(@$arr_article_WORK). "<br>";
+// echo "количество элементов NOT_WORK = ". count(@$arr_article_NOT_WORK). "<br>";
+// echo "количество элементов BEZ post INfo = ". count(@$arr_without_post_info). "<br>";
 
 // print_r($arr_article_WORK);
 
@@ -154,7 +154,59 @@ require_once "make_array_for_print.php";
 // require_once "print_article/table_services_without_postnumbers.php";
 
 // Выводим таблицу со всеми заказами 
-require_once "print_article/real_money_article.php";
+// require_once "print_article/real_money_article.php";
+
+// Выводим таблицу со возвратами
+require_once "print_article/returns_items_article.php";
+
+
+ $ozon_dop_url ='v3/posting/fbs/get';
+//  $ozon_dop_url ='v2/posting/fbo/get';
+ $send_data= '{
+"posting_number": "40529560-0799-1",
+"with": {
+"analytics_data": false,
+"barcodes": false,
+"financial_data": true,
+"legal_info": false,
+"product_exemplars": false,
+"related_postings": false,
+"translit": false
+}
+}';
+
+$ozon_dop_url ='v3/posting/fbs/get';
+
+// $gggg = get_fbs_or_fbo_adress('78944e3d-8722-4bfe-9d71-1b6970af47dd', '45537', "40529560-0799-1", 'v3/posting/fbs/get' );
+// print_r($gggg);
+
+
+$gggg = get_fbs_or_fbo_adress('78944e3d-8722-4bfe-9d71-1b6970af47dd', '45537', "0116802930-0091-1", 'v2/posting/fbo/get' );
+echo "<pre>";
+print_r($gggg);
+
+
+function get_fbs_or_fbo_adress($token, $client_id, $number_post,$ozon_dop_url ) {
+ $send_data= '{
+"posting_number": "'.$number_post.'",
+"with": {
+"analytics_data": false,
+"barcodes": false,
+"financial_data": true,
+"legal_info": false,
+"product_exemplars": false,
+"related_postings": false,
+"translit": false
+}
+}';
+
+$t_cluster = post_with_data_ozon($token, $client_id, $send_data, $ozon_dop_url );
+$cluster = $t_cluster['result']['financial_data']['cluster_to'];
+return($cluster);
+
+}
+
+
 
 die();
 // 0153247992-0053
