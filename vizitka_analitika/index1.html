@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeStorm - Аналитика личного кабинета продавца</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header>
+            <div class="header-top">
+                <div class="logo">
+                    <span class="logo-text">TradeStorm</span>
+                    <span class="logo-subtitle">Профессиональная ааналитика</span>
+                </div>
+                <button class="auth-btn" id="authBtn">
+                    <i class="fas fa-sign-in-alt"></i> Войти в аккаунт
+                </button>
+            </div>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item active"><a href="#"><i class="fas fa-chart-line"></i> Общая аналитика</a></li>
+                    <li class="nav-item"><a href="#"><i class="fas fa-box"></i> Товары и остатки</a></li>
+                    <li class="nav-item"><a href="#"><i class="fas fa-ruble-sign"></i> Финансы</a></li>
+                    <li class="nav-item"><a href="#"><i class="fas fa-star"></i> Рейтинги и отзывы</a></li>
+                    <li class="nav-item"><a href="#"><i class="fas fa-cog"></i> Настройки API</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Модальное окно авторизации -->
+        <div class="modal-overlay" id="authModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3><i class="fas fa-key"></i> Подключение к Ozon API</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="api-input-group">
+                        <label for="apiKey"><i class="fas fa-user-secret"></i> API Key</label>
+                        <input type="password" id="apiKey" placeholder="Введите ваш API ключ">
+                    </div>
+                    <div class="api-input-group">
+                        <label for="clientId"><i class="fas fa-id-card"></i> Client ID</label>
+                        <input type="text" id="clientId" placeholder="Введите ваш Client ID">
+                    </div>
+                    <p class="api-help">
+                        <i class="fas fa-info-circle"></i> Ключи API можно получить в личном кабинете Ozon Seller 
+                        в разделе "Настройки" → "Интеграция API"
+                    </p>
+                    <button class="connect-btn" id="connectBtn">
+                        <i class="fas fa-plug"></i> Подключиться к Ozon
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основной контент -->
+        <main>
+            <div class="dashboard-header">
+                <h1><i class="fas fa-tachometer-alt"></i> Панель аналитики</h1>
+                <div class="last-update">
+                    <i class="fas fa-sync-alt"></i> Данные обновлены: <span id="lastUpdate">сегодня, 10:30</span>
+                </div>
+            </div>
+
+            <!-- Карточки с ключевыми метриками -->
+            <div class="metrics-grid">
+                <div class="metric-card sales">
+                    <div class="metric-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Продажи за месяц</h3>
+                        <p class="metric-value" id="monthlySales">0 ₽</p>
+                        <p class="metric-change"><i class="fas fa-arrow-up"></i> <span id="salesChange">0%</span> с прошлого месяца</p>
+                    </div>
+                </div>
+
+                <div class="metric-card orders">
+                    <div class="metric-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Всего заказов</h3>
+                        <p class="metric-value" id="totalOrders">0</p>
+                        <p class="metric-change"><i class="fas fa-arrow-up"></i> <span id="ordersChange">0%</span> за неделю</p>
+                    </div>
+                </div>
+
+                <div class="metric-card rating">
+                    <div class="metric-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Рейтинг продавца</h3>
+                        <p class="metric-value" id="sellerRating">0.0</p>
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="metric-card balance">
+                    <div class="metric-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3>Доступный баланс</h3>
+                        <p class="metric-value" id="availableBalance">0 ₽</p>
+                        <p class="metric-change">Следующая выплата: <span id="nextPayout">01.01.2024</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Графики и таблицы -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-bar"></i> Динамика продаж</h3>
+                        <select id="periodSelect">
+                             <option value="quarter">За день</option>
+                            <option value="week" selected>За неделю</option>
+                            <option value="month" >За месяц</option>
+                           
+                        </select>
+                    </div>
+                    <div class="chart-placeholder" id="salesChart">
+                        <!-- Здесь будет график -->
+                        <p class="no-data">Подключитесь к API Ozon для отображения данных</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-boxes"></i> Топ товаров</h3>
+                        <button class="refresh-btn"><i class="fas fa-redo"></i> Обновить</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Товар</th>
+                                    <th>Продажи</th>
+                                    <th>Доход</th>
+                                    <th>Рейтинг</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topProductsTable">
+                                <tr>
+                                    <td colspan="4" class="no-data">Нет данных для отображения</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Быстрые действия -->
+            <div class="quick-actions">
+                <h3><i class="fas fa-bolt"></i> Быстрые действия</h3>
+                <div class="actions-grid">
+                    <button class="action-btn" id="updateDataBtn">
+                        <i class="fas fa-sync"></i> Обновить данные
+                    </button>
+                    <button class="action-btn" id="exportBtn">
+                        <i class="fas fa-file-export"></i> Экспорт отчета
+                    </button>
+                    <button class="action-btn" id="apiSettingsBtn">
+                        <i class="fas fa-cog"></i> Настройки API
+                    </button>
+                    <button class="action-btn" id="supportBtn">
+                        <i class="fas fa-headset"></i> Поддержка
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Футер -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>OZON Analytics</h4>
+                    <p>Профессиональная аналитика для продавцов Ozon</p>
+                    <p class="copyright">© 2024 OZON Analytics. Не является официальным сервисом Ozon.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Контакты</h4>
+                    <p><i class="fas fa-envelope"></i> support@ozon-analytics.ru</p>
+                    <p><i class="fas fa-phone"></i> +7 (999) 123-45-67</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Документация</h4>
+                    <a href="#"><i class="fas fa-book"></i> API документация</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Частые вопросы</a>
+                    <a href="#"><i class="fas fa-shield-alt"></i> Безопасность данных</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

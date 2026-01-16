@@ -1,250 +1,302 @@
-.html     {
+        /* Общие стили в стиле OZON */
+        :root {
+            --ozon-blue: #005bff;
+            --ozon-blue-hover: #0045cc;
+            --ozon-light-blue: #e6f0ff;
+            --ozon-gray: #f5f5f5;
+            --ozon-gray-border: #e0e0e0;
+            --ozon-dark-gray: #666;
+            --ozon-text: #333;
+            --ozon-green: #00a046;
+            --ozon-red: #ff3c3c;
+            --ozon-orange: #ff6b00;
+            --ozon-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
-        /* body {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          margin: 0;
-        } */
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--ozon-text);
+            line-height: 1.5;
+            padding: 20px;
+        }
 
-  body {
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         justify-content: center;
-         margin: 0;
-
-         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-         background: linear-gradient(135deg, #c6cef0 0%, #cfeec0 100%);
-         min-height: 100vh;
-         padding: 5px;
-        } 
-
-.table-container {
-    width: 80%;
-    /* max-width: 1200px; */
-    margin: 0 auto;
-} 
-
-     .form-container {
+        .h80procentov{
+            margin: 0px auto;
+            margin-top: 50px;
+            width: 90%;
+            box-shadow: 0 15px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        .h100proc_artikul{
+            margin: 0px auto;
+            margin-top: 50px;
+            width: 100%;
+            box-shadow: 0 15px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        .table-container {
+            margin-bottom: 30px;
             background: white;
-            border: #34495e 2px solid;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgb(0 0 0 / 72%);
-            padding: 10px;
-            /* width: 100%; */
-            /* max-width: 1000px; */
-            /* margin: 0 auto; */
-      }
-
-        .form-title {
-            text-align: center;
-            color: #000000;
-            margin-bottom: 0px;
-            font-size: 14px ;
-            font-weight: 600;
+            border-radius: 8px;
+            box-shadow: var(--ozon-shadow);
+            overflow: hidden;
         }
-
+        
+        /* Стили для формы */
+        .form-container {
+            padding: 20px;
+            border-bottom: 1px solid var(--ozon-gray-border);
+        }
+        
         .form-content {
             display: flex;
-            align-items: flex-end;
+            flex-wrap: wrap;
             gap: 20px;
+            align-items: flex-end;
         }
-
+        
         .date-fields {
             display: flex;
-            align-items: center;
             gap: 15px;
-            flex: 1;
+            flex-wrap: wrap;
         }
-
+        
         .date-group {
-            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
-
+        
         .date-label {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
             font-size: 14px;
-            text-align: center;
+            margin-bottom: 5px;
+            color: var(--ozon-dark-gray);
         }
-
+        
         .date-input {
-            width: 100%;
-            padding: 2px 10px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
+            padding: 10px 12px;
+            border: 1px solid var(--ozon-gray-border);
+            border-radius: 4px;
             font-size: 14px;
-            transition: all 0.3s ease;
-            background-color: #f8f9fa;
+            transition: border-color 0.2s;
         }
-
+        
         .date-input:focus {
             outline: none;
-            border-color: #34495e;
-            background-color: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: var(--ozon-blue);
         }
-
-
-
-        .actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
+        
         .submit-btn {
-            background: linear-gradient(135deg, #798692 0%, #34495e 100%);
+            background-color: var(--ozon-blue);
             color: white;
             border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
+            transition: background-color 0.2s;
         }
-
+        
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(39, 43, 61, 0.4);
+            background-color: var(--ozon-blue);
         }
-
+        
+        .actions {
+            margin-left: auto;
+        }
+        
         .link-btn {
-            color: #34495e;
+            display: inline-block;
+            background-color: white;
+            color: var(--ozon-blue);
+            border: 1px solid var(--ozon-blue);
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 14px;
             text-decoration: none;
-            padding: 7px 20px;
-            border: 2px solid #34495e;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            background: white;
+            transition: all 0.2s;
         }
-
+        
         .link-btn:hover {
-            background: #34495e;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            background-color: var(--ozon-light-blue);
         }
-
-        /* Мониторы (большие экраны) */
-        @media (min-width: 769px) {
-            .form-container {
-                margin-top: 5px;
-            }
-            
-            .form-title {
-                font-size: 18px;
-            }
-            
-            /* .date-fields {
-                gap: 20px;
-            }
-            
-            .actions {
-                gap: 20px;
-            } */
-            
-            /* .submit-btn {
-                padding: 14px 30px;
-            }
-            
-            .link-btn {
-                padding: 14px 25px;
-            } */
+        
+        /* Стили для таблиц */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
         }
+        .shapka_tabla {
+            text-align: center;
+            padding: 10px;
+            font-weight: 600;
+            color: var(--ozon-blue-hover);
+        }
+        th, td {
+            padding: 3px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--ozon-gray-border);
+        }
+        
+        th {
+            background-color: var(--ozon-gray);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--ozon-dark-gray);
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        /* Стили для финансовой таблицы */
+        .financial-table th,
+        .financial-table td {
+            text-align: left;
+        }
+       
+            
+        .even_color {
+            background-color: #f9f9f9;
+        }
+        
+        .oder_color {
+            background-color: rgba(233, 237, 241, 0.933);
+        }
+        
+        .positive {
+            color: var(--ozon-green);
+            font-weight: 600;
+        }
+        
+        .negative {
+            color: var(--ozon-red);
+            font-weight: 600;
+        }
+        
+        .subcategory {
+            padding-left: 30px !important;
+            font-style: italic;
+            color: var(--ozon-dark-gray);
+        }
+        
+        .big_text {
+            font-weight: 600;
+        }
+        
+        .center_text {
+            text-align: center;
+        }
+        
+        /* Стили для таблицы с товарами */
+        .real_money th,
+        .real_money td {
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .real_money th:first-child,
+        .real_money td:first-child {
+            text-align: left;
+        }
+        
+        .numbers_th {
+            font-weight: normal;
+            color: var(--ozon-dark-gray);
+        }
+        
+        .sort_setup {
+            color: var(--ozon-blue);
+            text-decoration: none;
+            margin: 0 2px;
+        }
+        
+        .sort_setup:hover {
+            text-decoration: underline;
+        }
+        
+        .big_font {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .small_font {
+            font-size: 11px;
+            color: var(--ozon-dark-gray);
+        }
+        
+        .green_color {
+            color: var(--ozon-green);
+        }
+        
+        .red_color {
+            color: var(--ozon-red);
+        }
+        
+        /* Стили для таблицы проверки */
+        .proverka-table th,
+        .proverka-table td {
+            text-align: left;
+        }
+        
+        .proverka-table th:first-child,
+        .proverka-table td:first-child {
+            text-align: left;
+        }
+        
+        .statia_rashodov {
+            padding-left: 30px !important;
+            font-style: italic;
+            color: var(--ozon-dark-gray);
+        }
+        /* фиксируем верхнюю строку в таблице */
+       thead th  {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            }
+        
+.tovar_name {
+      text-decoration: none;
+  
+  /* Цвет текста */
+  color: #005bff;
+  
+  /* Плавные переходы */
+  transition: all 0.3s ease;
+  
+  /* Курсор при наведении */
+  cursor: pointer;
+  
+  /* Стиль шрифта */
+  font-weight: 500;
+}
 
-        /* Телефоны (мобильные устройства) */
+
+
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .form-container {
-                margin-top: 5px;
-                padding: 5px;
-            }
-
-            .form-title {
-                font-size: 1.4rem;
-                margin-bottom: 20px;
-            }
-
             .form-content {
                 flex-direction: column;
-                gap: 15px;
+                align-items: stretch;
             }
-
+            
             .date-fields {
                 flex-direction: column;
-                gap: 15px;
-                width: 100%;
             }
-
-            .date-range-separator {
-                transform: rotate(90deg);
-                margin: 5px 0;
-            }
-
+            
             .actions {
-                width: 100%;
-                justify-content: space-between;
-                gap: 10px;
+                margin-left: 0;
             }
-
-            .submit-btn, .link-btn {
-                flex: 1;
-                text-align: center;
-                padding: 12px 15px;
-                font-size: 0.95rem;
+            
+            table {
+                display: block;
+                overflow-x: auto;
             }
-
-            .date-input {
-                padding: 10px 12px;
-                font-size: 0.95rem;
-            }
-        }
-
-        /* Стили для состояний валидации */
-        .date-input:valid {
-            border-color: #34495e;
-        }
-
-        .date-input:invalid:not(:focus):not(:placeholder-shown) {
-            border-color: #ef4444;
-        }
-
-        /* Анимация появления */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .form-container {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        /* Дополнительный контент для демонстрации */
-        .content {
-            max-width: 100%;
-            margin: 40px auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: white;
-            text-align: center;
         }

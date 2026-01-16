@@ -21,7 +21,7 @@
             box-sizing: border-box;
         }
         button {
-            background-color: #007bff;
+            background-color: #005bff;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -29,10 +29,51 @@
             cursor: pointer;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #0045cc;
         }
         .alarm_text {
             color: red;
             font-size: large;
             font-weight: 900;
+        }
+
+
+        .instruction {
+            margin-top: 80px;
+            padding: 20px;
+            border: #0056b3 1px solid;
+            border-radius: 5px;
+            text-align: center;
+            
+        }
+        .instruction_text {
+            margin-top: 30px;
+           font-style: italic;
+           font-size: 13px;
+        }
+        .instruction_link{
+            width: 100%;
+            font-size: 13px;
+            padding: 10px 20px;
+            border: #005bff 2px solid;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            font-weight: 400;
+            text-decoration: none;
+            color:  #005bff;
+            transition: 0.3s;
+        }
+
+
+    .instruction_link:hover{
+        background-color: #005bff;
+        border: #005bff 2px solid; 
+        color: rgb(255, 255, 255); 
+    }
+
+
+        .instruction_pics {
+            width: 100%;
         }

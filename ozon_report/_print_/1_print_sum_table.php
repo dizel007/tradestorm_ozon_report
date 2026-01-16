@@ -8,7 +8,11 @@ echo "<link rel=\"stylesheet\" href=\"css/finance_table.css\">";
 // echo "<h1><a href=\"https://seller.ozon.ru/app/finances/balance?tab=IncomesExpenses\" target=\"_blank\"> Ссылка на выплаты озона </a></h1>";
 // Начинаем отрисовывать таблицу 
 echo <<<HTML
+<div class="h80procentov">
 <div class="table-container">
+ 
+<h3 class = "shapka_tabla"> Данная таблица сформирована с запрошенных данных и привидена к виду таблицы БАЛАНС на Озоне  <a href="https://seller.ozon.ru/app/finances/balance?tab=IncomesExpenses" target="_blank" class="link-btn">Ссылка Озон Выплаты</a> </h3>
+
 <table class="financial-table">
 <tr>
     <th>пп</th>
@@ -41,14 +45,13 @@ HTML;
     foreach ($data_for_print as $name_trata => $summa_trat)
         {
     //  $i++;       
-    echo "<td class=\" $string_number_color subcategory\">$name_trata</td>";
-    ($summa_trat >=0)? $color_class="positive":$color_class="negative";
-    echo "<td class =\"center_text $string_number_color $color_class\">".number_format(round($summa_trat,0),0,'.',',')."</td>";
+            echo "<td class=\"$string_number_color subcategory\">$name_trata</td>";
+            ($summa_trat >=0)? $color_class="positive":$color_class="negative";
+
+            echo "<td class =\"center_text $string_number_color $color_class\">".number_format(round($summa_trat,0),0,'.',',')."</td>";
 
         echo "</tr>";
-    
-  
-   }
+      }
  }
 }
 
@@ -68,6 +71,8 @@ echo <<<HTML
 
 </table>
 </div>
+</div>
+
 HTML;
 
 

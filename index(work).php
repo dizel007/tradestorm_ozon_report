@@ -1,8 +1,8 @@
 <?php
 //0a2679cf-74cb-43eb-b042-94997de5f748
 //1724451
-ob_start();
 echo <<<HTML
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -52,21 +52,25 @@ HTML;
         file_put_contents($file_client_path."/token.txt",$token);
         file_put_contents($file_client_path."/client_id.txt",$client_id);
         $secret_client_id = base64_encode(''.$client_id);
-        header('Location: ozon_report?clt='.$secret_client_id, true, 301);
+        header('Location: ozon_report/index_ozon_razbor.php?clt='.$secret_client_id, true, 301);
         exit();
     }
 }
 
 
 
+
+
 echo <<<HTML
+
+
 <body>
     <h2>Форма инициализации</h2>
     
     <form action="#" method="POST">
         <!-- Первый параметр -->
         <div class="form-group">
-            <label for="param1">ozon_client_id: </label>
+            <label for="param1">ozon_client_id:</label>
             <input type="text" id="param1" name="client_id" required 
                    placeholder="ozon_client_id">
         </div>
@@ -80,15 +84,6 @@ echo <<<HTML
 
         <button type="submit">Отправить</button>
     </form>
-    <div class="instruction"> 
-        <!-- <p> -->
-            <a class ="instruction_link" href ="https://seller.ozon.ru/app/settings/api-keys" target="_blank">  ссылка в личный кабинет озон, где можно найти client_id</a>
-        <!-- </p> -->
-    <p  class="instruction_text">
-        * Для получения отчетов требуется сгенерировать ключ (ozon_token) с типом токена <b>Report</b>. Ключ отобразится только 1 раз. С типом токена Report, можно только смотреть отчеты озона, никаких изменений в кабинете произвести не получится
-    </p>
-    <img class ="instruction_pics" src="pics/ozon-token.jpg" alt="альтернативный текст">
-    </div>
 </body>
 </html>
 HTML;

@@ -4,7 +4,8 @@ require_once "../_libs_ozon/sku_fbo_na_fbs.php"; // массив с себест
 require_once "../mp_functions/report_excel_file.php";
 
 // $ozon_sebest = get_catalog_tovarov_v_mp($ozon_shop, $pdo, 'all');
-
+// echo "<pre>";
+// print_r($prod_array);
 // делаем один последовательный массив в операциями
 foreach ($prod_array as $items) {
     foreach ($items as $item) {
@@ -198,16 +199,16 @@ if (isset($item['count']['summa']) AND ($item['count']['summa']) !=0) {
 /************************************************************************************************************ */
 /**  Подготовка данных для озоновской таблицы */
 /************************************************************************************************************ */
-require_once "make_data_for_sum_table.php";
+require_once "_make_data_/make_data_for_sum_table.php";
 /************************************************************************************************************ */
 // ВЫВОД Первой ТАБЛИЦЫ ////////////////////////////////////////////////////
-require_once "print_sum_table.php";
+require_once "_print_/1_print_sum_table.php";
 // ВЫВОД АЛАРМ ТАБЛИЦЫ ////////////////////////////////////////////////////
 // если нашли неразобранные массивы то выводим алармную талицу
 if ($summa_ne_naidennih_statei != 0) {
     $file_name_ozon_alarm = "../!cache" ."/".$client_id."/".$client_id."_alarm_index_(".date('Y-m-d').")".".json";
        file_put_contents($file_name_ozon_alarm,json_encode($alarm_index_array, JSON_UNESCAPED_UNICODE));
-     require_once "print_alarm_table.php";
+     require_once "_print_/2_print_alarm_table.php";
 }
 
 
@@ -224,9 +225,9 @@ $sell_count_summa += @$print_item['count']['summa'];
 }
 // Если количество  больше нуля то выводим таблицу 
 if($sell_count_summa >0) {
-    require_once "make_data_for_table_real_ozon.php";
-    require_once "print_table_po_artikulam_ozon.php";
-    require_once "print_rashozhdenia_table.php";
+    require_once "_make_data_/make_data_for_table_real_ozon.php";
+    require_once "_print_/3_print_table_po_artikulam_ozon.php";
+    require_once "_print_/4_print_rashozhdenia_table.php";
 }
 
 

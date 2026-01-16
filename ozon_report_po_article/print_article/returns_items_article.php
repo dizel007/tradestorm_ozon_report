@@ -139,7 +139,8 @@ $all_summa_zatrat += $summa_zatrat ;
         $ozon_dop_url = 'v3/posting/fbs/get';
         }
 if ($update_claster == 0) {
-$cluster_dostavki = get_fbs_or_fbo_adress('78944e3d-8722-4bfe-9d71-1b6970af47dd', '45537', $post_number, $ozon_dop_url );
+    $cluster_dostavki = get_fbs_or_fbo_adress('78944e3d-8722-4bfe-9d71-1b6970af47dd', '45537', $post_number, $ozon_dop_url );
+    usleep(50);
 $update_claster  ++;
 }
 
@@ -176,4 +177,24 @@ echo "</tr>";
 
 echo "</table>";
 
+
+function get_fbs_or_fbo_adress($token, $client_id, $number_post,$ozon_dop_url ) {
+ $send_data= '{
+"posting_number": "'.$number_post.'",
+"with": {
+"analytics_data": false,
+"barcodes": false,
+"financial_data": true,
+"legal_info": false,
+"product_exemplars": false,
+"related_postings": false,
+"translit": false
+}
+}';
+
+$t_cluster = post_with_data_ozon($token, $client_id, $send_data, $ozon_dop_url );
+$cluster = $t_cluster['result']['financial_data']['cluster_to'];
+return($cluster);
+
+}
 

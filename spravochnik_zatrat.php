@@ -15,6 +15,7 @@
                                      'MarketplaceServiceItemRedistributionReturnsPVZ' => 'Обработка возвратов, отмен и невыкупов партнёрами',
                                      'MarketplaceServiceItemDelivToCustomer' => 'Выдача товара',
                                      'MarketplaceServiceItemRedistributionLastMilePVZ' => 'Выдача товара',
+                                     'Временное размещение товара партнерами' => 'Временное размещение товара партнерами'
 
                                      
                                 ) ;

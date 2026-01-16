@@ -3,12 +3,7 @@
 // echo "<pre>";
 // print_r($arr_real_ozon_data[1861485446]);
 
-// CSS цепляем
-echo "<link rel=\"stylesheet\" href=\"css/main_ozon_reports.css\">";
 
-// Начинаем отрисовывать таблицу 
-echo "<table id=\"ancor_table\" class=\"real_money fl-table\">";
-// ссылки для сртировкии 
 
 // 
 $link_sort_accruals_for_sale           = $queryString."&type_sort=".base64_encode('sort_accruals_for_sale_ot_max_k_min')."#ancor_table";
@@ -44,22 +39,17 @@ $link_sort_ecvairing_one_item         = $queryString."&type_sort=".base64_encode
 $link_sort_bez_vsego_gde_est_artikul = $queryString."&type_sort=".base64_encode('sort_bez_vsego_gde_est_artikul_ot_max_k_min')."#ancor_table";
 $link_sort_bez_vsego_gde_est_artikul_one_item = $queryString."&type_sort=".base64_encode('sort_bez_vsego_gde_est_artikul_one_item_ot_max_k_min')."#ancor_table";
 
-
 ///
-
-
 $link_sort_bez_vsego                 = $queryString."&type_sort=".base64_encode('sort_bez_vsego_ot_max_k_min')."#ancor_table";
 $link_sort_pribil                    = $queryString."&type_sort=".base64_encode('sort_pribil_ot_max_k_min')."#ancor_table";
-
-
 
 if (strpos($type_sort, '_ot_max_k_min') !== false){
   $temp_name_perem = "link_".str_replace('_ot_max_k_min', '' , $type_sort);
   $temp_string = str_replace('_ot_max_k_min', '_ot_min_k_max', $type_sort);
 
-   echo "type_sort=".$type_sort."<br>";
-   echo "temp_name_perem=".$temp_name_perem."<br>";
-   echo "temp_string=".$temp_string."<br>";
+//    echo "type_sort=".$type_sort."<br>";
+//    echo "temp_name_perem=".$temp_name_perem."<br>";
+//    echo "temp_string=".$temp_string."<br>";
 
   $$temp_name_perem = $queryString."&type_sort=".base64_encode($temp_string)."#ancor_table";
 }
@@ -68,6 +58,12 @@ if (strpos($type_sort, '_ot_max_k_min') !== false){
 
 // ШАПКА ТАблицы
 echo <<<HTML
+<div class="h100proc_artikul">
+<h3 class = "shapka_tabla">Сводная таблица поступлений и трат с разбивкой по артикулам</h3>
+
+<!-- Начинаем отрисовывать таблицу  -->
+<table id="ancor_table" class="real_money fl-table">
+<thead>
 <tr>
     <th class ="name_row">Наименование</th>
     <th>SKU<br>Артикул</th>
@@ -100,14 +96,22 @@ echo <<<HTML
 <!-- <th>% от общей<br>суммы<br>продаж<br>(руб)</th> -->
     <th>доп.услуги<br>(руб)</th>
     <th>К начисле<br>нию<br>(руб)</th>
-    <th>Хор.цена<br>(руб)</th>
+    <!-- <th>Хор.цена<br>(руб)</th> -->
     <th>Себест-сть<br>(руб)</th>
     <th>Прибыль<br>(руб)</th>
     
 </tr>
+</thead>
+
 
 <tr>
-    <td class="numbers_th"></td>
+    <td class="numbers_th">
+<!--  окно для ввода артикула -->
+        <div class="article-filter-container">
+            <input style="width: 250px; text-align: center;" type="text" placeholder="Введите артикул или SKU..." id="article-filter">
+        </div>
+      
+    </td>
     <td class="numbers_th"></td>
     <td class="numbers_th">(1)<br>\xE2\x80\x8B</td>
     <td class="numbers_th">(2)<br>\xE2\x80\x8B</td>
@@ -158,10 +162,10 @@ echo <<<HTML
 
     <td class="numbers_th">(12)<br>\xE2\x80\x8B</td>
     <td class="numbers_th">(13)=10+12<br>\xE2\x80\x8B</td>
+    <!-- <td class="numbers_th">(14)<br>\xE2\x80\x8B</td> -->
     <td class="numbers_th">(14)<br>\xE2\x80\x8B</td>
-    <td class="numbers_th">(15)<br>\xE2\x80\x8B</td>
 <!-- Прибыль -->    
-    <td class="numbers_th">(16)15*3<br>
+    <td class="numbers_th">(15)=14*3<br>
         <a class="sort_setup" href="?$link_sort_pribil">Σ</a>
     </td>
     
@@ -170,17 +174,20 @@ echo <<<HTML
 HTML;
 
  
-foreach ($arr_real_ozon_data as $sku_ozon=>$item_for_print) {   
+echo "<tbody id=\"filterable-table-body\">";
+foreach ($arr_real_ozon_data as $sku_ozon=>$item_for_print) {
 
-echo "<tr>";
+// echo "<tr>";
+echo "<tr data-article=\"" . htmlspecialchars($item_for_print['sku']) . "\" data-mp-article=\"" . htmlspecialchars($item_for_print['mp_article']) . "\">";
 // 
 
 // Название товара
-   echo "<td>". " <a href =\"".$item_for_print['link_for_site_ozon']."\" target=\"_blank\">". $item_for_print['name']."</a>". "</td>";
+   echo "<td>". " <a class=\"tovar_name\" href =\"".$item_for_print['link_for_site_ozon']."\" target=\"_blank\">". $item_for_print['name']."</a>". "</td>";
 // 
-   echo "<td>"." <a href =\"".$item_for_print['link_for_report_article']."\" target=\"_blank\">". $item_for_print['sku']."</a><hr>". 
+//    echo "<td>"." <a href =\"".$item_for_print['link_for_report_article']."\" target=\"_blank\">". $item_for_print['sku']."</a><hr>". 
+//     $item_for_print['mp_article']." </td>";
+   echo "<td>". $item_for_print['sku']."<hr>". 
     $item_for_print['mp_article']." </td>";
-
 
 // Количество заказаыын товаров
 print_one_string_in_table($item_for_print['count'],  'direct'); 
@@ -260,12 +267,12 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Хорошая цена и разница от цена продажи после всех вычетов
 /////////////////////////////////////////////////////////////////////////////////////////////
-  $item_for_print['diff_main_price'] >=0? $color_class = 'green_color':$color_class = 'red_color';
-  echo "<td>
-        <p class=\"big_font $color_class\">". "&#x200b" ."</p>
-        <p class = \"small_font\">" .  $item_for_print['main_price']." руб".  "</p>
-        <p class = \"small_font $color_class\">" .  number_format($item_for_print['diff_main_price'],0 ,',','') ." руб". "</p>
-        </td>";
+//   $item_for_print['diff_main_price'] >=0? $color_class = 'green_color':$color_class = 'red_color';
+//   echo "<td>
+//         <p class=\"big_font $color_class\">". "&#x200b" ."</p>
+//         <p class = \"small_font\">" .  $item_for_print['main_price']." руб".  "</p>
+//         <p class = \"small_font $color_class\">" .  number_format($item_for_print['diff_main_price'],0 ,',','') ." руб". "</p>
+//         </td>";
 
 /************************************************************************************/
 // Себестоимость и разница от цена продажи после всех вычетов
@@ -293,10 +300,10 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
 // СТРОКА ИТОГО ТАблицы
     echo "<tr>"; 
         echo "<td>"."ИТОГО"."</td>"; 
-        echo "<td>"."-"."</td>";
-        echo "<td>"."-"."</td>";
-        echo "<td>"."-"."</td>";
-        echo "<td>"."-"."</td>";
+        echo "<td>".""."</td>";
+        echo "<td>".""."</td>";
+        echo "<td>".""."</td>";
+        echo "<td>".""."</td>";
         print_summa_in_table($arr_summ, 'Цена для покупателя', $color_class = '');
         print_summa_in_table($arr_summ, 'Комиссия озона', 'red_color');
         print_summa_in_table($arr_summ, 'Логистика', 'red_color');
@@ -307,10 +314,56 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
         // echo "<td>".round($arr_summ['Процент распределения стоимости'],2)."</td>";
         print_summa_in_table($arr_summ, 'Сумма распределения доп.услуг', 'red_color');
         print_summa_in_table($arr_summ, 'Сумма без всего', $color_class = '');
-        echo "<td>"."-"."</td>";
+        // echo "<td>"."-"."</td>";
         print_summa_in_table($arr_summ, 'Сумма себестоимость', $color_class = '');
         $arr_summ['Сумма прибыль'] >=0? $color_class = 'green_color':$color_class = 'red_color'; 
         print_summa_in_table($arr_summ, 'Сумма прибыль', $color_class);
     echo "</tr>";
-echo "</table>";
 
+echo <<<HTML
+</tbody>
+</table>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Находим элементы на странице
+    const filterInput = document.getElementById('article-filter');
+    const tableBody = document.getElementById('filterable-table-body');
+    
+    if (filterInput && tableBody) {
+        // Функция фильтрации
+        filterInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const rows = tableBody.querySelectorAll('tr');
+            
+            rows.forEach(row => {
+                const sku = row.getAttribute('data-article') || '';
+                const mpArticle = row.getAttribute('data-mp-article') || '';
+                const combined = (sku + ' ' + mpArticle).toLowerCase();
+                
+                if (searchTerm === '' || 
+                    sku.toLowerCase().includes(searchTerm) || 
+                    mpArticle.toLowerCase().includes(searchTerm) ||
+                    combined.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+        
+        // Добавляем подсказку при фокусе
+        filterInput.addEventListener('focus', function() {
+            this.placeholder = 'Введите часть артикула...';
+        });
+        
+        filterInput.addEventListener('blur', function() {
+            this.placeholder = 'Введите артикул или SKU...';
+        });
+    } else {
+        console.error('Не найдены элементы для фильтрации');
+    }
+});
+</script>
+</div>
+HTML;

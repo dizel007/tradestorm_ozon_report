@@ -2,6 +2,8 @@
 // echo "***********************<br>";
 // print_r($arr_sum_services_payment);
 // echo "***********************<br>";
+// echo "<pre>";
+// print_r($arr_sum_services_payment_with_SKU);
 
 require_once "../spravochnik_zatrat.php";
 $arr_for_sum_table =[];

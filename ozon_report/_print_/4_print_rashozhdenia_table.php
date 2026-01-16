@@ -5,7 +5,9 @@ echo <<<HTML
 <link rel="stylesheet" href="css/proverka_table.css">
 
  <!-- Начинаем отрисовывать таблицу  -->
+  <div class="h80procentov">
   <div class="table-container">
+<h3 class = "shapka_tabla">В таблице сравниваем расчитанные поартикульно суммы с суммами из таблицы баланса озон (из-за округлений могут быть некоторые расхождения)</h3>
 <table class="proverka-table">
 <tr>
     <th>пп</th>
@@ -25,21 +27,27 @@ HTML;
 $pp=0;
 
 $pp++;
+
 $summa_price_for_pokupatel = $arr_for_sum_table['Продажи']['-'] + $arr_for_sum_table['Возвраты']['-'];
 $rashozhdenie_price_for_pokupatel = $arr_summ['Цена для покупателя'] - $summa_price_for_pokupatel;
+    ($summa_price_for_pokupatel >=0)? $color_class="positive":$color_class="negative";
 echo "<tr>";
     echo "<td rowspan =\"2\">"."$pp". "</td>";
     echo "<td rowspan =\"2\">"."Цена для покупателя". "</td>";
-    echo "<td class=\"center_text\" rowspan =\"2\">".number_format(round(@$arr_summ['Цена для покупателя'],0),0,'.',',') . "</td>";
+    echo "<td class=\"center_text $color_class\" rowspan =\"2\">".number_format(round(@$arr_summ['Цена для покупателя'],0),0,'.',',') . "</td>";
+    
     echo "<td>". 'Продажи'. "</td>";
-    echo "<td class=\"center_text\">". number_format(round(@$arr_for_sum_table['Продажи']['-'],0),0,'.',',') . "</td>";
-    echo "<td class=\"center_text\" rowspan =\"2\">".number_format(round($summa_price_for_pokupatel,0),0,'.',','). "</td>";
+    echo "<td class=\"center_text positive\">". number_format(round(@$arr_for_sum_table['Продажи']['-'],0),0,'.',',') . "</td>";
+    echo "<td class=\"center_text positive\" rowspan =\"2\">".number_format(round($summa_price_for_pokupatel,0),0,'.',','). "</td>";
     echo "<td class=\"center_text\" rowspan =\"2\">".number_format(round($rashozhdenie_price_for_pokupatel,0),0,'.',','). "</td>";
 echo "</tr>";
 
+// строка возвраты 
 echo "<tr>";
-    echo "<td >". 'Возвраты'. "</td>";
-    echo "<td class=\"center_text\">". number_format(round(@$arr_for_sum_table['Возвраты']['-'],0),0,'.',',') . "</td>";
+
+    echo "<td class=\"center_text\">". "Возвраты". "</td>";
+    echo "<td class=\"center_text negative\">". number_format(round(@$arr_for_sum_table['Возвраты']['-'],0),0,'.',',') . "</td>";
+
 echo "</tr>";
 
 
@@ -50,10 +58,10 @@ $pp++;
 echo "<tr>";
     echo "<td>"."$pp". "</td>";
     echo "<td>"."Комиссия озона". "</td>";
-    echo "<td class=\"center_text\">".number_format(round(@$arr_summ['Комиссия озона'],0),0,'.',',') . "</td>";
+    echo "<td class=\"center_text negative\">".number_format(round(@$arr_summ['Комиссия озона'],0),0,'.',',') . "</td>";
     echo "<td>". 'Комиссия озона'. "</td>";
-    echo "<td class=\"center_text\">". number_format(round(@$arr_for_sum_table['Вознаграждение Ozon']['-'],0),0,'.',',') . "</td>";
-    echo "<td class=\"center_text\">". number_format(round(@$arr_for_sum_table['Вознаграждение Ozon']['-'],0),0,'.',',') . "</td>";
+    echo "<td class=\"center_text negative\">". number_format(round(@$arr_for_sum_table['Вознаграждение Ozon']['-'],0),0,'.',',') . "</td>";
+    echo "<td class=\"center_text negative\">". number_format(round(@$arr_for_sum_table['Вознаграждение Ozon']['-'],0),0,'.',',') . "</td>";
     $rashozhdenie_price_ozon_commision = $arr_summ['Комиссия озона'] - $arr_for_sum_table['Вознаграждение Ozon']['-'];
     echo "<td class=\"center_text\">".number_format(round($rashozhdenie_price_ozon_commision,0),0,'.',','). "</td>";
 echo "</tr>";
@@ -82,7 +90,7 @@ echo <<<HTML
             <tr>
             <td rowspan="{$count_string}">$pp</td>
             <td rowspan="{$count_string}">Логистика</td>
-            <td  class="center_text" rowspan="{$count_string}">$log_sum</td>
+            <td  class="center_text negative" rowspan="{$count_string}">$log_sum</td>
 HTML;
 
 $i = 0;
@@ -90,10 +98,10 @@ $i = 0;
 foreach ($arr_logistiki_for_print as $key=>$data_for_print){
 $i++;
     echo "<td class=\"statia_rashodov\">$key</td>";
-    echo "<td class=\"center_text\">".number_format(round($data_for_print,0),0,'.',',')."</td>";
+    echo "<td class=\"center_text negative\">".number_format(round($data_for_print,0),0,'.',',')."</td>";
     if ( $i == 1 ) { 
-        echo     "<td class=\"center_text\" rowspan=\"$count_string\">".number_format(round($summa_logistika,0),0,'.',',')."</td>";
-        echo     "<td class=\"center_text\" rowspan=\"$count_string\">".number_format(round($rashozhdenie_logistika,0),0,'.',',')."</td>";
+        echo     "<td class=\"center_text negative\" rowspan=\"$count_string\">".number_format(round($summa_logistika,0),0,'.',',')."</td>";
+        echo     "<td class=\"center_text \" rowspan=\"$count_string\">".number_format(round($rashozhdenie_logistika,0),0,'.',',')."</td>";
     }
 
     echo"</tr>";
@@ -115,7 +123,7 @@ if (isset($arr_sum_services_payment_with_SKU)) {
             <tr>
             <td rowspan="{$count_string}">$pp</td>
             <td rowspan="{$count_string}">Сервисы</td>
-            <td class="center_text" rowspan="{$count_string}">$dop_rashodi_sum</td>
+            <td class="center_text negative" rowspan="{$count_string}">$dop_rashodi_sum</td>
 HTML;
 
 $i = 0;
@@ -123,9 +131,9 @@ $i = 0;
 foreach ($arr_sum_services_payment_with_SKU as $key=>$data_for_print){
 $i++;
     echo "<td class=\"statia_rashodov\">$key</td>";
-    echo "<td class=\"center_text\">".number_format(round($data_for_print,0),0,'.',',')."</td>";
+    echo "<td class=\"center_text negative\">".number_format(round($data_for_print,0),0,'.',',')."</td>";
     if ( $i == 1 ) { 
-        echo     "<td class=\"center_text\" rowspan=\"$count_string\">".number_format(round($summa_service,0),0,'.',',')."</td>";
+        echo     "<td class=\"center_text negative\" rowspan=\"$count_string\">".number_format(round($summa_service,0),0,'.',',')."</td>";
         echo     "<td class=\"center_text\" rowspan=\"$count_string\">".number_format(round($rashozhdenie_servicei,0),0,'.',',')."</td>";
     }
 
@@ -136,19 +144,20 @@ $i++;
 /*******************************************************************************************************/
 // эувайринг
 /*******************************************************************************************************/
+if (isset($arr_for_sum_table['Услуги агентов']['Эквайринг'])) {
 $pp++;
 echo "<tr>";
     echo "<td>"."$pp". "</td>";
     echo "<td>"."Эквайринг". "</td>";
-    echo "<td class=\"center_text\">".number_format(round(@$arr_summ['Эквайринг'],0),0,'.',',') . "</td>";
+    echo "<td class=\"center_text negative\">".number_format(round(@$arr_summ['Эквайринг'],0),0,'.',',') . "</td>";
     echo "<td>". 'Эквайринг'. "</td>";
-    echo "<td class=\"center_text\">". number_format(round(@$arr_for_sum_table['Услуги агентов']['Эквайринг'],0),0,'.',',') . "</td>";
-    echo "<td class=\"center_text\">". number_format(round(@$arr_for_sum_table['Услуги агентов']['Эквайринг'],0),0,'.',',') . "</td>";
+    echo "<td class=\"center_text negative\">". number_format(round(@$arr_for_sum_table['Услуги агентов']['Эквайринг'],0),0,'.',',') . "</td>";
+    echo "<td class=\"center_text negative\">". number_format(round(@$arr_for_sum_table['Услуги агентов']['Эквайринг'],0),0,'.',',') . "</td>";
     $rashozhdenie_price_aquaring = $arr_summ['Эквайринг'] - $arr_for_sum_table['Услуги агентов']['Эквайринг'];
         echo "<td class=\"center_text\">".number_format(round($rashozhdenie_price_aquaring,0),0,'.',','). "</td>";
 echo "</tr>";
 
-
+}
 
 
 /*******************************************************************************************************/
@@ -177,7 +186,7 @@ echo <<<HTML
             <tr>
             <td rowspan="{$count_string}">$pp</td>
             <td rowspan="{$count_string}">Дополнительные расходы</td>
-            <td  class="center_text" rowspan="{$count_string}">$dop_rashodi_sum</td>
+            <td  class="center_text negative" rowspan="{$count_string}">$dop_rashodi_sum</td>
 HTML;
 
 $i = 0;
@@ -186,9 +195,9 @@ if (isset($arr_sum_services_payment)) {
     foreach ($arr_sum_services_payment as $key=>$data_for_print){
     $i++;
         echo "<td class=\"statia_rashodov\">$key</td>";
-        echo "<td class=\"center_text\">".number_format(round($data_for_print,0),0,'.',',')."</td>";
+        echo "<td class=\"center_text negative\">".number_format(round($data_for_print,0),0,'.',',')."</td>";
         if ( $i == 1 ) { 
-            echo     "<td class=\"center_text\" rowspan=\"$count_string\">".number_format(round($summa_dop_rashodi,0),0,'.',',')."</td>";
+            echo     "<td class=\"center_text negative\" rowspan=\"$count_string\">".number_format(round($summa_dop_rashodi,0),0,'.',',')."</td>";
             echo     "<td class=\"center_text\" rowspan=\"$count_string\">".number_format(round($rashozhdenie_dop_rashodi,0),0,'.',',')."</td>";
         }
 
@@ -200,9 +209,9 @@ if (isset($arr_for_compensation_copy_for_check_table)) {
     foreach ($arr_for_compensation_copy_for_check_table as $key=>$data_for_print){
     $i++;
         echo "<td class=\"statia_rashodov\">$key</td>";
-        echo "<td class=\"center_text\">".number_format(round($data_for_print,0),0,'.',',')."</td>";
+        echo "<td class=\"center_text negative\">".number_format(round($data_for_print,0),0,'.',',')."</td>";
         if ( $i == 1 ) { 
-            echo     "<td class=\"center_text\" rowspan=\"$count_string\">".round($summa_dop_rashodi,0)."</td>";
+            echo     "<td class=\"center_text negative\" rowspan=\"$count_string\">".round($summa_dop_rashodi,0)."</td>";
             echo     "<td class=\"center_text\" rowspan=\"$count_string\">".round($rashozhdenie_dop_rashodi,0)."</td>";
         }
 
@@ -213,6 +222,7 @@ if (isset($arr_for_compensation_copy_for_check_table)) {
 }
 }
 echo "</table>";
+echo "</div>";
 echo "</div>";
 /*******************************************************************************************************/
 /*******************************************************************************************************/

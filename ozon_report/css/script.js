@@ -32,7 +32,7 @@ document.getElementById('dateForm').addEventListener('submit', function(e) {
             clt: client_id
         });
 
-       window.location.href = `index_ozon_razbor.php?${params.toString()}`;
+       window.location.href = `?${params.toString()}`;
 
     }
 });

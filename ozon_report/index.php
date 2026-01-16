@@ -85,9 +85,9 @@ echo <<<HTML
                         <button type="submit" class="submit-btn">Запросить данные</button>
                  </div>
 
-                 <div class="actions">
+                 <!-- <div class="actions">
                     <a href="https://seller.ozon.ru/app/finances/balance?tab=IncomesExpenses" target="_blank" class="link-btn">Ссылка Озон Выплаты</a>
-                </div>
+                </div> -->
  
              </div>
             <input hidden type="text" id = "clientId" value="$secret_client_id">
@@ -98,7 +98,7 @@ echo <<<HTML
 
 HTML;
 
-
+// die();
 if ($priznak_date == 0)  {die ('');} 
 
 // формируем название папки и файла
