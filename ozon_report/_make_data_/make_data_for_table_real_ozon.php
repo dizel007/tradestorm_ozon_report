@@ -22,10 +22,23 @@ function get_data_sell_tovar($data) {
 
 
 $arr_real_ozon_data = [];
+
+
 foreach ($arr_article as $sku_ozon=>$print_item) {   
 /**************************************************************************************/
-// 
+// цепояем артикул товара
 /**************************************************************************************/
+foreach ($arr_article_products as $item_hj) {
+       if  ($sku_ozon == $item_hj['sku']) {
+           $arr_real_ozon_data[$sku_ozon]['mp_article']   =  $item_hj['article'];
+           $arr_real_ozon_data[$sku_ozon]['product_id']   =  $item_hj['product_id'];
+           $arr_real_ozon_data[$sku_ozon]['min_price']  =  $item_hj['sebestoimost'];
+       }
+
+
+}
+
+
     $arr_real_ozon_data[$sku_ozon]['name'] = $print_item['name'];
     $arr_real_ozon_data[$sku_ozon]['sku'] = $print_item['sku'];
 // Формируем квери параметры для разбора по артикулу
@@ -120,12 +133,11 @@ $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego']  =  get_data_sell_tovar(@$p
 
 $arr_summ['Сумма без всего'] = @$arr_summ['Сумма без всего'] + $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego'];
 
- /**************************************************************************************/
+/**************************************************************************************/
 // ***************  Данные по себестоимости
 /**************************************************************************************/
-$arr_real_ozon_data[$sku_ozon]['mp_article']   =  @$arr_sebestoimost[$sku_ozon]['mp_article'];
-$arr_real_ozon_data[$sku_ozon]['min_price']    =  get_data_sell_tovar(@$arr_sebestoimost[$sku_ozon]['min_price']);
-$arr_real_ozon_data[$sku_ozon]['main_price']   =  get_data_sell_tovar(@$arr_sebestoimost[$sku_ozon]['main_price']);
+// $arr_real_ozon_data[$sku_ozon]['min_price']    =  get_data_sell_tovar(@$arr_sebestoimost[$sku_ozon]['min_price']);
+// $arr_real_ozon_data[$sku_ozon]['main_price']   =  get_data_sell_tovar(@$arr_sebestoimost[$sku_ozon]['main_price']);
 
 
 
@@ -143,7 +155,7 @@ if ($arr_real_ozon_data[$sku_ozon]['count']['summa'] !=0) {
     $arr_real_ozon_data[$sku_ozon]['one_item']['dop_uslugi']  =  round($arr_real_ozon_data[$sku_ozon]['summa']['dop_uslugi']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego']  =  round($arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
     $arr_real_ozon_data[$sku_ozon]['diff_min_price']   =   $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego'] - $arr_real_ozon_data[$sku_ozon]['min_price'] ;
-    $arr_real_ozon_data[$sku_ozon]['diff_main_price']   =  $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego'] - $arr_real_ozon_data[$sku_ozon]['main_price'] ;
+//     $arr_real_ozon_data[$sku_ozon]['diff_main_price']   =  $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego'] - $arr_real_ozon_data[$sku_ozon]['main_price'] ;
 
  } else {
     $arr_real_ozon_data[$sku_ozon]['one_item']['logistika']  =  0;

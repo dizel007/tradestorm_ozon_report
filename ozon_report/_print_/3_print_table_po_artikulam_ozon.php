@@ -179,23 +179,17 @@ foreach ($arr_real_ozon_data as $sku_ozon=>$item_for_print) {
 
 // echo "<tr>";
 echo "<tr data-article=\"" . htmlspecialchars($item_for_print['sku']) . "\" data-mp-article=\"" . htmlspecialchars($item_for_print['mp_article']) . "\">";
-// 
 
 // Название товара
    echo "<td>". " <a class=\"tovar_name\" href =\"".$item_for_print['link_for_site_ozon']."\" target=\"_blank\">". $item_for_print['name']."</a>". "</td>";
-// 
-//    echo "<td>"." <a href =\"".$item_for_print['link_for_report_article']."\" target=\"_blank\">". $item_for_print['sku']."</a><hr>". 
-//     $item_for_print['mp_article']." </td>";
-   echo "<td>". $item_for_print['sku']."<hr>". 
-    $item_for_print['mp_article']." </td>";
-
+// Артикул и СКУ 
+   echo "<td>". $item_for_print['sku']."<hr>".$item_for_print['mp_article']." </td>";
 // Количество заказаыын товаров
 print_one_string_in_table($item_for_print['count'],  'direct'); 
 // Количество возвратов товаров
 print_one_string_in_table($item_for_print['count'],  'return');
 // Количетво выкупленных товаров
 print_one_string_in_table($item_for_print['count'],  'summa'); 
-
 
 /**************************************************************************************/
 // Цена для покупателя (стоимость товара в личном кабинете)
@@ -339,12 +333,19 @@ document.addEventListener('DOMContentLoaded', function() {
             rows.forEach(row => {
                 const sku = row.getAttribute('data-article') || '';
                 const mpArticle = row.getAttribute('data-mp-article') || '';
-                const combined = (sku + ' ' + mpArticle).toLowerCase();
+                
+                // Получаем название товара из первой ячейки строки
+                const nameCell = row.querySelector('td:first-child');
+                const productName = nameCell ? nameCell.textContent.toLowerCase() : '';
+                
+                // Объединяем все данные для поиска
+                const searchData = (sku + ' ' + mpArticle + ' ' + productName).toLowerCase();
                 
                 if (searchTerm === '' || 
                     sku.toLowerCase().includes(searchTerm) || 
                     mpArticle.toLowerCase().includes(searchTerm) ||
-                    combined.includes(searchTerm)) {
+                    productName.includes(searchTerm) ||
+                    searchData.includes(searchTerm)) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
@@ -352,13 +353,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
-        // Добавляем подсказку при фокусе
-        filterInput.addEventListener('focus', function() {
-            this.placeholder = 'Введите часть артикула...';
-        });
-        
-        filterInput.addEventListener('blur', function() {
-            this.placeholder = 'Введите артикул или SKU...';
+               
+        // Добавляем класс к ячейке с названием для удобства
+        const nameCells = tableBody.querySelectorAll('td:first-child');
+        nameCells.forEach(cell => {
+            cell.classList.add('searchable-name');
         });
     } else {
         console.error('Не найдены элементы для фильтрации');

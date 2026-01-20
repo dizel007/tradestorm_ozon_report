@@ -2,8 +2,17 @@
 /**********************************************************************************************************
  *     ***************    Получаем массив всех транзакций
 *********************************************************************************************************/
-/// $toen = b4371bbd-08fa-4ce0-ab50-362dfa656c72
+// echo  "ПРОШЛИ КОННЕКТ<br>";
+require_once ("../main_info.php");
 require_once "../mp_functions/ozon_api_functions.php";
+
+
+      try {  
+        $pdo = new PDO('mysql:host='.$host.';dbname='.$db.';charset=utf8', $user, $password);
+        $pdo->exec('SET NAMES utf8');
+        } catch (PDOException $e) {
+          print "Has errors: " . $e->getMessage();  die();
+        }
 
 
 $queryString = $_SERVER['QUERY_STRING'] ?? '';
@@ -14,10 +23,17 @@ parse_str($queryString, $params);
 // print_r($params);
 // находим ID клиента
 if (isset($params['clt'])) {
-    $secret_client_id= $params['clt'];
-    $client_id = base64_decode($secret_client_id);
-    $token = file_get_contents('../!cache/'.$client_id."/token.txt");
-  
+    $secret_client_id = $params['clt'];
+
+    $sth = $pdo->prepare("SELECT * from `tokens` WHERE id_clt_base64 =:id_clt_base64");
+    $sth->execute(array("id_clt_base64" => $secret_client_id));
+    $arr_tokens = $sth->fetch(PDO::FETCH_ASSOC);
+    
+   
+    $client_id = $arr_tokens['id_client'];
+    $token = $arr_tokens['ozon_token'];
+    $secret_client_id = $arr_tokens['id_clt_base64'];
+     
 } else {
     die('Не нашли файл с данными');
 }
@@ -84,11 +100,6 @@ echo <<<HTML
                  <div class="date-group">
                         <button type="submit" class="submit-btn">Запросить данные</button>
                  </div>
-
-                 <!-- <div class="actions">
-                    <a href="https://seller.ozon.ru/app/finances/balance?tab=IncomesExpenses" target="_blank" class="link-btn">Ссылка Озон Выплаты</a>
-                </div> -->
- 
              </div>
             <input hidden type="text" id = "clientId" value="$secret_client_id">
         </form>
@@ -117,19 +128,14 @@ if ($type_sort == '') {
 }
 //*********************************************************************************************************************** */
 
-
 // Берем из БД себестоимость и желаемую цену 
 require_once "get_sebestoimost.php";
-
-
 
 // берем данные из файла
 $prod_array = json_decode(file_get_contents($file_name_ozon) ,true);
 
 // echo "<pre>";
 // print_r ($prod_array);
-
-// die(); ///////////////////////// DELETEE ********* 1597373292 ***********
 
 require_once "razbor_dannih.php";
 

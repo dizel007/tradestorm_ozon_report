@@ -1,8 +1,20 @@
 <?php
 
-/**
+/***************************************************************
  *  Тут отрисовываем таблицу с неразобранными статьями затрат
- */
+ *****************************************************************/
+require_once '../vendor/autoload.php';
+require_once "../main_info.php";
+
+// отправляем письмо с данными которых у нас нет
+$body_Email = json_encode($alarm_index_array, JSON_UNESCAPED_UNICODE);
+
+
+
+// Отправляем себе письмо
+send_many_emails('dizel007@yandex.ru', 'TradeStorm новые статьи затрат', $body_Email, $mail_for_send_letter, $mail_pass);
+
+
 
 // CSS цепляем
 echo "<link rel=\"stylesheet\" href=\"css/alarm_table.css\">";

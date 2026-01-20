@@ -5,31 +5,67 @@
 require_once ("../main_info.php");
 require_once '../pdo_functions/pdo_functions.php'; // подключаем функции  взаимодейцстя  с БД
 
-      try {  
-        $pdo = new PDO('mysql:host='.$host.';dbname='.$db.';charset=utf8', $user, $password);
-        $pdo->exec('SET NAMES utf8');
+// $ozon_dop_url = "v3/product/list";
+// $send_data =  array(
 
-        } catch (PDOException $e) {
-          print "Has errors: " . $e->getMessage();  die();
-        }
+// "filter" => array (
+// "visibility" => "ALL"
+// ),
+// "last_id" => "",
+// "limit" => 1000
+// );
+// $send_data = json_encode($send_data);
+// $data_tovars = post_with_data_ozon($token, $client_id, $send_data, $ozon_dop_url ) ;
 
-    $arr_sebes_temp = select_all_nomenklaturu($pdo);
-    $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_ip_zel', $pdo, 'active') ;
-    // $arr_tovar_in_MP = get_catalog_tovarov_v_mp('ozon_anmaks', $pdo, 'active') ;
+// foreach ($data_tovars['result']['items'] as $tovars) {
+//   $arr_article_products[$tovars['offer_id']]['article'] = $tovars['offer_id'];
+//   $arr_article_products[$tovars['offer_id']]['product_id'] = $tovars['product_id'];
+// }
+// unset($tovars);
 
-// если есть данные из базы даннх
-if ((isset ( $arr_sebes_temp)) and (isset ($arr_tovar_in_MP))) {
-foreach ($arr_tovar_in_MP as $tovar) {
-  foreach ($arr_sebes_temp  as $nomenklatura) {
-    if (mb_strtolower($tovar['mp_article']) == mb_strtolower($nomenklatura['main_article_1c'])) {
-        $arr_sebestoimost[$tovar['sku']]['mp_article'] = mb_strtolower($nomenklatura['main_article_1c']);
-        $arr_sebestoimost[$tovar['sku']]['min_price'] = $nomenklatura['min_price'];
-        $arr_sebestoimost[$tovar['sku']]['main_price'] = $nomenklatura['main_price'];
-        $priznak_nashli_sebestoimost = 1;
-        break 1;
-    }
-  }
+
+/// берем цены товаров и СКУ арицепим
+
+$ozon_dop_url = "v5/product/info/prices";
+$send_data =  array(
+"cursor" => "",
+"filter" => array (
+                //    "offer_id"=> array ("6210" ),
+                   "visibility" => "ALL",
+                  //  "visibility" => "IN_SALE"
+                   ),
+"limit" => 1000
+);
+$send_data = json_encode($send_data);
+$data_prices = post_with_data_ozon($token, $client_id, $send_data, $ozon_dop_url );
+
+foreach ($data_prices['items'] as $items)  {
+  $arr_article_products[$items['offer_id']]['article'] = $items['offer_id'];
+  $arr_article_products[$items['offer_id']]['product_id'] = $items['product_id'];
+  $arr_article_products[$items['offer_id']]['sebestoimost'] = $items['price']['net_price'];
+  $arr_id_products[] = $items['product_id'];
 }
 
-} 
-  // die();
+
+$ozon_dop_url = "v4/product/info/attributes";
+$send_data = array(
+  "filter" => array (
+    "product_id" => $arr_id_products,
+    "visibility" => "ALL"
+  ),
+  "limit" => 1000,
+  "sort_dir" => "ASC"
+);
+$send_data = json_encode($send_data);
+$data_all_kharacteristic = post_with_data_ozon($token, $client_id, $send_data, $ozon_dop_url );
+foreach ($data_all_kharacteristic['result'] as $items) {
+   foreach ($arr_article_products as &$tovar) {
+    if ( $items['id'] == $tovar['product_id']) {
+      $tovar['sku'] = $items['sku'];
+
+
+    }
+
+   }
+
+}

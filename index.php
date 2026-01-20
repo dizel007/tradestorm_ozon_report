@@ -1,6 +1,13 @@
 <?php
-//0a2679cf-74cb-43eb-b042-94997de5f748
-//1724451
+require_once ("main_info.php");
+require_once ("vendor/autoload.php");
+      try {  
+        $pdo = new PDO('mysql:host='.$host.';dbname='.$db.';charset=utf8', $user, $password);
+        $pdo->exec('SET NAMES utf8');
+        } catch (PDOException $e) {
+          print "Has errors: " . $e->getMessage();  die();
+        }
+        
 ob_start();
 echo <<<HTML
 <!DOCTYPE html>
@@ -52,6 +59,34 @@ HTML;
         file_put_contents($file_client_path."/token.txt",$token);
         file_put_contents($file_client_path."/client_id.txt",$client_id);
         $secret_client_id = base64_encode(''.$client_id);
+
+        // записываем токен и илклиента в БД
+        // сначала проверяем есть ли такой идклиента
+        $check =$pdo->prepare("SELECT * from `tokens`WHERE id_clt_base64 =:id_clt_base64");
+        $check->execute(array("id_clt_base64" => $secret_client_id));
+        $arr_token = $check->fetch(PDO::FETCH_ASSOC);
+        
+        // смотрим есть ли такой клиент айди если нет то добавляем его
+        if (!isset($arr_token['id_clt_base64'])) {
+            // добавляем новый токен
+          $sth = $pdo->prepare("INSERT INTO `tokens` SET `ozon_token` = :ozon_token, `id_client` = :id_client, 
+                                                `id_clt_base64` = :id_clt_base64,  `date` = :date");
+          $sth->execute(array('ozon_token' => $token, 
+                              'id_client' => $client_id,
+                              'id_clt_base64' => $secret_client_id,
+                              'date' => date('Y-m-d H:i:m')
+                              ));
+            // письмецо на почту 
+            send_many_emails('dizel007@yandex.ru', 'Кто то тестанул тейдштром', 'новый клиент: '. $client_id, $mail_for_send_letter, $mail_pass);
+        } else {
+            // смотрим совпадает ли старый токен с новым, еесли нет то обновляем его
+            if (($arr_token['ozon_token'] !== $token)  && ($arr_token['id_client'] == $client_id)) {
+                $sth= $pdo ->prepare ("UPDATE `tokens` SET  `ozon_token`= :ozon_token WHERE `id_client` =:id_client");
+                $sth->execute (array ("ozon_token" => $token,
+                                    "id_client" => $client_id ));
+        }
+        }
+
         header('Location: ozon_report?clt='.$secret_client_id, true, 301);
         exit();
     }
@@ -111,18 +146,9 @@ function send_query_on_ozon($token, $client_id, $send_data, $ozon_dop_url ) {
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_HEADER, false);
 	$res = curl_exec($ch);
-
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Получаем HTTP-код
-
-	curl_close($ch);
-	
 	$res = json_decode($res, true);
-
-  
-
-   
     return ($http_code);	
-
 }
 
 
