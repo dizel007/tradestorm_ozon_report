@@ -183,7 +183,8 @@ echo "<tr data-article=\"" . htmlspecialchars($item_for_print['sku']) . "\" data
 // Название товара
    echo "<td>". " <a class=\"tovar_name\" href =\"".$item_for_print['link_for_site_ozon']."\" target=\"_blank\">". $item_for_print['name']."</a>". "</td>";
 // Артикул и СКУ 
-   echo "<td>". $item_for_print['sku']."<hr>".$item_for_print['mp_article']." </td>";
+   echo "<td>". $item_for_print['sku']."<hr>".
+   "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$item_for_print['mp_article']."\" target=\"_blank\">".$item_for_print['mp_article']."</a> </td>";
 // Количество заказаыын товаров
 print_one_string_in_table($item_for_print['count'],  'direct'); 
 // Количество возвратов товаров
