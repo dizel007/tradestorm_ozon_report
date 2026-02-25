@@ -63,11 +63,11 @@ function post_with_data_ozon($token_ozon, $client_id_ozon, $send_data, $ozon_dop
 	
 	$res = json_decode($res, true);
 
-    if (intdiv($http_code,100) > 2) {
-        echo     '<br>Результат обмена озон (с данными POST): '.$http_code. "<br>";
-		echo "<pre>";
-        print_r($res);
-        }
+    // if (intdiv($http_code,100) > 2) {
+    //     echo     '<br>Результат обмена озон (с данными POST): '.$http_code. "<br>";
+	// 	echo "<pre>";
+    //     print_r($res);
+    //     }
 
     return($res);	
     }

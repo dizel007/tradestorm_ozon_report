@@ -266,7 +266,7 @@
       text-decoration: none;
   
   /* Цвет текста */
-  color: #005bff;
+  color: #6e7074;
   
   /* Плавные переходы */
   transition: all 0.3s ease;
@@ -277,7 +277,9 @@
   /* Стиль шрифта */
   font-weight: 500;
 }
-
+.name_row {
+    width: 22%;
+}
 
 
         /* Адаптивность */

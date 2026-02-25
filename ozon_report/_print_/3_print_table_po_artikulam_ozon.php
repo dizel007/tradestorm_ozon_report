@@ -88,7 +88,7 @@ echo <<<HTML
 
 
 <!-- Эквайринг -->
-    <th>Эквайринг<br>(руб)<br>(9)</th>
+    <th>Эквайринг<br>(руб)</th>
 
 <!-- Цена за вычетом всего где есть арктикул -->
     <th>Цена за<br>вычетом<br>всего<br>(руб)</th>
@@ -148,7 +148,7 @@ echo <<<HTML
         <a class="sort_setup" href="?$link_sort_services_one_item">шт</a>  
   </td>
 <!-- Эквайринг -->
-  <td class="numbers_th">(8)<br>
+  <td class="numbers_th">(9)<br>
         <a class="sort_setup" href="?$link_sort_ecvairing">Σ</a>
         <a class="sort_setup" href="?$link_sort_ecvairing_one_procent">%</a>
         <a class="sort_setup" href="?$link_sort_ecvairing_one_item">шт</a>  
@@ -160,12 +160,12 @@ echo <<<HTML
     </td>
     <!-- <td>(11)</td> -->
 
-    <td class="numbers_th">(12)<br>\xE2\x80\x8B</td>
-    <td class="numbers_th">(13)=10+12<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(11)<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(12)=10+11<br>\xE2\x80\x8B</td>
     <!-- <td class="numbers_th">(14)<br>\xE2\x80\x8B</td> -->
-    <td class="numbers_th">(14)<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(13)<br>\xE2\x80\x8B</td>
 <!-- Прибыль -->    
-    <td class="numbers_th">(15)=14*3<br>
+    <td class="numbers_th">(14)=13*3<br>
         <a class="sort_setup" href="?$link_sort_pribil">Σ</a>
     </td>
     
@@ -177,14 +177,34 @@ HTML;
 echo "<tbody id=\"filterable-table-body\">";
 foreach ($arr_real_ozon_data as $sku_ozon=>$item_for_print) {
 
+/**************************************************************************************/
+// костыль для уцененных товаров, у которых нет нашего артикула 
+/**************************************************************************************/
+if (!isset($item_for_print['mp_article'])) {
+   $item_for_print['mp_article'] = '';
+}
+
 // echo "<tr>";
 echo "<tr data-article=\"" . htmlspecialchars($item_for_print['sku']) . "\" data-mp-article=\"" . htmlspecialchars($item_for_print['mp_article']) . "\">";
-
+// $temp_per_test = rand(1000,100000);
 // Название товара
+// $Name_for_instruction = 'Название товара '.$temp_per_test;
+//    echo "<td>". " <a class=\"tovar_name\" href =\"".$item_for_print['link_for_site_ozon']."\" target=\"_blank\">". $Name_for_instruction."</a>". "</td>";
    echo "<td>". " <a class=\"tovar_name\" href =\"".$item_for_print['link_for_site_ozon']."\" target=\"_blank\">". $item_for_print['name']."</a>". "</td>";
+
 // Артикул и СКУ 
+
+// $sku_for_instruction = 'SKU-'.$temp_per_test;
+    // echo "<td>". $sku_for_instruction."<hr>".
+
    echo "<td>". $item_for_print['sku']."<hr>".
-   "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$item_for_print['mp_article']."\" target=\"_blank\">".$item_for_print['mp_article']."</a> </td>";
+
+//  $Article_for_instruction = 'артикул-'.$temp_per_test;
+//    "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$Article_for_instruction."\" target=\"_blank\">".$Article_for_instruction."</a> </td>";
+ "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$item_for_print['mp_article']."\" target=\"_blank\">".$item_for_print['mp_article']."</a> </td>";
+
+
+
 // Количество заказаыын товаров
 print_one_string_in_table($item_for_print['count'],  'direct'); 
 // Количество возвратов товаров

@@ -5,25 +5,6 @@
 require_once ("../main_info.php");
 require_once '../pdo_functions/pdo_functions.php'; // подключаем функции  взаимодейцстя  с БД
 
-// $ozon_dop_url = "v3/product/list";
-// $send_data =  array(
-
-// "filter" => array (
-// "visibility" => "ALL"
-// ),
-// "last_id" => "",
-// "limit" => 1000
-// );
-// $send_data = json_encode($send_data);
-// $data_tovars = post_with_data_ozon($token, $client_id, $send_data, $ozon_dop_url ) ;
-
-// foreach ($data_tovars['result']['items'] as $tovars) {
-//   $arr_article_products[$tovars['offer_id']]['article'] = $tovars['offer_id'];
-//   $arr_article_products[$tovars['offer_id']]['product_id'] = $tovars['product_id'];
-// }
-// unset($tovars);
-
-
 /// берем цены товаров и СКУ арицепим
 
 $ozon_dop_url = "v5/product/info/prices";
@@ -39,7 +20,13 @@ $send_data =  array(
 $send_data = json_encode($send_data);
 $data_prices = post_with_data_ozon($token, $client_id, $send_data, $ozon_dop_url );
 
+// если не получили данные - ждем 2 секунды и снова пробуем
+if (!isset($data_prices['items'])) {
+  sleep(2);
+$data_prices = post_with_data_ozon($token, $client_id, $send_data, $ozon_dop_url );
+}
 foreach ($data_prices['items'] as $items)  {
+  
   $arr_article_products[$items['offer_id']]['article'] = $items['offer_id'];
   $arr_article_products[$items['offer_id']]['product_id'] = $items['product_id'];
   $arr_article_products[$items['offer_id']]['sebestoimost'] = $items['price']['net_price'];

@@ -78,7 +78,7 @@ echo <<<HTML
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/form_dates.css">
-    <title>TradeStorm</title>
+    <title>TradeStorm - аналитика</title>
     
 </head>
 <body>

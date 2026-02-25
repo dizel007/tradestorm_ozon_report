@@ -2,7 +2,7 @@
 // print_r($arr_for_sum_table);
 // CSS цепляем
 echo <<<HTML
-<link rel="stylesheet" href="css/proverka_table.css">
+<!-- <link rel="stylesheet" href="css/proverka_table.css"> -->
 
  <!-- Начинаем отрисовывать таблицу  -->
   <div class="h80procentov">

@@ -1,6 +1,7 @@
 <?php
 // echo "***********************<br>";
-// print_r($arr_sum_services_payment);
+// echo "<pre>";
+// print_r($arr_for_sum_table);
 // echo "***********************<br>";
 // echo "<pre>";
 // print_r($arr_sum_services_payment_with_SKU);
@@ -16,6 +17,7 @@ $arr_for_sum_table =[];
  $arr_for_sum_table['Услуги ФБО']['delete'] = 0;
  $arr_for_sum_table['Продвижение и реклама']['delete'] = 0;
  $arr_for_sum_table['Другие услуги']['delete'] = 0;
+ $arr_for_sum_table['Другие услуги и штрафы']['delete'] = 0;
  $arr_for_sum_table['Компенсации и декомпенсации']['delete'] = 0;
  $arr_for_sum_table['Прочие начисления']['delete'] = 0;
 
@@ -103,6 +105,7 @@ $summa_k_nachisleniu = round($summa_k_nachisleniu,0);
  unset($arr_for_sum_table['Услуги ФБО']['delete']);
  unset($arr_for_sum_table['Продвижение и реклама']['delete']);
  unset($arr_for_sum_table['Другие услуги']['delete']);
+ unset($arr_for_sum_table['Другие услуги и штрафы']['delete']);
  unset($arr_for_sum_table['Компенсации и декомпенсации']['delete']);
  unset($arr_for_sum_table['Прочие начисления']['delete']);
 

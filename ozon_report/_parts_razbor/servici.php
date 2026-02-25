@@ -1,10 +1,17 @@
 <?php
 // echo "<pre>";
-// print_r($arr_services);
+// print_r($arr_services[44]);
 // die();
 
 if (isset ($arr_services)) {
     foreach ($arr_services as $items) {
+        // добавляем создание массива с сервисами в которых есть номер заказа, чтобы потом по-
+        //пробовать вывести их на отдельной страничке
+       if  (($items['posting']['posting_number'] != '' ) AND ((preg_match('/^\d+-\d+-\d+$/', $items['posting']['posting_number'])))) {
+        $arr_services_with_post_numbers[$items['operation_type_name']][$items['posting']['posting_number']] = @$arr_services_with_post_numbers[$items['operation_type_name']][$items['posting']['posting_number']] + $items['amount'];
+       }
+
+        /// конец создания массива с сервисами с заказами
         $i++;
         $service_obrabotan = 0;
         // создаем массивы с сервисами и их описанием
@@ -22,8 +29,9 @@ if (isset ($arr_services)) {
             if (count($our_item) != 0)
                 {
                    $arr_article[$new_sku]['services'][$items['operation_type_name']] = @$arr_article[$new_sku]['services'][$items['operation_type_name']] + 
-                   $items['amount'];
-                    $arr_sum_services_payment_with_SKU[$items['operation_type_name']] = @$arr_sum_services_payment_with_SKU[$items['operation_type_name']] + $items['amount'];            
+                   $items['amount']/count($our_item);
+                    $arr_sum_services_payment_with_SKU[$items['operation_type_name']] = @$arr_sum_services_payment_with_SKU[$items['operation_type_name']] + 
+                    $items['amount']/count($our_item);            
                     $service_obrabotan = 1;
                 }
             }
@@ -37,3 +45,9 @@ if (isset ($arr_services)) {
     }
 
 }
+
+
+// echo "***********************<br>";
+// echo "<pre>";
+// print_r($arr_services_with_post_numbers);
+// echo "***********************<br>";
