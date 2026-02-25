@@ -48,11 +48,99 @@ foreach ($copy_arr_for_sum_table['Продвижение и реклама'] as 
     $arr_for_tink_data['Реклама'] = 0;
     }
 
+// Услуги агентов
+if (isset($copy_arr_for_sum_table['Услуги агентов'])) {
+foreach ($copy_arr_for_sum_table['Услуги агентов'] as $agent_cost ){
+ $arr_for_tink_data['Услуги агентов'] = @$arr_for_tink_data['Услуги агентов'] + $agent_cost;  
+    unset ($copy_arr_for_sum_table['Услуги агентов']); 
+}
+} else {
+    $arr_for_tink_data['Услуги агентов'] = 0;
+    }
+
+
+
+// echo "<pre>";
+// print_r($copy_arr_for_sum_table);
+// Прочее 
+$arr_for_tink_data['Прочее'] = 0;
+foreach ($copy_arr_for_sum_table as $key=>$prochie_uslugi){
+
+    foreach ($prochie_uslugi as $prochie_cost){
+        $arr_for_tink_data['Прочее'] = @$arr_for_tink_data['Прочее'] + $prochie_cost;  
+     }
+unset ($copy_arr_for_sum_table[$key]);
+} 
+
+
+
+// Итого Другие расходы
+$arr_for_tink_data['Другие расходы'] = $arr_for_tink_data['Прочее']+ $arr_for_tink_data['Услуги агентов']+$arr_for_tink_data['Реклама'];
+// Процент других услуг от стоимости продаж
+$procent_drugih_prodaz = round($arr_for_tink_data['Другие расходы']/$one_sell_procent,1);
+
+
+// Ищем количество проданноого товароы
+foreach ($arr_orders as $orders_item) {
+    if ($orders_item['operation_type'] == 'OperationAgentDeliveredToCustomer') {
+         foreach($orders_item['items'] as $item) {
+            $arr_orders_item[$item['sku']] = @$arr_orders_item[$item['sku']] + 1;
+         }
+     }
+}
+unset($item);
+
+
+// Ищем количество возврата товароы
+foreach ($arr_returns as $returns_item) {
+    if ($returns_item['operation_type'] == 'ClientReturnAgentOperation') {
+         foreach($returns_item['items'] as $item) {
+            $arr_returns_item[$item['sku']] = @$arr_returns_item[$item['sku']] + 1;
+         }
+     }
+}
+unset($item);
+
+// вычитаем возвраты из заказов 
+if (isset($arr_returns_item)) {
+    foreach ($arr_orders_item as $order_key =>&$orders_item) {
+        foreach ($arr_returns_item as $return_key =>$return_item) {
+            if ($order_key == $return_key) {
+                $arr_orders_item[$order_key] =  $arr_orders_item[$order_key] - $arr_returns_item[$return_key] ;
+            }
+        }
+    }
+}
+// находим себестоимость всех закзаов
+foreach ($arr_orders_item as $sku_itemcs => $count_itemcs ) {
+    foreach ($arr_article_products as $sebestoimost_data) {
+        if($sku_itemcs == $sebestoimost_data['sku']) {
+            $arr_sebest[$sku_itemcs] = @$arr_sebest[$sku_itemcs] + $sebestoimost_data['sebestoimost']*$count_itemcs;
+        }
+    }
+}
+
+$summa_sebes = - array_sum($arr_sebest);
+// Процент себестоимости
+$procent_sebestoimosti = round($summa_sebes/$one_sell_procent,1);
+
+// Прибылб
+$real_pribil = $arr_for_tink_data['Выкуплено'] + $arr_for_tink_data['Основные расходы']  +
+                $arr_for_tink_data['Другие расходы'] + $summa_sebes;
+// Процент прибыли
+$procent_pribil = round($real_pribil/$one_sell_procent,1);
+
+
+// echo "<pre>";
+// print_r($arr_sebest);
+
+// print_r($summa_sebes);
 
 
 // Данные для отображения (можно заменить на реальные)
-echo "<pre>";
-print_r($copy_arr_for_sum_table);
+
+// print_r($arr_returns);
+// arr_returns
 $sales = [
     
     'sold'          => $arr_for_tink_data['Продажи'],
@@ -71,12 +159,12 @@ $main_expenses = [
 ];
 
 $other_expenses = [
-    'total'   => -380776,
-    'percent' => -26,
+    'total'   => $arr_for_tink_data['Другие расходы'] ,
+    'percent' => $procent_drugih_prodaz,
     'items'   => [
-        'Хранение'  => -139525,
-        'Маркетинг' => -188779,
-        'Остальные' => -52472
+        'Услуги агентов'  => $arr_for_tink_data['Услуги агентов'],
+        'Реклама' =>  $arr_for_tink_data['Реклама'],
+        'Остальные' => $arr_for_tink_data['Прочее']
     ]
 ];
 
@@ -106,7 +194,7 @@ $profit = [
         }
 
         .finance {
-            max-width: 1200px;
+            max-width: 90%;
             margin: 0 auto;
             background: #fff;
             border-radius: 16px;
@@ -254,11 +342,12 @@ $profit = [
             <!-- Колонка Продано -->
             <div class="col sales">
                 <div class="col-header">
-                    Продано
-                    <span class="amount"><?= number_format($sales['sold'], 0, '.', ' ') ?> ₽</span>
+                    Выкуплено
+                    
+                    <span class="amount"><?= number_format($sales['bought'], 0, '.', ' ') ?> ₽</span>
                     <span class="percent"><?= $sales['sold_percent'] ?>%</span>
                 </div>
-                <div class="sub-item">Выкуплено <span class="amount"><?= number_format($sales['bought'], 0, '.', ' ') ?> ₽</span></div>
+                <div class="sub-item">Продано <span class="amount"><?= number_format($sales['sold'], 0, '.', ' ') ?> ₽</span></div>
                 <div class="sub-item">Возвращено <span class="amount negative"><?= number_format($sales['returned'], 0, '.', ' ') ?> ₽</span></div>
             </div>
 
@@ -301,16 +390,30 @@ $profit = [
                     </div>
                 <?php endforeach; ?>
             </div>
+                        <!-- Себестоимость -->
+            <div class="col other-expenses">
+                <div class="col-header">
+                    Себестоимость товаров
+                    <span class="amount negative"><?= number_format($summa_sebes, 0, '.', ' ') ?> ₽</span>
+                    <span class="percent negative"><?= $procent_sebestoimosti ?>%</span>
+                </div>
+                    <div class="sub-item">
+                        Себестоимость
+                        <span class="amount negative"><?= number_format($summa_sebes, 0, '.', ' ') ?> ₽</span>
+                    </div>
+
+            </div>
+
         </div>
 
         <!-- Блок прибыли -->
         <div class="profit-block">
             <div class="profit-header">
                 <span class="profit-title">Прибыль на сегодня</span>
-                <span class="profit-amount"><?= number_format($profit['amount'], 0, '.', ' ') ?> ₽</span>
-                <span class="profit-percent"><?= $profit['percent'] ?>%</span>
+                <span class="profit-amount"><?= number_format($real_pribil, 0, '.', ' ') ?> ₽</span>
+                <span class="profit-percent"><?= $procent_pribil ?>%</span>
             </div>
-            <div class="profit-note"><?= htmlspecialchars($profit['diff_text']) ?></div>
+            <!-- <div class="profit-note"><?= htmlspecialchars($profit['diff_text']) ?></div> -->
         </div>
     </section>
 </body>
