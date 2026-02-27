@@ -22,19 +22,25 @@ parse_str($queryString, $params);
 // echo "<pre>";
 // print_r($params);
 // находим ID клиента
-if (isset($params['clt'])) {
+if (isset($params['clt']) AND ($params['clt'] !='')) {
     $secret_client_id = $params['clt'];
 
     $sth = $pdo->prepare("SELECT * from `tokens` WHERE id_clt_base64 =:id_clt_base64");
     $sth->execute(array("id_clt_base64" => $secret_client_id));
     $arr_tokens = $sth->fetch(PDO::FETCH_ASSOC);
     
-   
+    // если не нашли клиетна в БД то уходим на начало
+    if (!isset($arr_tokens['id_client'])) {
+      header('Location: ../');  
+    } 
     $client_id = $arr_tokens['id_client'];
     $token = $arr_tokens['ozon_token'];
     $secret_client_id = $arr_tokens['id_clt_base64'];
+
      
 } else {
+ header('Location: ../');
+
     die('Не нашли файл с данными');
 }
 

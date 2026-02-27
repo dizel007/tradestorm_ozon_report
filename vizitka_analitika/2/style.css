@@ -258,7 +258,17 @@ body {
     font-weight: 500;
 }
 
+
+
+
+
+
 /* Features */
+.unit_economica {
+    width: 100px;
+    margin: 0 auto;
+    border-radius: 40%;
+}
 .features {
     padding: 80px 0;
     background: #0a0c0f;
@@ -343,7 +353,11 @@ body {
 .team-card p {
     color: #b0b0b0;
 }
-
+/* technical_support */
+.technical_support {
+    width: 50%;
+    border-radius: 10px;
+}
 /* FAQ Section */
 .faq {
     padding: 80px 0;
@@ -509,10 +523,11 @@ body {
 
 .video-item {
     text-align: center;
+
 }
 
 .video-thumb {
-    width: 100%;
+    width: 250px;
     height: 180px;
     background: linear-gradient(135deg, #1a1f25, #2a2e35);
     margin-bottom: 15px;
@@ -533,6 +548,7 @@ body {
 .video-item:hover p {
     color: #00d4b0;
 }
+
 
 /* Responsive */
 @media (max-width: 768px) {

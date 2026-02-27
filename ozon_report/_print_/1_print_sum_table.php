@@ -1,20 +1,4 @@
 <?php
-if (isset($arr_services_with_post_numbers)) {
-    $jsonData_li = json_encode($arr_services_with_post_numbers, JSON_UNESCAPED_UNICODE);
-    // Вставляем данные как JavaScript-объект, а затем сохраняем в localStorage
-    echo "<script>";
-    echo "var data = " . $jsonData_li . ";";
-    echo "localStorage.setItem('myDataStrafi', JSON.stringify(data));";
-    echo "</script>";
-}
-
-// echo "<pre>";
-// print_r($arr_for_sum_table);
-
-// CSS цепляем
-
-// echo "<link rel=\"stylesheet\" href=\"css/finance_table.css\">";
-
 // echo "<h1><a href=\"https://seller.ozon.ru/app/finances/balance?tab=IncomesExpenses\" target=\"_blank\"> Ссылка на выплаты озона </a></h1>";
 // Начинаем отрисовывать таблицу 
 echo <<<HTML
@@ -57,7 +41,7 @@ HTML;
     //  $i++;       
     // если есть массив с номерами заказов по этим статьям затрат, то сделаем ссылку на это строку
     if (isset($arr_services_with_post_numbers[$name_trata])) {
-        $a_url = '_print_/1dop_print_shtaf_table.php?expenses='.$name_trata;
+        $a_url = 'penalty tables?expenses='.$name_trata;
             echo "<td class=\"$string_number_color subcategory\"><a href=\"$a_url\" target=\"_blank\">$name_trata</a></td>";
     } else {
             echo "<td class=\"$string_number_color subcategory\">$name_trata</td>";

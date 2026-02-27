@@ -1,9 +1,9 @@
 <?php 
 
 // echo "<pre>";
-// print_r($arr_real_ozon_data[1861485446]);
+// print_r($arr_real_ozon_data);
 
-
+// die();
 
 // 
 $link_sort_accruals_for_sale           = $queryString."&type_sort=".base64_encode('sort_accruals_for_sale_ot_max_k_min')."#ancor_table";
@@ -59,7 +59,7 @@ if (strpos($type_sort, '_ot_max_k_min') !== false){
 // ШАПКА ТАблицы
 echo <<<HTML
 <div class="h100proc_artikul">
-<h3 class = "shapka_tabla">Сводная таблица поступлений и трат с разбивкой по артикулам</h3>
+<h3 class = "shapka_tabla">Юнит-экономика с возможностью сортировки по всем параметрам</h3>
 
 <!-- Начинаем отрисовывать таблицу  -->
 <table id="ancor_table" class="real_money fl-table">
@@ -296,7 +296,7 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
     $item_for_print['diff_min_price'] >=0? $color_class = 'green_color':$color_class = 'red_color';
   echo "<td>
         <p class=\"big_font $color_class\">". number_format($item_for_print['summa']['sebestoimost'],0 ,',',' ') ."</p>
-        <p class = \"small_font\">" .  $item_for_print['min_price']." руб"."</p>
+        <p class = \"small_font\"><a href =\"https://seller.ozon.ru/app/prices/manager/".$item_for_print['product_id']."/prices\" target=\"_blank\">" .  $item_for_print['min_price']." руб"."</a></p>
         <p class = \"small_font $color_class\">" .  number_format($item_for_print['diff_min_price'],0 ,',','') ." руб". "</p>
         </td>";
 /************************************************************************************/

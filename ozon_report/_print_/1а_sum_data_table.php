@@ -1,4 +1,8 @@
 <?php
+// сылка на имнкоф аналитику
+// https://business.tbank.ru/seller/analytics/summary?marketId=demo-data-market&from=Mon%20Feb%2016%202026&to=Sun%20Feb%2022%202026&timeGranule=week&marketplace=wb
+
+
 $copy_arr_for_sum_table = $arr_for_sum_table;
 // Подбиваем суммы продажи и возвратов
 if (($copy_arr_for_sum_table['Продажи']['-'] != 0 )) {
@@ -127,6 +131,15 @@ $procent_sebestoimosti = round($summa_sebes/$one_sell_procent,1);
 // Прибылб
 $real_pribil = $arr_for_tink_data['Выкуплено'] + $arr_for_tink_data['Основные расходы']  +
                 $arr_for_tink_data['Другие расходы'] + $summa_sebes;
+// Цвет профита
+if ($real_pribil>=0) {
+    $profit_amount = "profit-amount";
+    $profit_percent = "profit-percent";
+} else {
+    $profit_amount = "No_profit-amount";
+    $profit_percent = "No_profit-percent";
+}
+
 // Процент прибыли
 $procent_pribil = round($real_pribil/$one_sell_procent,1);
 
@@ -271,10 +284,17 @@ $profit = [
         .amount.negative {
             color: #dc2626;
         }
-
+        .amount.positive {
+            color: #059669;
+        }
         .percent.negative {
             color: #dc2626;
         }
+
+        .percent.positive {
+            color: #059669;
+        }
+
 
         .profit-block {
             background: #f0f9ff;
@@ -302,13 +322,23 @@ $profit = [
             font-weight: 700;
             color: #059669;
         }
+        
+        .No_profit-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: #dc2626;
+        }
 
         .profit-percent {
             font-size: 22px;
             font-weight: 600;
             color: #059669;
         }
-
+        .No_profit-percent {
+            font-size: 22px;
+            font-weight: 600;
+            color: #dc2626;
+        }
         .profit-note {
             font-size: 15px;
             color: #1e293b;
@@ -344,10 +374,10 @@ $profit = [
                 <div class="col-header">
                     Выкуплено
                     
-                    <span class="amount"><?= number_format($sales['bought'], 0, '.', ' ') ?> ₽</span>
-                    <span class="percent"><?= $sales['sold_percent'] ?>%</span>
+                    <span class="amount positive"><?= number_format($sales['bought'], 0, '.', ' ') ?> ₽</span>
+                    <span class="percent positive"><?= $sales['sold_percent'] ?>%</span>
                 </div>
-                <div class="sub-item">Продано <span class="amount"><?= number_format($sales['sold'], 0, '.', ' ') ?> ₽</span></div>
+                <div class="sub-item">Продано <span class="amount positive"><?= number_format($sales['sold'], 0, '.', ' ') ?> ₽</span></div>
                 <div class="sub-item">Возвращено <span class="amount negative"><?= number_format($sales['returned'], 0, '.', ' ') ?> ₽</span></div>
             </div>
 
@@ -410,8 +440,8 @@ $profit = [
         <div class="profit-block">
             <div class="profit-header">
                 <span class="profit-title">Прибыль на сегодня</span>
-                <span class="profit-amount"><?= number_format($real_pribil, 0, '.', ' ') ?> ₽</span>
-                <span class="profit-percent"><?= $procent_pribil ?>%</span>
+                <span class="<?php echo $profit_amount; ?>"><?= number_format($real_pribil, 0, '.', ' ') ?> ₽</span>
+                <span class="<?php echo $profit_percent; ?>"><?= $procent_pribil ?>%</span>
             </div>
             <!-- <div class="profit-note"><?= htmlspecialchars($profit['diff_text']) ?></div> -->
         </div>

@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeStorm | Автоматизация маркетплейсов</title>
+    <title>TradeStorm | Лучшая аналитика маркетплейсов</title>
     <link rel="stylesheet" href="style.css">
+
+
+
+
 </head>
 <body>
     <!-- Header -->
@@ -13,7 +17,7 @@
             <a href="#" class="logo">Trade<span>Storm</span></a>
             <nav class="nav">
                 <a href="#projects">Разработки</a>
-                <a href="#team">Команда</a>
+                <a href="#partners">Интеграции</a>
                 <a href="#articles">Блог</a>
                 <a href="#faq">FAQ</a>
                 <a href="#contacts">Контакты</a>
@@ -21,15 +25,6 @@
             <div class="phone">+7 (950) 540-40-24</div>
         </div>
     </header>
-
-    <!-- Hero Section -->
-    <!-- <section class="hero">
-        <div class="container">
-            <h1>Автоматизация работы на маркетплейсах</h1>
-            <p>API интеграция, аналитика FBS заказов, умные отчеты и полный контроль вашего бизнеса</p>
-            <a href="#" class="btn">Запустить автоматизацию</a>
-        </div>
-    </section> -->
 
 <!-- Hero Section -->
 <section class="hero">
@@ -41,7 +36,7 @@
         <div class="hero-content">
             <h1>Автоматизация работы на маркетплейсах</h1>
             <p>API интеграция, аналитика FBS заказов, умные отчеты и полный контроль вашего бизнеса</p>
-            <a href="#" class="btn">Запустить автоматизацию</a>
+            <a href="#projects" class="btn">Запустить автоматизацию</a>
         </div>
     </div>
 </section>
@@ -61,15 +56,15 @@
                 <div class="project-card">
                     <div class="project-image" style="background-image: url('pics/project1.png')"></div>
                     <div class="project-info">
-                        <h3>Ozon FBS Dashboard</h3>
-                        <p>Аналитика 50 000 заказов/мес</p>
+                        <h3>Финансовый отчет WB</h3>
+                        <p>(в разработке)</p>
                     </div>
                 </div>
                 <div class="project-card">
                     <div class="project-image" style="background-image: url('pics/project1.png')"></div>
                     <div class="project-info">
-                        <h3>Яндекс Маркет API</h3>
-                        <p>Автоматизация остатков и цен</p>
+                        <h3>Финансовый отчет Яндекс Маркет</h3>
+                        <p>(в разработке)</p>
                     </div>
                 </div>
             
@@ -85,12 +80,20 @@
             <p style="text-align: center; margin-bottom: 40px;">Смотрите видео о наших решениях</p>
             <div class="video-grid">
                 <div class="video-item">
-                    <div class="video-thumb"></div>
-                    <p>Как подключить Wildberries API за 1 час</p>
+                      <div class="video-thumb">
+                        <video class="video_time" id="myVideo" width="240" height="170" 
+                            poster="video/212.jpg" 
+                            controls preload="none" playsinline>
+                        <source src="video/212.mp4" type="video/mp4">
+                        Ваш браузер не поддерживает видео.
+                        </video>
+                    <p>Как подключить аналитику финансовых отчетов для OZON за 5 минут</p>
                 </div>
+                </div>
+
                 <div class="video-item">
                     <div class="video-thumb"></div>
-                    <p>Автоматизация FBS заказов на Ozon</p>
+                    <p>Как получить отчеты, и как работать с ними</p>
                 </div>
                 <div class="video-item">
                     <div class="video-thumb"></div>
@@ -109,26 +112,30 @@
         <div class="container">
             <div class="features-grid">
                 <div class="feature">
-                    <div class="feature-icon"></div>
-                    <h3>Единое API-решение</h3>
-                    <p>Объединяем Wildberries, Ozon, Yandex Market в одной системе. Управляйте всеми площадками через единый интерфейс.</p>
+                    <!-- <div class="feature-icon"></div> -->
+                    <div ><img class="unit_economica" src="pics/features/unit_economica.jpg" alt="Юнит экономика по маркетплейсам"></div>
+                    <h3>Реальная юнит-экономика</h3>
+                    <p>Мы автоматически рассчитываем чистую прибыль с каждого проданного товара. Система вычитает из выручки все фактические расходы: комиссии маркетплейсов, логистику, хранение, рекламу и себестоимость закупки.</p>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon"></div>
-                    <h3>Автоматическая аналитика</h3>
-                    <p>Ежедневные отчеты по продажам, остаткам, рейтингам. Прогнозирование спроса на основе ML алгоритмов.</p>
+                    <!-- <div class="feature-icon"></div> -->
+                    <div><img class="unit_economica" src="pics/features/zatrati_po_stat.jpg" alt="Детализация затрат по статьям маркетплейса"></div>
+                    <h3>Детализация затрат по статьям</h3>
+                    <p>Вы видите полную структуру расходов: комиссии Ozon/WB, логистика (FBO/FBS), хранение на складе, возвраты, рекламные кампании, упаковка, брак и прочие издержки. Никаких скрытых списаний.</p>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon"></div>
-                    <h3>FBS автоматизация</h3>
-                    <p>Полный цикл обработки заказов: от поступления до отгрузки. Автоматическое создание этикеток и уведомлений.</p>
+                    <!-- <div class="feature-icon"></div> -->
+                    <div><img class="unit_economica" src="pics/features/get_data_api.jpg" alt="Автоматический сбор через API Ozon и Wildberries"></div>
+
+                    <h3>Автоматический сбор через API Ozon и Wildberries</h3>
+                    <p>Данные подгружаются напрямую с маркетплейсов. Вам не нужно вручную сводить отчёты — всё уже разложено по полкам в личном кабинете.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Team Section -->
-    <section id="team" class="team">
+    <!-- <section id="team" class="team">
         <div class="container">
             <h2 class="section-title">Команда разработки</h2>
             <div class="team-grid">
@@ -136,7 +143,7 @@
                     <div class="team-photo"></div>
                     <h3>Дмитрий</h3>
                     <div class="position">Lead API Developer</div>
-                    <p>5 лет интеграций с маркетплейсами, эксперт по Wildberries API</p>
+                    <p>5 лет интеграций с маркетплейсами, эксперт по Ozon и Wildberries API</p>
                 </div>
                 <div class="team-card">
                     <div class="team-photo"></div>
@@ -152,10 +159,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Partners -->
-    <section class="partners">
+    <section id ="partners" class="partners">
         <div class="container">
             <h2 class="section-title">Интеграции с площадками</h2>
             <div class="partners-grid">
@@ -172,10 +179,17 @@
         <div class="container">
             <div class="features-grid">
                 <div class="feature">
-                    <div class="feature-icon"></div>
+                    <!-- <div class="feature-icon"></div> -->
+                    <div>
+                        <img class="technical_support" src="pics/teh_podderzhka.jpg" alt="Детализация затрат по статьям маркетплейса">
+                    </div>
+
                     <h3>Мониторинг 24/7</h3>
-                    <p>Отслеживайте работу API в реальном времени. Мгновенные уведомления о сбоях и изменениях в заказах через Telegram.</p>
+                    <p>Отслеживайте работу своей магазина через API в реальном времени. Мы можете моментально увидить, что товар перестал давать прибыль и вытягивает с Вас деньги</p>
+                    <br>
+                   <a href="#projects" class="btn">Запустить автоматизацию</a> 
                 </div>
+                
             </div>
         </div>
     </section>
@@ -186,16 +200,16 @@
             <h2 class="section-title">Блог об автоматизации</h2>
             <div class="articles-grid">
                 <div class="article-card">
-                    <h3>Как автоматизировать FBS на Wildberries</h3>
-                    <p>Пошаговое руководство по настройке автоматической обработки заказов через API.</p>
+                    <h3>Чем сервис отличается от других</h3>
+                    <p>Скорость работы, простой и удобный интерфейс, и мы не просто выдаем Вам расчеты и цифры, а позволяем сравнить их с данными в личном кабинете</p>
                 </div>
                 <div class="article-card">
-                    <h3>Сравнение API Ozon и Wildberries</h3>
-                    <p>Технический разбор возможностей и ограничений основных маркетплейсов.</p>
+                    <h3>Сколько кабинетов можно подключить</h3>
+                    <p>На данный момент не ограничения по кабинетам. Пока всю бесплатно, но в дальнейшем планируется плата в размере 500руб/месяц за каждый кабинет</p>
                 </div>
                 <div class="article-card">
-                    <h3>Прогнозирование продаж с помощью ML</h3>
-                    <p>Как мы предсказываем спрос с точностью 95% на основе исторических данных.</p>
+                    <h3>Для чего сервис аналитики маркетплейсов нужен</h3>
+                    <p>Мы можете в ежедненом редиме отслеживать динамику не только продаж, но и динамику прибыли, учитывая все траты, комиссии и себестоимости товаров</p>
                 </div>
             </div>
         </div>
@@ -208,11 +222,11 @@
             <div class="faq-grid">
                 <div class="faq-item">
                     <h3>Сколько времени занимает интеграция API?</h3>
-                    <p>Базовая интеграция занимает от 3 до 7 дней. Сложные проекты с кастомной аналитикой — до 3 недель.</p>
+                    <p>Базовая интеграция занимает от 1 до 7 дней. Сложные проекты с кастомной аналитикой — по согласованию.</p>
                 </div>
                 <div class="faq-item">
                     <h3>Какие маркетплейсы вы поддерживаете?</h3>
-                    <p>Wildberries, Ozon, Yandex Market, а также интеграцию с Google Sheets, 1С и Telegram.</p>
+                    <p>Wildberries, Ozon, Yandex Market</p>
                 </div>
                 <div class="faq-item">
                     <h3>Как происходит автоматизация FBS заказов?</h3>
@@ -228,7 +242,7 @@
                 </div>
                 <div class="faq-item">
                     <h3>Есть ли техническая поддержка?</h3>
-                    <p>Круглосуточная поддержка через Telegram и email. Среднее время ответа — 15 минут.</p>
+                    <p>Круглосуточная поддержка через email. Среднее время ответа — 60 минут.</p>
                 </div>
             </div>
         </div>
@@ -244,7 +258,7 @@
                 </div>
                 <div>
                     <h3>Контакты</h3>
-                    <a href="tel:+74994033216">+7 (499) 403-32-16</a>
+                    <!-- <a href="tel:+74994033216">+7 (499) 403-32-16</a> -->
                     <a href="mailto:info@tradestorm.ru">info@tradestorm.ru</a>
                     <p>г. Москва, ул. Льва Толстого, 16<br>БЦ "Морозов", офис 405</p>
                 </div>
@@ -256,7 +270,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 TradeStorm. Все права защищены.</p>
+                <p>&copy; 2026 TradeStorm. Все права защищены.</p>
                 <a href="#">Политика конфиденциальности</a>
                 <a href="#">Договор оферты</a>
             </div>
@@ -281,4 +295,11 @@
     */
     ?>
 </body>
+
+    <script type="text/javascript" src="script_video.js"></script>
+
 </html>
+
+
+
+

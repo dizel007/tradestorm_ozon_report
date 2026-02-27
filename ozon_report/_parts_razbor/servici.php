@@ -5,10 +5,13 @@
 
 if (isset ($arr_services)) {
     foreach ($arr_services as $items) {
-        // добавляем создание массива с сервисами в которых есть номер заказа, чтобы потом по-
-        //пробовать вывести их на отдельной страничке
+        
+       // добавляем создание массива с сервисами в которых есть номер заказа, чтобы потом по-
+        //пробовать вывести их на отдельной страничке penalty tables
        if  (($items['posting']['posting_number'] != '' ) AND ((preg_match('/^\d+-\d+-\d+$/', $items['posting']['posting_number'])))) {
         $arr_services_with_post_numbers[$items['operation_type_name']][$items['posting']['posting_number']] = @$arr_services_with_post_numbers[$items['operation_type_name']][$items['posting']['posting_number']] + $items['amount'];
+
+        
        }
 
         /// конец создания массива с сервисами с заказами
