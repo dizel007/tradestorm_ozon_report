@@ -3,8 +3,8 @@
 /***************************************************************
  *  Тут отрисовываем таблицу с неразобранными статьями затрат
  *****************************************************************/
-require_once '../vendor/autoload.php';
-require_once "../main_info.php";
+require_once '../../vendor/autoload.php';
+require_once "../../main_info.php";
 
 // отправляем письмо с данными которых у нас нет
 $body_Email = json_encode($alarm_index_array, JSON_UNESCAPED_UNICODE);

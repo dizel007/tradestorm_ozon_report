@@ -1,6 +1,6 @@
 <?PHP
-require_once "../_libs_ozon/function_ozon_reports.php"; // массив с себестоимостью товаров
-require_once "../_libs_ozon/sku_fbo_na_fbs.php"; // массив с себестоимостью товаров
+// require_once "../_libs_ozon/function_ozon_reports.php"; // массив с себестоимостью товаров
+// require_once "../_libs_ozon/sku_fbo_na_fbs.php"; // массив с себестоимостью товаров
 require_once "../mp_functions/report_excel_file.php";
 
 // $ozon_sebest = get_catalog_tovarov_v_mp($ozon_shop, $pdo, 'all');

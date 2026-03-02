@@ -1,233 +1,307 @@
-<?php
-require_once("main_info.php");
-require_once("vendor/autoload.php");
-try {
-    $pdo = new PDO('mysql:host=' . $host . ';dbname=' . $db . ';charset=utf8', $user, $password);
-    $pdo->exec('SET NAMES utf8');
-} catch (PDOException $e) {
-    print "Has errors: " . $e->getMessage();
-    die();
-}
-
-ob_start();
-echo <<<HTML
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeStorm - аналитика маркетплейсов</title>
-    <link rel="stylesheet" href="css/index_page.css">
+    <title>TradeStorm | Лучшая аналитика маркетплейсов</title>
+    <link rel="stylesheet" href="css/style.css">
+
+
+
+
 </head>
-HTML;
-
-
-
-// ************* Проверяем введен ли токен и ИДКлиента
-// Если есть токен и ИД клиетна то проверяем его 
-$priznak_nalichia_token = 0;
-if ((isset($_POST['token'])) && (isset($_POST['client_id']))) {
-    $token = htmlspecialchars($_POST['token']);
-    $client_id =  htmlspecialchars($_POST['client_id']);
-    $date_now = date('Y-m-d');
-    $priznak_nalichia_token = 1;
-}
-
-// Если есть токе и илклиент то проверяем есть ли роль "РЕПОРТС"
-if ($priznak_nalichia_token == 1) {
-    $ozon_link = 'v3/finance/transaction/list';
-    $send_data = array(
-        "filter" => array(
-            "date" => array(
-                "from" => $date_now . "T00:00:00.000Z",
-                "to" => $date_now . "T00:00:00.000Z"
-            ),
-            "operation_type" => [],
-            "posting_number" => "",
-            "transaction_type" => "all"
-        ),
-        "page" => 1,
-        "page_size" => 1
-    );
-    $send_data = json_encode($send_data);
-    $http_code = send_query_on_ozon($token, $client_id, $send_data, $ozon_link);
-    // echo "<br>11111111111 http_code = " . $http_code;
-    if (intdiv($http_code, 100) > 2) {
-        echo <<<HTML
-    <div class="alarm_text">Токен или ID_клиента не верны (проверьте роль Report)</div>
-    HTML;
-    } else {
-        /// если обмен прошел полодительно то увеличиваем признака
-        $priznak_nalichia_token ++;
-    }
-    // проверяем если ли роль токена  PRODUCTS ONLY
-        $ozon_link = "v5/product/info/prices";
-        $send_data =  array(
-        "cursor" => "",
-        "filter" => array ("visibility" => "ALL",),
-        "limit" => 1
-        );
-    $send_data = json_encode($send_data);
-    $http_code = send_query_on_ozon($token, $client_id, $send_data, $ozon_link);
-    // echo "222222222 http_code = " . $http_code;
-    if (intdiv($http_code, 100) > 2) {
-        echo <<<HTML
-    <div class="alarm_text">Токен или ID_клиента не верны (проверьте роль Product read-only)</div>
-    HTML;
-    } else {
-        /// если обмен прошел полодительно то увеличиваем признака
-        $priznak_nalichia_token ++;
-    }
-}
-
-
-
-
-if ($priznak_nalichia_token == 3) {;
-// Если токен рабочий, то создаем папки и уходим на добычу информации
-$file_client_path =  '!cache/' . $client_id;
-try {
-    createDirectoryIfNotExists($file_client_path);
-} catch (Exception $e) {
-    echo "Ошибка: " . $e->getMessage();
-}
-// кладем токен и ИД
-file_put_contents($file_client_path . "/token.txt", $token);
-file_put_contents($file_client_path . "/client_id.txt", $client_id);
-$secret_client_id = base64_encode('' . $client_id);
-
-// записываем токен и илклиента в БД
-// сначала проверяем есть ли такой идклиента
-$check = $pdo->prepare("SELECT * from `tokens`WHERE id_clt_base64 =:id_clt_base64");
-$check->execute(array("id_clt_base64" => $secret_client_id));
-$arr_token = $check->fetch(PDO::FETCH_ASSOC);
-
-// смотрим есть ли такой клиент айди если нет то добавляем его
-if (!isset($arr_token['id_clt_base64'])) {
-    // добавляем новый токен
-    $sth = $pdo->prepare("INSERT INTO `tokens` SET `ozon_token` = :ozon_token, `id_client` = :id_client, 
-                                                `id_clt_base64` = :id_clt_base64,  `date` = :date");
-    $sth->execute(array(
-        'ozon_token' => $token,
-        'id_client' => $client_id,
-        'id_clt_base64' => $secret_client_id,
-        'date' => date('Y-m-d H:i:m')
-    ));
-    // письмецо на почту 
-    send_many_emails('dizel007@yandex.ru', 'Кто то тестанул тейдштром', 'новый клиент: ' . $client_id, $mail_for_send_letter, $mail_pass);
-} else {
-    // смотрим совпадает ли старый токен с новым, еесли нет то обновляем его
-    if (($arr_token['ozon_token'] !== $token)  && ($arr_token['id_client'] == $client_id)) {
-        $sth = $pdo->prepare("UPDATE `tokens` SET  `ozon_token`= :ozon_token WHERE `id_client` =:id_client");
-        $sth->execute(array(
-            "ozon_token" => $token,
-            "id_client" => $client_id
-        ));
-    }
-}
-header('Location: ozon_report?clt='.$secret_client_id, true, 301);
-exit();
-}
-
-
-
-
-
-
-echo <<<HTML
 <body>
-    <!-- Кнопка скачивания PDF -->
-    <div class="pdf-download-container">
-        <a href="files/doc1.pdf" download class="pdf-download-btn">
-            <svg class="pdf-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-            </svg>
-            Скачать инструкцию по подключению(PDF)
-        </a>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">Trade<span>Storm</span></a>
+            <nav class="nav">
+                <a href="#projects">Разработки</a>
+                <a href="#partners">Интеграции</a>
+                <a href="#articles">Блог</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+            <div class="phone"></div>
+        </div>
+    </header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-background">
+        <img src="pics/hero_banner.png" alt="Marketplace Automation" class="hero-image">
+        <div class="hero-overlay"></div>
     </div>
-    <!-- Кнопка скачивания PDF -->
-    <div class="pdf-download-container2">
-        <a href="files/doc2.pdf" download class="pdf-download-btn">
-            <svg class="pdf-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-            </svg>
-            Скачать инструкцию по работе (PDF)
-        </a>
+    <div class="container">
+        <div class="hero-content">
+            <h1>Автоматизация работы на маркетплейсах</h1>
+            <p>API интеграция, аналитика FBS заказов, умные отчеты и полный контроль вашего бизнеса</p>
+            <a href="#projects" class="btn">Запустить автоматизацию</a>
+        </div>
     </div>
-    <h2>Форма инициализации</h2>
+</section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">Наши разработки</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <a class="project-start-link" href = "ozon">
+                        <div class="project-image" style="background-image: url('pics/project1.png')"></div>
+                        <div class="project-info">
+                            <h3>Финансовый отчет OZON</h3>
+                            <p>Поартикульный разбор затрат на товары. Выделяем комиссии, логистику, эквайринг и все возможные затраты</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="dimmed-image project-card">
+                    <div class="project-image" style="background-image: url('pics/project1.png')"></div>
+                    <div class="project-info">
+                        <h3>Финансовый отчет WB</h3>
+                        <p>(в разработке)</p>
+                    </div>
+                </div>
+                <div class="dimmed-image project-card">
+                    <div class="project-image" style="background-image: url('pics/project1.png')"></div>
+                    <div class="project-info">
+                        <h3>Финансовый отчет Яндекс Маркет</h3>
+                        <p>(в разработке)</p>
+                    </div>
+                </div>
+            
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="video-section">
+        <div class="container">
+            <h2 class="section-title">Как автоматизировать маркетплейсы?</h2>
+            <p style="text-align: center; margin-bottom: 40px;">Смотрите видео о наших решениях</p>
+            <div class="video-grid">
+                <div class="video-item">
+                      <div class="video-thumb">
+                        <video class="video_time" id="myVideo" width="240" height="170" 
+                            poster="video/212.jpg" 
+                            controls preload="none" playsinline>
+                        <source src="video/212.mp4" type="video/mp4">
+                        Ваш браузер не поддерживает видео.
+                        </video>
+                    <p>Как подключить аналитику финансовых отчетов для OZON за 5 минут</p>
+                </div>
+                </div>
+
+                <div class="video-item">
+                    <div class="video-thumb"></div>
+                    <p>Как получить отчеты, и как работать с ними</p>
+                </div>
+                <div class="video-item">
+                    <div class="video-thumb"></div>
+                    <p>Создание отчетов в реальном времени</p>
+                </div>
+                <div class="video-item">
+                    <div class="video-thumb"></div>
+                    <p>Разбор FBS: ошибки и оптимизация</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature">
+                    <!-- <div class="feature-icon"></div> -->
+                    <div ><img class="unit_economica" src="pics/features/unit_economica.jpg" alt="Юнит экономика по маркетплейсам"></div>
+                    <h3>Реальная юнит-экономика</h3>
+                    <p>Мы автоматически рассчитываем чистую прибыль с каждого проданного товара. Система вычитает из выручки все фактические расходы: комиссии маркетплейсов, логистику, хранение, рекламу и себестоимость закупки.</p>
+                </div>
+                <div class="feature">
+                    <!-- <div class="feature-icon"></div> -->
+                    <div><img class="unit_economica" src="pics/features/zatrati_po_stat.jpg" alt="Детализация затрат по статьям маркетплейса"></div>
+                    <h3>Детализация затрат по статьям</h3>
+                    <p>Вы видите полную структуру расходов: комиссии Ozon/WB, логистика (FBO/FBS), хранение на складе, возвраты, рекламные кампании, упаковка, брак и прочие издержки. Никаких скрытых списаний.</p>
+                </div>
+                <div class="feature">
+                    <!-- <div class="feature-icon"></div> -->
+                    <div><img class="unit_economica" src="pics/features/get_data_api.jpg" alt="Автоматический сбор через API Ozon и Wildberries"></div>
+
+                    <h3>Автоматический сбор через API Ozon и Wildberries</h3>
+                    <p>Данные подгружаются напрямую с маркетплейсов. Вам не нужно вручную сводить отчёты — всё уже разложено по полкам в личном кабинете.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <!-- <section id="team" class="team">
+        <div class="container">
+            <h2 class="section-title">Команда разработки</h2>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-photo"></div>
+                    <h3>Дмитрий</h3>
+                    <div class="position">Lead API Developer</div>
+                    <p>5 лет интеграций с маркетплейсами, эксперт по Ozon и Wildberries API</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-photo"></div>
+                    <h3>Екатерина</h3>
+                    <div class="position">Data Analyst</div>
+                    <p>Разработка алгоритмов прогнозирования и аналитических отчетов</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-photo"></div>
+                    <h3>Андрей</h3>
+                    <div class="position">DevOps Engineer</div>
+                    <p>Обеспечение стабильной работы API и безопасности данных</p>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Partners -->
+    <section id ="partners" class="partners">
+        <div class="container">
+            <h2 class="section-title">Интеграции с площадками</h2>
+            <div class="partners-grid">
+                <span class="partner-item">Wildberries API</span>
+                <span class="partner-item">Ozon Seller API</span>
+                <span class="partner-item">Yandex Market</span>
     
-    <form action="#" method="POST">
-        <!-- Первый параметр -->
-        <div class="form-group">
-            <label for="param1">ozon_client_id: </label>
-            <input type="text" id="param1" name="client_id" required 
-                   placeholder="ozon_client_id">
+            </div>
         </div>
+    </section>
 
-        <!-- Второй параметр -->
-        <div class="form-group">
-            <label for="param2">ozon_token:</label>
-            <input type="text" id="ozon_token" name="token" required 
-                   placeholder="ozon_token">
+    <!-- Online Control -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature">
+                    <!-- <div class="feature-icon"></div> -->
+                    <div>
+                        <img class="technical_support" src="pics/teh_podderzhka.jpg" alt="Детализация затрат по статьям маркетплейса">
+                    </div>
+
+                    <h3>Мониторинг 24/7</h3>
+                    <p>Отслеживайте работу своей магазина через API в реальном времени. Мы можете моментально увидить, что товар перестал давать прибыль и вытягивает с Вас деньги</p>
+                    <br>
+                   <a href="#projects" class="btn">Запустить автоматизацию</a> 
+                </div>
+                
+            </div>
         </div>
+    </section>
 
-        <button type="submit">Отправить</button>
-    </form>
-    <div class="instruction"> 
-        <!-- <p> -->
-            <a class ="instruction_link" href ="https://seller.ozon.ru/app/settings/api-keys" target="_blank">  ссылка в личный кабинет озон</a>
-        <!-- </p> -->
-    <p  class="instruction_text">
-        * Для получения отчетов требуется сгенерировать ключ (ozon_token) с типом токена <b>Product read-only</b> и <b>Report</b>. Ключ отобразится только 1 раз. С типом токена Report, можно только смотреть отчеты озона, никаких изменений в кабинете произвести не получится
-    </p>
-    <!-- <img class ="instruction_pics" src="pics/ozon-token.jpg" alt="альтернативный текст"> -->
-    </div>
-</body>
-</html>
-HTML;
+    <!-- Articles Section -->
+    <section id="articles" class="articles">
+        <div class="container">
+            <h2 class="section-title">Блог об автоматизации</h2>
+            <div class="articles-grid">
+                <div class="article-card">
+                    <h3>Чем сервис отличается от других</h3>
+                    <p>Скорость работы, простой и удобный интерфейс, и мы не просто выдаем Вам расчеты и цифры, а позволяем сравнить их с данными в личном кабинете</p>
+                </div>
+                <div class="article-card">
+                    <h3>Сколько кабинетов можно подключить</h3>
+                    <p>На данный момент не ограничения по кабинетам. Пока всю бесплатно, но в дальнейшем планируется плата в размере 500руб/месяц за каждый кабинет</p>
+                </div>
+                <div class="article-card">
+                    <h3>Для чего сервис аналитики маркетплейсов нужен</h3>
+                    <p>Мы можете в ежедненом редиме отслеживать динамику не только продаж, но и динамику прибыли, учитывая все траты, комиссии и себестоимости товаров</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- FAQ Section -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <h2 class="section-title">Часто задаваемые вопросы</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Сколько времени занимает интеграция API?</h3>
+                    <p>Базовая интеграция занимает от 1 до 7 дней. Сложные проекты с кастомной аналитикой — по согласованию.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Какие маркетплейсы вы поддерживаете?</h3>
+                    <p>Wildberries, Ozon, Yandex Market</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Как происходит автоматизация FBS заказов?</h3>
+                    <p>Система автоматически получает заказы по API, формирует этикетки, обновляет остатки и отправляет уведомления.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Можно ли настроить кастомные отчеты?</h3>
+                    <p>Да, мы разрабатываем любые отчеты под ваши задачи: по продажам, остаткам, рейтингам, комиссиям и т.д.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Как обеспечивается безопасность?</h3>
+                    <p>Все ключи API хранятся в зашифрованном виде, используется двухфакторная аутентификация и HTTPS протоколы.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Есть ли техническая поддержка?</h3>
+                    <p>Круглосуточная поддержка через email. Среднее время ответа — 60 минут.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-/*******************************************************************
- * функция взаимодейсвтия с озоном
- /********************************************************************/
+    <!-- Footer -->
+    <footer id="contacts" class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>TradeStorm</h3>
+                    <p>Автоматизация маркетплейсов<br>и аналитика FBS заказов</p>
+                </div>
+                <div>
+                    <h3>Контакты</h3>
+                    <!-- <a href="tel:+74994033216">+7 (499) 403-32-16</a> -->
+                    <a href="mailto:info@tradestorm.ru">info@tradestorm.ru</a>
+                    <p>г. Москва, ул. Льва Толстого, 16<br>БЦ "Морозов", офис 405</p>
+                </div>
+                <div>
+                    <h3>Реквизиты</h3>
+                    <p>ООО "Торговые Системы"</p>
+                    <p>ИНН 9705143827</p>
+                    <p>ОГРН 1237700123456</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TradeStorm. Все права защищены.</p>
+                <a href="#">Политика конфиденциальности</a>
+                <a href="#">Договор оферты</a>
+            </div>
+        </div>
+    </footer>
 
-function send_query_on_ozon($token, $client_id, $send_data, $ozon_dop_url)
-{
-
-    $ch = curl_init('https://api-seller.ozon.ru/' . $ozon_dop_url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Api-Key:' . $token,
-        'Client-Id:' . $client_id,
-        'Content-Type:application/json'
-    ));
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $send_data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_HEADER, false);
-    $res = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Получаем HTTP-код
-
-    // $res = json_decode($res, true);
-    // echo "<pre>";
-    // print_r($res);
-    return ($http_code);
-}
-
-
-/*******************************************************************
- * функция которая созает папку, если ее нет
- /********************************************************************/
-
-function createDirectoryIfNotExists($path)
-{
-    // Проверяем, существует ли папка
-    if (!is_dir($path)) {
-        // Пытаемся создать папку
-        if (mkdir($path, 0777, true)) {
-            return true;
-        } else {
-            throw new Exception("Не удалось создать папку: $path");
-        }
+    <?php
+    // PHP код для динамических элементов
+    $current_year = date('Y');
+    echo "<script>console.log('TradeStorm - автоматизация маркетплейсов, текущий год: " . $current_year . "');</script>";
+    
+    // Пример функции для получения данных по API
+    /*
+    function getMarketplaceStats() {
+        // Подключение к API маркетплейсов
+        return [
+            'total_orders' => 15000,
+            'avg_rating' => 4.8,
+            'revenue' => 25000000
+        ];
     }
-    return true;
-}
+    */
+    ?>
+</body>
+
+    <script type="text/javascript" src="js/script_video.js"></script>
+
+</html>
+
+
+
+

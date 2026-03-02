@@ -1,7 +1,7 @@
 <?php
-$offset = "../";
-require_once $offset . "main_info.php";
-require_once $offset . "mp_functions/ozon_api_functions.php";
+
+require_once "../../main_info.php";
+require_once "../mp_functions/ozon_api_functions.php";
 
 /*****************************************************************
  * Вычитываем информацию о товаре - цену / скидки и прочую хрень
