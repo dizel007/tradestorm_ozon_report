@@ -196,7 +196,8 @@ if ($arr_real_ozon_data[$sku_ozon]['count']['summa'] !=0) {
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego_gde_est_artikul']  =  round ($arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_gde_est_artikul']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
     $arr_real_ozon_data[$sku_ozon]['one_item']['dop_uslugi']  =  round($arr_real_ozon_data[$sku_ozon]['summa']['dop_uslugi']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego']  =  round($arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
-    $arr_real_ozon_data[$sku_ozon]['diff_min_price']   =   $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego'] - $arr_real_ozon_data[$sku_ozon]['min_price'] ;
+    $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego_s_ino_tovarami']  =  round($arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_s_ino_tovarami']/$arr_real_ozon_data[$sku_ozon]['count']['summa'],0);
+    $arr_real_ozon_data[$sku_ozon]['diff_min_price']   =   $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego_s_ino_tovarami'] - $arr_real_ozon_data[$sku_ozon]['min_price'] ;
 //     $arr_real_ozon_data[$sku_ozon]['diff_main_price']   =  $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego'] - $arr_real_ozon_data[$sku_ozon]['main_price'] ;
 
  } else {
@@ -207,7 +208,7 @@ if ($arr_real_ozon_data[$sku_ozon]['count']['summa'] !=0) {
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego_gde_est_artikul']  = 0;
     $arr_real_ozon_data[$sku_ozon]['one_item']['dop_uslugi']  =  0;
     $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego']  =  0;
-    $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego_s_inostan']  =  0;
+    $arr_real_ozon_data[$sku_ozon]['one_item']['bez_vsego_s_ino_tovarami']  =  0;
     $arr_real_ozon_data[$sku_ozon]['diff_min_price']   = 0;
     $arr_real_ozon_data[$sku_ozon]['diff_main_price']  = 0;
 
@@ -244,7 +245,7 @@ if ($arr_real_ozon_data[$sku_ozon]['one_procent_from_accruals_for_sale'] !=0) {
 /**************************************************************************************/
 
 $arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost'] = $arr_real_ozon_data[$sku_ozon]['min_price'] * $arr_real_ozon_data[$sku_ozon]['count']['summa']; 
-$arr_real_ozon_data[$sku_ozon]['summa']['pribil'] = $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego'] - $arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost']; 
+$arr_real_ozon_data[$sku_ozon]['summa']['pribil'] = $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_s_ino_tovarami'] - $arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost']; 
 
 $arr_summ['Сумма себестоимость'] = @$arr_summ['Сумма себестоимость'] + $arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost'] ;
 $arr_summ['Сумма прибыль'] = @$arr_summ['Сумма прибыль'] + $arr_real_ozon_data[$sku_ozon]['summa']['pribil'];

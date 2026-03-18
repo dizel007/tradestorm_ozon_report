@@ -47,17 +47,16 @@ $pp = 0; // номер строки в тублице
 // echo "<pre>";
 foreach ($arr_article as $key => $one_string_data) {
 
-        echo "<tr>";
+   echo "<tr>";
         $pp++;   
-
- // костыль окончен
+// пункт по порядку
     echo "<td>" . $pp . "</td>";
-    /// тип операции
+ /// тип операции
     echo "<td>"; 
 
         foreach ($one_string_data['type_operation'] as $type_key=>$type) {
                 echo "$type<br>";
-        }
+       }
 
     echo "</td>";
     echo "<td class=\"td_logistika\">" . $one_string_data['name'] . "</td>";
@@ -74,6 +73,9 @@ foreach ($arr_article as $key => $one_string_data) {
      } elseif ($one_string_data['delivery_schema'] == "FBO") {
          echo "<a href=\"https://seller.ozon.ru/app/postings/fbo/".$one_string_data['post_number_gruzomesto']."\" target=\"_blank\">".$one_string_data['delivery_schema'] . "</a>";;
      }
+          if (isset($one_string_data['ino'])) {
+            echo " (ino)";
+        }
     echo "</td>";
 // Цена в личном кабинете
     echo "<td>" . $one_string_data['accruals_for_sale'] . "</td>";

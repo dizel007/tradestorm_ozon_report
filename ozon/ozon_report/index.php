@@ -152,10 +152,13 @@ if ($type_sort == '') {
 
 
 // Тянем данные по товаром проданным в страны ЕАЭС
-$arr_data_sell_in_srtani_eaes = get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to );
-if (isset($arr_data_sell_in_srtani_eaes)) {
-           file_put_contents($file_name_ozon_inostran_prodazhi,json_encode($arr_data_sell_in_srtani_eaes, JSON_UNESCAPED_UNICODE));
-   }
+$arr_data_sell_in_srtani_eaes_temp = get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to, $file_name_ozon_inostran_prodazhi);
+$arr_data_sell_in_srtani_eaes = $arr_data_sell_in_srtani_eaes_temp['products'];
+
+
+
+$summa_prodannogo_v_strani_EAES = $arr_data_sell_in_srtani_eaes_temp['summa_prodannogo'];
+
 
 // echo "<pre>";
 // print_r($arr_data_sell_in_srtani_eaes);
@@ -231,7 +234,7 @@ else {return false;}
  * Функция получения данных о продажах товаров в страны ЕАЭС 
  *****************************************************************************************************************/
 
-function get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to)
+function get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to, $file_name_ozon_inostran_prodazhi)
 {
     $ozon_dop_url = "v1/finance/products/buyout";
     $send_data = '
@@ -241,14 +244,25 @@ function get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to)
             }';
     $arr_sell_v_strani_EAES = send_injection_on_ozon($token, $client_id, $send_data, $ozon_dop_url);
 
-    foreach ($arr_sell_v_strani_EAES['products'] as $items) {
-        $new_arr_sell_v_strani_EAES[$items['sku']]['sku'] = $items['sku'];
-        $new_arr_sell_v_strani_EAES[$items['sku']]['offer_id'] = $items['offer_id'];
-        $new_arr_sell_v_strani_EAES[$items['sku']]['amount'] = @$new_arr_sell_v_strani_EAES[$items['sku']]['amount'] + $items['amount'];
-        $new_arr_sell_v_strani_EAES[$items['sku']]['quantity'] = @$new_arr_sell_v_strani_EAES[$items['sku']]['quantity'] + $items['quantity'];
-        $new_arr_sell_v_strani_EAES[$items['sku']]['seller_price_per_instance'] = @$new_arr_sell_v_strani_EAES[$items['sku']]['seller_price_per_instance'] + $items['seller_price_per_instance'];
+    if (isset($arr_sell_v_strani_EAES)) {
+           file_put_contents($file_name_ozon_inostran_prodazhi,json_encode($arr_sell_v_strani_EAES, JSON_UNESCAPED_UNICODE));
     }
 
+$summa_prodazh = 0;
+    foreach ($arr_sell_v_strani_EAES['products'] as $items) {
+        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['sku'] = $items['sku'];
+        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['offer_id'] = $items['offer_id'];
+        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['amount'] = @$new_arr_sell_v_strani_EAES['products'][$items['sku']]['amount'] + $items['amount'];
+        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['quantity'] = @$new_arr_sell_v_strani_EAES['products'][$items['sku']]['quantity'] + $items['quantity'];
+        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['seller_price_per_instance'] = @$new_arr_sell_v_strani_EAES['products'][$items['sku']]['seller_price_per_instance'] + $items['seller_price_per_instance'];
+
+        $summa_prodazh = $summa_prodazh + $items['amount'];
+    }
+ $new_arr_sell_v_strani_EAES['summa_prodannogo'] = $summa_prodazh;
+ $new_arr_sell_v_strani_EAES['date_from'] = $date_from;
+ $new_arr_sell_v_strani_EAES['date_to'] = $date_to;
+
     unset ($arr_sell_v_strani_EAES);
+
     return $new_arr_sell_v_strani_EAES;
 }

@@ -23,7 +23,18 @@
   
 
 foreach ($arr_article as $key=>&$one_tovar) {
- 
+/***************************************************************** */ 
+// Иностранные товары  добавляем их стоимость
+/***************************************************************** */ 
+
+$one_tovar['ino_prodazha'] = 0;
+foreach ($arr_prod_inostran_prodazhi['products'] as $ino_sells_data) {
+    if ($ino_sells_data['posting_number'] == $one_tovar['posting_number']) {
+        $one_tovar['ino'] = 'ino';
+        $one_tovar['accruals_for_sale'] = $ino_sells_data['amount'];
+    }
+}
+
 // если есть проданные товары 
 //     
          $one_tovar['post_number_gruzomesto'] = $key;
@@ -115,6 +126,8 @@ foreach ($arr_penalty_posting_numbers as $penalty_data) {
         $one_tovar['penalty'] = $penalty_data['amount'];
     }
 }
+
+
 
 // считаем итого на р/с
 $one_tovar['amount_na_rs'] = $one_tovar['amount'] +  $one_tovar['acquiring'] + $one_tovar['penalty'];

@@ -154,15 +154,15 @@ foreach ($arr_article as $sku_itemcs => $itmess ) {
 
 
 $summa_sebes = - array_sum($arr_sebest);
-// echo "<pre>";
-// print_r( $arr_article);
-// die();
 // Процент себестоимости
 $procent_sebestoimosti = round($summa_sebes/$one_sell_procent,1);
 
+// Сумма проджа товаров в тсраны ЕАЭС
+$summa_prodannogo_v_strani_EAES;
+
 // Прибылб
 $real_pribil = $arr_for_tink_data['Выкуплено'] + $arr_for_tink_data['Основные расходы']  +
-                $arr_for_tink_data['Другие расходы'] + $summa_sebes;
+                $arr_for_tink_data['Другие расходы'] + $summa_sebes + $summa_prodannogo_v_strani_EAES;
 // Цвет профита
 if ($real_pribil>=0) {
     $profit_amount = "profit-amount";
@@ -175,11 +175,6 @@ if ($real_pribil>=0) {
 // Процент прибыли
 $procent_pribil = round($real_pribil/$one_sell_procent,1);
 
-
-// echo "<pre>";
-// print_r($arr_sebest);
-
-// print_r($summa_sebes);
 
 
 // Данные для отображения (можно заменить на реальные)
@@ -213,11 +208,7 @@ $other_expenses = [
     ]
 ];
 
-$profit = [
-    'amount'    => 562382,
-    'percent'   => 38,
-    'diff_text' => 'Это на 74 060 ₽ меньше, чем в прошлом периоде — снизились продажи'
-];
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -465,6 +456,19 @@ $profit = [
                     </div>
 
             </div>
+                        <!-- Продажи в страны ЕАЭС -->
+            <div class="col other-expenses">
+                <div class="col-header">
+                    Продажи в страны ЕАЭС
+                    <span class="amount positive"><?= number_format($summa_prodannogo_v_strani_EAES, 0, '.', ' ') ?> ₽</span>
+          
+                </div>
+                    <div class="sub-item">
+                        Продажи в страны ЕАЭС
+                        <span class="amount positive"><?= number_format($summa_prodannogo_v_strani_EAES, 0, '.', ' ') ?> ₽</span>
+                    </div>
+
+            </div>
 
         </div>
 
@@ -475,8 +479,9 @@ $profit = [
                 <span class="<?php echo $profit_amount; ?>"><?= number_format($real_pribil, 0, '.', ' ') ?> ₽</span>
                 <span class="<?php echo $profit_percent; ?>"><?= $procent_pribil ?>%</span>
             </div>
-            <!-- <div class="profit-note"><?= htmlspecialchars($profit['diff_text']) ?></div> -->
+            <!-- <div class="profit-note"><?= htmlspecialchars($real_pribil_with_ino_tovari) ?></div> -->
         </div>
+
     </section>
 </body>
 </html>

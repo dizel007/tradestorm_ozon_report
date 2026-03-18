@@ -97,7 +97,8 @@ echo <<<HTML
     <th>доп.услуги<br>(руб)</th>
     <th>К начисле<br>нию<br>(руб)</th>
     <th>Иностр<br>продажи(руб)</th>
-    <th>Себест-сть<br>(руб)</th>
+    <th>Выплаты<br>(руб)</th>
+    <th>Себестсть<br>(руб)</th>
     <th>Прибыль<br>(руб)</th>
     
 </tr>
@@ -165,6 +166,8 @@ echo <<<HTML
     <td class="numbers_th">(12)=10+11<br>\xE2\x80\x8B</td>
 
     <td class="numbers_th">(12a)<br>\xE2\x80\x8B</td>
+    <td class="numbers_th">(12б)<br>\xE2\x80\x8B</td>
+
 
 
     <!-- <td class="numbers_th">(14)<br>\xE2\x80\x8B</td> -->
@@ -321,6 +324,14 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['prodazh_v_eae
                                          $item_for_print['count']['prodazh_v_eaes'], 
                                          $color_class = '');
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+// ВЫплаты
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego_s_ino_tovarami'],
+                                         $item_for_print['one_item']['bez_vsego_s_ino_tovarami'], 
+                                         $color_class = '');
+
 /************************************************************************************/
 // Себестоимость и разница от цена продажи после всех вычетов
 /************************************************************************************/
@@ -362,7 +373,7 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['prodazh_v_eae
         print_summa_in_table($arr_summ, 'Сумма распределения доп.услуг', 'red_color');
         print_summa_in_table($arr_summ, 'Сумма без всего', $color_class = '');
         print_summa_in_table($arr_summ, 'Сумма за ино_товары', $color_class = '');
-
+        print_summa_in_table($arr_summ, 'Сумма без всего с иностр.товарами', $color_class = '');
         // echo "<td>".$arr_summ['Сумма за ино_товары']."</td>";
         print_summa_in_table($arr_summ, 'Сумма себестоимость', $color_class = '');
         $arr_summ['Сумма прибыль'] >=0? $color_class = 'green_color':$color_class = 'red_color'; 

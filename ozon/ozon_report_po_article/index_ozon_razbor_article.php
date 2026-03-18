@@ -28,13 +28,9 @@ if (isset($_GET['data'])) {
     // Достаем токен и ИД клинета
     $mp_article = $params['article'];
     $article_sebest = $params['sebest'];
-    $acquiring_sum=$params['acquiring'];
-    $acquiring_count=$params['acquiring_count'];
-
-    $dop_uslugi=$params['dop_uslugi'];
-
-   
-
+    $acquiring_sum = $params['acquiring'];
+    $acquiring_count = $params['acquiring_count'];
+    $dop_uslugi = $params['dop_uslugi'];
 
     $secret_client_id = $params['clt'];
 
@@ -47,20 +43,26 @@ if (isset($_GET['data'])) {
         header('Location: ../');
     }
     $client_id = $arr_tokens['id_client'];
-    // $token = $arr_tokens['ozon_token'];
     $secret_client_id = $arr_tokens['id_clt_base64'];
 
     $need_SKU = $params['sku'];
     $file_name_ozon_small = $params['file_name_ozon_small'];
-    $file_name_ozon = "../!cache" . "/" . $client_id . "/" . $file_name_ozon_small . ".json";
+    $file_name_ozon = "../!cache" . "/" . $client_id . "/" . $file_name_ozon_small . "_main_data.json";
+    $file_name_ozon_inostran_prodazhi = "../!cache" . "/" . $client_id . "/" . $file_name_ozon_small . "_inostran_prodazhi.json";
+
+
+
 
     $prod_array = json_decode(file_get_contents($file_name_ozon), true);
+    $arr_prod_inostran_prodazhi = json_decode(file_get_contents($file_name_ozon_inostran_prodazhi), true);
+
 } else {
     die('Не нашли файл с данными');
 }
 
-echo "<pre>";
-print_r($need_SKU);
+
+// echo "<pre>";
+// print_r($arr_prod_inostran_prodazhi);
 // print_r($prod_array);
 // echo "<br>";
 
@@ -207,4 +209,21 @@ function make_posting_number($posting_temp_number)
         $pos4 = $posting_temp_number;
     }
     return $pos4;
+}
+
+/*****************************************************************************************************************
+ * Функция получения данных о продажах товаров в страны ЕАЭС 
+ *****************************************************************************************************************/
+
+function get_sell_postings_in_srtani_eaes($token, $client_id, $date_from, $date_to)
+{
+    $ozon_dop_url = "v1/finance/products/buyout";
+    $send_data = '
+            {
+            "date_from": "' . $date_from . '",
+            "date_to": "' . $date_to . '"
+            }';
+    $arr_sell_v_strani_EAES = send_injection_on_ozon($token, $client_id, $send_data, $ozon_dop_url);
+
+    return $arr_sell_v_strani_EAES;
 }
