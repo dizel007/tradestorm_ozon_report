@@ -96,7 +96,7 @@ echo <<<HTML
 <!-- <th>% от общей<br>суммы<br>продаж<br>(руб)</th> -->
     <th>доп.услуги<br>(руб)</th>
     <th>К начисле<br>нию<br>(руб)</th>
-    <!-- <th>Хор.цена<br>(руб)</th> -->
+    <th>Иностр<br>продажи(руб)</th>
     <th>Себест-сть<br>(руб)</th>
     <th>Прибыль<br>(руб)</th>
     
@@ -161,7 +161,12 @@ echo <<<HTML
     <!-- <td>(11)</td> -->
 
     <td class="numbers_th">(11)<br>\xE2\x80\x8B</td>
+    
     <td class="numbers_th">(12)=10+11<br>\xE2\x80\x8B</td>
+
+    <td class="numbers_th">(12a)<br>\xE2\x80\x8B</td>
+
+
     <!-- <td class="numbers_th">(14)<br>\xE2\x80\x8B</td> -->
     <td class="numbers_th">(13)<br>\xE2\x80\x8B</td>
 <!-- Прибыль -->    
@@ -175,6 +180,8 @@ HTML;
 
  
 echo "<tbody id=\"filterable-table-body\">";
+
+
 foreach ($arr_real_ozon_data as $sku_ozon=>$item_for_print) {
 
 /**************************************************************************************/
@@ -183,6 +190,27 @@ foreach ($arr_real_ozon_data as $sku_ozon=>$item_for_print) {
 if (!isset($item_for_print['mp_article'])) {
    $item_for_print['mp_article'] = '';
 }
+
+// echo "<pre>";
+// print_r($item_for_print);
+
+// готовим информацию для передачи GET запроса в поартикульную разбор
+     $original_data = "clt=".$secret_client_id.
+     "&sku=". $item_for_print['sku'].
+     "&file_name_ozon_small=$file_name_ozon_small".
+     "&sebest=".$item_for_print['min_price'].
+     "&acquiring=".$item_for_print['summa']['amount_ecvairing'].
+     "&acquiring_count=".$item_for_print['count']['direct'].
+     "&dop_uslugi=".$item_for_print['summa']['dop_uslugi'].
+     "&article=".$item_for_print['mp_article'];
+
+     $base64_encoded = base64_encode($original_data);
+     $url_encoded = urlencode($base64_encoded);
+
+//      echo "<pre>";
+//      print_r($params);
+
+// die();
 
 // echo "<tr>";
 echo "<tr data-article=\"" . htmlspecialchars($item_for_print['sku']) . "\" data-mp-article=\"" . htmlspecialchars($item_for_print['mp_article']) . "\">";
@@ -197,11 +225,17 @@ echo "<tr data-article=\"" . htmlspecialchars($item_for_print['sku']) . "\" data
 // $sku_for_instruction = 'SKU-'.$temp_per_test;
     // echo "<td>". $sku_for_instruction."<hr>".
 
-   echo "<td>". $item_for_print['sku']."<hr>".
+   echo "<td>". // ссылка по поартикульную таблицу расходов
+
+ "<a href=\"../ozon_report_po_article/index_ozon_razbor_article.php?data=".$url_encoded."\" target=\"_blank\">"
+   .$item_for_print['sku']
+   ."</a> <hr>".
 
 //  $Article_for_instruction = 'артикул-'.$temp_per_test;
 //    "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$Article_for_instruction."\" target=\"_blank\">".$Article_for_instruction."</a> </td>";
- "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$item_for_print['mp_article']."\" target=\"_blank\">".$item_for_print['mp_article']."</a> </td>";
+ "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$item_for_print['mp_article']."\" target=\"_blank\">"
+    .$item_for_print['mp_article'].
+   "</a> </td>";
 
 
 
@@ -238,13 +272,13 @@ print_three_strings_for_table_red($item_for_print['summa']['sale_commission'],
 /// *******************   логистка  **************************
 /**************************************************************************************/
 print_three_strings_for_table_red($item_for_print['summa']['logistika'],
-                              $item_for_print['one_procent']['logistika']."%", 
-                              $item_for_print['one_item']['logistika']);
+                                  $item_for_print['one_procent']['logistika']."%", 
+                                  $item_for_print['one_item']['logistika']);
 
 // ************************** Цена продажи *******************************************************************
 print_two_strings_in_table_two_parametrs($item_for_print['summa']['amount'],
-                                           $item_for_print['one_item']['amount'], 
-                                           $color_class = '');
+                                         $item_for_print['one_item']['amount'], 
+                                         $color_class = '');
 
   /// *******************  Сервисы  **************************
 print_three_strings_for_table_red($item_for_print['summa']['services'],
@@ -280,14 +314,12 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
                                             $color_class = '');
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-// Хорошая цена и разница от цена продажи после всех вычетов
+// Иностранные продажи
 /////////////////////////////////////////////////////////////////////////////////////////////
-//   $item_for_print['diff_main_price'] >=0? $color_class = 'green_color':$color_class = 'red_color';
-//   echo "<td>
-//         <p class=\"big_font $color_class\">". "&#x200b" ."</p>
-//         <p class = \"small_font\">" .  $item_for_print['main_price']." руб".  "</p>
-//         <p class = \"small_font $color_class\">" .  number_format($item_for_print['diff_main_price'],0 ,',','') ." руб". "</p>
-//         </td>";
+
+print_two_strings_in_table_two_parametrs($item_for_print['summa']['prodazh_v_eaes'],
+                                         $item_for_print['count']['prodazh_v_eaes'], 
+                                         $color_class = '');
 
 /************************************************************************************/
 // Себестоимость и разница от цена продажи после всех вычетов
@@ -329,7 +361,9 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego'],
         // echo "<td>".round($arr_summ['Процент распределения стоимости'],2)."</td>";
         print_summa_in_table($arr_summ, 'Сумма распределения доп.услуг', 'red_color');
         print_summa_in_table($arr_summ, 'Сумма без всего', $color_class = '');
-        // echo "<td>"."-"."</td>";
+        print_summa_in_table($arr_summ, 'Сумма за ино_товары', $color_class = '');
+
+        // echo "<td>".$arr_summ['Сумма за ино_товары']."</td>";
         print_summa_in_table($arr_summ, 'Сумма себестоимость', $color_class = '');
         $arr_summ['Сумма прибыль'] >=0? $color_class = 'green_color':$color_class = 'red_color'; 
         print_summa_in_table($arr_summ, 'Сумма прибыль', $color_class);

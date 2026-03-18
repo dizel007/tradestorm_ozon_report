@@ -23,6 +23,10 @@ parse_str($queryString, $params);
 // print_r($params);
 // находим ID клиента
 if (isset($params['clt']) AND ($params['clt'] !='')) {
+
+
+
+// Достаем токен и ИД клинета
     $secret_client_id = $params['clt'];
 
     $sth = $pdo->prepare("SELECT * from `tokens` WHERE id_clt_base64 =:id_clt_base64");
@@ -37,8 +41,19 @@ if (isset($params['clt']) AND ($params['clt'] !='')) {
     $token = $arr_tokens['ozon_token'];
     $secret_client_id = $arr_tokens['id_clt_base64'];
 
+
+        // Устанавливаем сесии
+    require_once '../session_config.php';
+    session_start();
+    // Регенерация ID сессии для защиты от фиксации
+    session_regenerate_id(true);
+        $_SESSION['id_client'] = $client_id;
+        $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];      // для дополнительной привязки
+        $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+        $_SESSION['last_activity'] = time();
      
 } else {
+    
  header('Location: ../');
 
     die('Не нашли файл с данными');
@@ -119,8 +134,9 @@ HTML;
 if ($priznak_date == 0)  {die ('');} 
 
 // формируем название папки и файла
-$file_name_ozon = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")".".json";
-$file_name_ozon_small = "_(".date('Y-m-d').")";
+$file_name_ozon = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")_main_data".".json";
+$file_name_ozon_inostran_prodazhi = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")_inostran_prodazhi".".json";
+$file_name_ozon_small = $client_id."_(".date('Y-m-d').")";
 
 
 // Непосредственный запрос данных с озона и сохранение данных в файл
@@ -134,6 +150,16 @@ if ($type_sort == '') {
 }
 //*********************************************************************************************************************** */
 
+
+// Тянем данные по товаром проданным в страны ЕАЭС
+$arr_data_sell_in_srtani_eaes = get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to );
+if (isset($arr_data_sell_in_srtani_eaes)) {
+           file_put_contents($file_name_ozon_inostran_prodazhi,json_encode($arr_data_sell_in_srtani_eaes, JSON_UNESCAPED_UNICODE));
+   }
+
+// echo "<pre>";
+// print_r($arr_data_sell_in_srtani_eaes);
+// die();
 // Берем из БД себестоимость и желаемую цену 
 require_once "get_sebestoimost.php";
 
@@ -198,4 +224,31 @@ for ($i=1; $i <=$page_count; $i ++) {
 }
 if (isset($prod_array)) {return  $prod_array;}
 else {return false;}
+}
+
+
+/*****************************************************************************************************************
+ * Функция получения данных о продажах товаров в страны ЕАЭС 
+ *****************************************************************************************************************/
+
+function get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to)
+{
+    $ozon_dop_url = "v1/finance/products/buyout";
+    $send_data = '
+            {
+            "date_from": "' . $date_from . '",
+            "date_to": "' . $date_to . '"
+            }';
+    $arr_sell_v_strani_EAES = send_injection_on_ozon($token, $client_id, $send_data, $ozon_dop_url);
+
+    foreach ($arr_sell_v_strani_EAES['products'] as $items) {
+        $new_arr_sell_v_strani_EAES[$items['sku']]['sku'] = $items['sku'];
+        $new_arr_sell_v_strani_EAES[$items['sku']]['offer_id'] = $items['offer_id'];
+        $new_arr_sell_v_strani_EAES[$items['sku']]['amount'] = @$new_arr_sell_v_strani_EAES[$items['sku']]['amount'] + $items['amount'];
+        $new_arr_sell_v_strani_EAES[$items['sku']]['quantity'] = @$new_arr_sell_v_strani_EAES[$items['sku']]['quantity'] + $items['quantity'];
+        $new_arr_sell_v_strani_EAES[$items['sku']]['seller_price_per_instance'] = @$new_arr_sell_v_strani_EAES[$items['sku']]['seller_price_per_instance'] + $items['seller_price_per_instance'];
+    }
+
+    unset ($arr_sell_v_strani_EAES);
+    return $new_arr_sell_v_strani_EAES;
 }

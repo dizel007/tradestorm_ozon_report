@@ -4,6 +4,7 @@
 // print_r($arr_returns );
 // die();
 
+$arr_test_spisok_returns_postnumbers = array();
 foreach ($arr_returns as $items) {
     $i++;
         $our_item = $items['items'];
@@ -15,12 +16,29 @@ foreach ($arr_returns as $items) {
                 $arr_article[$new_sku]['sku'] = $new_sku;
                 // $arr_article[$new_sku]['name'] = $item['name'];
                 $arr_article[$new_sku]['name'] = $items['items'][0]['name'];
+                
 
+//*********************************************************************************************************************************** */
+// т.к. логистика и сервисы разбиты на несколько массивово,  то создадим массив с номера отправлений, которые мы уже посчитали
+// и если там нет номера, то дабавим его и будем проверять его в дальнейшем
+//*********************************************************************************************************************************** */
+        $temp_posting_number = $items['posting']['posting_number'];
+            if (!in_array($temp_posting_number, $arr_test_spisok_returns_postnumbers)) 
+                {
+                      $arr_article[$new_sku]['count']['return'] = @$arr_article[$new_sku]['count']['return'] + 1;
+                      $arr_test_spisok_returns_postnumbers[] = $temp_posting_number;
+                } 
+//*********************************************************************************************************************************** */
+//*********************************************************************************************************************************** */
 
+               
+              
 // Разбиваем стоиомть возвратов на логистику и обработку ... может еще что то
 // Доставка и обработка возврата, отмены, невыкупа
                 if (($items['operation_type'] == 'OperationReturnGoodsFBSofRMS') || ($items['operation_type'] == 'OperationItemReturn')
                         || ($items['operation_type'] == 'OperationAgentStornoDeliveredToCustomer')) { 
+
+       
                    foreach ($items['services'] as $return_dop_obrabotka) {
                         $arr_article[$new_sku]['logistika']['return'][$return_dop_obrabotka['name']] = @$arr_article[$new_sku]['logistika']['return'][$return_dop_obrabotka['name']]
                          + $return_dop_obrabotka['price'];
@@ -41,7 +59,7 @@ foreach ($arr_returns as $items) {
         // Получение возврата, отмены, невыкупа от покупател
                 // количество товаров в заказе 
         
-                $arr_article[$new_sku]['count']['return'] = @ $arr_article[$new_sku]['count']['return'] + 1;
+                // $arr_article[$new_sku]['count']['return'] = @$arr_article[$new_sku]['count']['return'] + 1;
                 if ($items['posting']['delivery_schema'] == 'FBO') {
                         $arr_article[$new_sku]['count']['returnFBO'] = @$arr_article[$new_sku]['count']['returnFBO'] + 1;
                 } else if ($items['posting']['delivery_schema'] == 'FBS') {
@@ -71,8 +89,8 @@ foreach ($arr_returns as $items) {
 // if (isset($arr_nerazjbrannoe) )
 // {
 //         echo "<br>******************************************< ARRAY ALARM VOZVRATOV ******************************************<br>";
-//         echo "<pre>";
-//         print_R($arr_nerazjbrannoe);
+        // echo "<pre>";
+        // print_R($arr_test_spisok_returns_postnumbers);
 //         echo "</pre>";
 //         echo "<br>******************************************< END ARRAY ALARM VOZVRATOV ******************************************<br>";
 // } 

@@ -29,14 +29,14 @@ echo <<<HTML
 <th>Дата заказа</th>
 <th>Тип<br>отгрузки</th>
 <th>Цена в ЛК</th>
-<th>Цена продаже</th>
-<th>Вознаг озон</th>
+<th>Комиссия<br>озон</th>
+<th>Прям/обрат<br>логистика</th>
+<th>На р/с</th>
+<th>Эквайринг<br>Штрафы</th>
+<th>Доп.Услуги</th>
+<th>Итого на р/с<br>Себест-ть</th>
+<th>Итого<br>на р/с</th>
 
-<th class = "td_logistika" >Логистика</th>
-<th class = "td_logistika">Услуги<br>агентов</th>
-<th class = "td_logistika">Сервисы</th>
-
- <th>Артикул</th>
 
 
 </tr>
@@ -45,93 +45,137 @@ HTML;
 $pp = 0; // номер строки в тублице
 
 // echo "<pre>";
-foreach ($one_sku_in_reestr as $key => $one_string_data) {
+foreach ($arr_article as $key => $one_string_data) {
 
         echo "<tr>";
         $pp++;   
-   $dost_sum =0;
+
  // костыль окончен
     echo "<td>" . $pp . "</td>";
+    /// тип операции
     echo "<td>"; 
-        foreach ($one_string_data['type'] as $type_key=>$type) {
-                echo "$type_key<br>";
+
+        foreach ($one_string_data['type_operation'] as $type_key=>$type) {
+                echo "$type<br>";
         }
-//  
-        // if ($one_string_data['delivery_schema'] == 'FBO') {
-            $link_for_post_delivery_finans_info = 'https://seller.ozon.ru/app/finances/accruals?search='.$one_string_data['post_number_gruzomesto'].'&tab=ACCRUALS_DETAILS';
-        // } elseif ()
-            // $link_for_post_delivery_finans_info = 'https://seller.ozon.ru/app/finances/accruals?search='.$one_string_data['post_number_gruzomesto'].'&tab=ACCRUALS_DETAILS';
+
     echo "</td>";
-    // echo "<td>" . $one_string_data['name'] . "</td>";
-    echo "<td>" . $one_string_data['sku'] . "</td>";
-    echo "<td>" . $one_string_data['sku'] . "</td>";
+    echo "<td class=\"td_logistika\">" . $one_string_data['name'] . "</td>";
+    echo "<td>" .  $mp_article."<hr>" .$one_string_data['sku'] . "</td>";
+    
+// номер и дата заказа
+        $link_for_post_delivery_finans_info = 'https://seller.ozon.ru/app/finances/accruals?search='.$one_string_data['post_number_gruzomesto'].'&tab=ACCRUALS_DETAILS';
     echo "<td>"."<a href=\"$link_for_post_delivery_finans_info\" target=\"_blank\">".$one_string_data['post_number_gruzomesto'] . "</a><hr>". $one_string_data['order_date'] . "</td>";
-    echo "<td>" . $one_string_data['delivery_schema'] . "</td>";
+// схема доставки 
+    echo "<td>";
+    if ($one_string_data['delivery_schema'] == "FBS") {
+         echo "<a href=\"https://seller.ozon.ru/app/postings/fbs?tab=delivering&postingDetails=".$one_string_data['post_number_gruzomesto']."\" target=\"_blank\">".
+     $one_string_data['delivery_schema'] . "</a>";
+     } elseif ($one_string_data['delivery_schema'] == "FBO") {
+         echo "<a href=\"https://seller.ozon.ru/app/postings/fbo/".$one_string_data['post_number_gruzomesto']."\" target=\"_blank\">".$one_string_data['delivery_schema'] . "</a>";;
+     }
+    echo "</td>";
+// Цена в личном кабинете
     echo "<td>" . $one_string_data['accruals_for_sale'] . "</td>";
     $summa_accruals_for_sale = @$summa_accruals_for_sale + $one_string_data['accruals_for_sale'];
-    echo "<td>" . $one_string_data['amount'] . "</td>";
-    $summa_amount = @$summa_amount + $one_string_data['amount'];
+
+// Комиссия озон
     echo "<td  class= \"bad_desired_price\">" . $one_string_data['sale_commission']." (".$one_string_data['ozon_procent_commition']."%)" . "</td>";
      $summa_sale_commission = @$summa_sale_commission + $one_string_data['sale_commission'];
 
-// выводим логистику
-    echo "<td>";
-    if (isset($one_string_data['Услуги доставки'])){
-        foreach ($one_string_data['Услуги доставки'] as $type_dost=>$summa_dost) {
-            echo "$type_dost: $summa_dost<br>";
-            $dost_sum = @$dost_sum + $summa_dost;
-        }
+// Прямая логистика
+    echo "<td class= \"bad_desired_price\">";
+    echo $one_string_data['logistika_direct']." (". $one_string_data['procent_stoimosti_logistika_direct'] . "%)";
+    echo "<hr>";
+    echo $one_string_data['logistika_return'] ;
 
-        // процент стоимости доставки от цены кабинета
-        if ($one_string_data['one_procent_accruals_for_sale'] != 0) {
-            $procent_stoimosti_logistiki =  round( -$dost_sum / $one_string_data['one_procent_accruals_for_sale'] , 1);
-            } 
-            else {
-              $procent_stoimosti_logistiki = 0;  
-            }
-        echo "<hr><p class= \"bad_desired_price\" >".$dost_sum." (". $procent_stoimosti_logistiki . "%)"."</p>";
-$summa_logistika = @$summa_logistika + $dost_sum;
-    } else {
-        echo " ----  ";
-    }
-      echo "</td>";
-// выводим усулги агента
+    echo "</td>";
+
+// Цена на р/с
+    echo "<td>" . $one_string_data['amount'] . "</td>";
+    $summa_amount = @$summa_amount + $one_string_data['amount'];
+// Эквайринг Штрафы
+    echo "<td class= \"bad_desired_price\">";
+    echo $one_string_data['acquiring'];
+    echo "<hr>";
+    echo $one_string_data['penalty'];
+    echo "</td>";
+// Допр услугуи
+
+// Прямая логистика
+    echo "<td class= \"bad_desired_price\">";
+    echo $one_string_data['dop_uslugi'] ;
+    echo "</td>";
+
+
+
+
+    // Итого на р/с
+
     echo "<td>";
-    if (isset($one_string_data['Услуги агентов'])){
-        foreach ($one_string_data['Услуги агентов'] as $type_agent=>$summa_agent) {
-            echo "$type_agent: $summa_agent<br>";
-        }
-          echo "<hr><p class= \"bad_desired_price\" >".$summa_agent." (". "X" . "%)"."</p>";
-    $summa_all_agent = @$summa_all_agent + $summa_agent;
-    } else {
-        echo " ----  ";
-    }
-   
-      echo "</td>";
-// выводим сервисы
+    echo "<p class= \"\" >".$one_string_data['amount_na_rs'].
+    "<hr>" .$article_sebest."</p>";
+    echo "</td>";
+
+
+// Прибыль
+($one_string_data['pribil'] >0)?$amount_flag = 'good_desired_price':$amount_flag = 'bad_desired_price';
     echo "<td>";
-    if (isset($one_string_data['сервисы'])){
-        foreach ($one_string_data['сервисы'] as $type_service=>$summa_service) {
-            echo "$type_service: $summa_service<br>";
-        }
-  echo "<hr><p class= \"bad_desired_price\" >".$summa_service." (". "Я" . "%)"."</p>";
- $summa_all_service = @$summa_all_service + $summa_service;  
-    } else {
-        echo " ----  ";
-    }
- 
-      echo "</td>";
+    echo "<p class= \"$amount_flag\" >".$one_string_data['pribil']."</p>";
+    echo "</td>";
+
 
 echo "</tr>";
 
 }
+
+
+echo <<<HTML
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+HTML;
+
+
+// цена в ЛК кабинете
+echo "<td>".$arr_sum_article_data['accruals_for_sale']."</td>";
+// комиссия озоон
+echo "<td class= \"bad_desired_price\">".$arr_sum_article_data['sale_commission']."</td>";
+
+//логистика прям обр
+$sum_logisk_direct_return = round($arr_sum_article_data['logistika_direct'] + $arr_sum_article_data['logistika_return'],0);
+echo "<td class= \"bad_desired_price\">".$arr_sum_article_data['logistika_direct']." | ".$arr_sum_article_data['logistika_return'].
+     "<hr>". $sum_logisk_direct_return."</td>";
+// amount
+echo "<td>".$arr_sum_article_data['amount']."</td>";
+// эквайринг  + штрафы
+$sum_acquiring_penalty = round($arr_sum_article_data['acquiring'] + $arr_sum_article_data['penalty'],0);
+echo "<td class= \"bad_desired_price\">".$arr_sum_article_data['acquiring']." | ".$arr_sum_article_data['penalty'].
+"<hr>". $sum_acquiring_penalty."</td>";
+// допрасходы
+echo "<td>".$arr_sum_article_data['dop_uslugi']."</td>";
+
+// на р/с за вычетом всего
+echo "<td>".$arr_sum_article_data['amount_na_rs']."</td>";
+
+
+echo "<td>".$arr_sum_article_data['pribil']."</td>";
+
+// echo "<td>".$arr_sum_article_data['sale_commission']."</td>";
+// echo "<td>".$arr_sum_article_data['sale_commission']."</td>";
+
+// $arr_sum_article_data['acquiring'] = @$arr_sum_article_data['acquiring'] +  round($one_tovar['acquiring'],0);
+// $arr_sum_article_data['penalty'] = @$arr_sum_article_data['penalty'] +  round($one_tovar['penalty'],0);
+
+
+echo "</tr>";
+
+
 echo "</table>";
 
 
-echo $summa_accruals_for_sale."<br>";
-echo $summa_amount."<br>";
-echo $summa_sale_commission."<br>";
-echo "Логистика=".$summa_logistika."<br>";
-echo "Агента=".$summa_all_agent."<br>";
-$gg = $summa_logistika + $summa_all_agent;
-echo "ИТОГО=".$gg."<br>";
+

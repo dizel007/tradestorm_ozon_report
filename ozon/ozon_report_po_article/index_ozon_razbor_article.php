@@ -1,30 +1,68 @@
 <?php
+
 /**********************************************************************************************************
  *     ***************    Получаем массив всех транзакций
-*********************************************************************************************************/
+ *********************************************************************************************************/
 
-// require_once "../connect_db.php";
+require_once("../../main_info.php");
 require_once "../mp_functions/ozon_api_functions.php";
-// require_once "../pdo_functions/pdo_functions.php";
-require_once "../_libs_ozon/function_ozon_reports.php"; // массив с себестоимостью товаров
-require_once "../_libs_ozon/sku_fbo_na_fbs.php"; // массив с себестоимостью товаров
 // формируем признак принудительного обновления данных 
+
+try {
+    $pdo = new PDO('mysql:host=' . $host . ';dbname=' . $db . ';charset=utf8', $user, $password);
+    $pdo->exec('SET NAMES utf8');
+} catch (PDOException $e) {
+    print "Has errors: " . $e->getMessage();
+    die();
+}
+
+
 
 $need_SKU = '';
 if (isset($_GET['data'])) {
     $decoded_data = base64_decode(urldecode($_GET['data']));
-     parse_str($decoded_data, $params);
-     $client_id = $params['clt'];
-     $need_SKU = $params['article'];
-     $file_name_ozon_small = $params['file_name_ozon_small'];
-     $file_name_ozon = "../!cache" ."/".$client_id."/".$client_id. $file_name_ozon_small.".json";
-     $token = file_get_contents('../!cache/'.$client_id."/token.txt");
-     $prod_array = json_decode(file_get_contents($file_name_ozon), true);
+    parse_str($decoded_data, $params);
+// echo "<pre>";
+//     print_r($params);
+//     die();
+    // Достаем токен и ИД клинета
+    $mp_article = $params['article'];
+    $article_sebest = $params['sebest'];
+    $acquiring_sum=$params['acquiring'];
+    $acquiring_count=$params['acquiring_count'];
+
+    $dop_uslugi=$params['dop_uslugi'];
+
+   
+
+
+    $secret_client_id = $params['clt'];
+
+    $sth = $pdo->prepare("SELECT * from `tokens` WHERE id_clt_base64 =:id_clt_base64");
+    $sth->execute(array("id_clt_base64" => $secret_client_id));
+    $arr_tokens = $sth->fetch(PDO::FETCH_ASSOC);
+
+    // если не нашли клиетна в БД то уходим на начало
+    if (!isset($arr_tokens['id_client'])) {
+        header('Location: ../');
+    }
+    $client_id = $arr_tokens['id_client'];
+    // $token = $arr_tokens['ozon_token'];
+    $secret_client_id = $arr_tokens['id_clt_base64'];
+
+    $need_SKU = $params['sku'];
+    $file_name_ozon_small = $params['file_name_ozon_small'];
+    $file_name_ozon = "../!cache" . "/" . $client_id . "/" . $file_name_ozon_small . ".json";
+
+    $prod_array = json_decode(file_get_contents($file_name_ozon), true);
 } else {
     die('Не нашли файл с данными');
 }
 
-
+echo "<pre>";
+print_r($need_SKU);
+// print_r($prod_array);
+// echo "<br>";
 
 echo <<<HTML
 <head>
@@ -39,58 +77,71 @@ HTML;
  *  ***** ДАННЫЕ ПОЛУЧЕНЫ ОТСЮДА НАЧИНАЕМ ИХ ОБРАБАТЫВАТЬ ******************************
  *******************************************************************************************/
 
-// echo "<pre>";
-// print_r($prod_array);
-// die();
-// Формируем скозвной массив из элеметов для разбора (убираем вложенность)
+
 foreach ($prod_array as $arr_temp) {
-    foreach ($arr_temp as $add) 
-    {$array_MINI[] = $add;}
- }
+    // Формируем скозвной массив из элеметов для разбора (убираем вложенность)
+    foreach ($arr_temp as $add) {
+        if (isset($add['items'])) {
+            foreach ($add['items'] as $items) {
+                /// оставляем только те массивы где есть наше СКУ
+                if ($need_SKU == $items['sku']) {
+                    $array_MINI[] = $add;
+                }
+            }
+        }
+        // Формируем массив где нет товаров, но есть номера заказов -- типа штрафы к заказу
+     if ((count($add['items']) == 0) AND (isset($add['posting']['posting_number'])) AND (strpos($add['posting']['posting_number'], '-')))
+       {
+            $arr_penalty_posting_numbers[] = $add;
+       }
+    }
+}
+
 unset($prod_array);
+unset($items);
+
+
+
+// echo "<pre>";
+// print_r($arr_penalty_posting_numbers);
+// die();
+
 
 // НАчинаем перебирать перечень элементов по типу 
 foreach ($array_MINI as $item) {
-    
+
     // если в номере заказа нет тире , то переносим этот массив в массив без заказа
     // создаем массив затрат для нет номера заказа
-    if (!strpos( $item['posting']['posting_number'], '-')) {
-         $array_without_posting_number[$item['type']][] = $item; // 
-        
+    if (!strpos($item['posting']['posting_number'], '-')) {
+        $array_without_posting_number[$item['type']][] = $item; // 
+
     } else {
-    // создаем массив, где есть номер заказа
-
-
-    // if      (($item['type']) == 'orders') {require "parts_article/orders_article.php";}
-    // elseif  (($item['type']) == 'returns') {require "parts_article/returns_article.php";}
-    // elseif  (($item['type']) == 'other')    {require "parts_article/other_article.php";}
-    // elseif  (($item['type']) == 'services') {require "parts_article/servici_article.php";}
-    // elseif  (($item['type']) == 'compensation') {require "parts_article/uderzhania_article.php";}
-
-
-    $arr_type_items_WITH_POSTING_NUMBER[$item['type']][] = $item;
+        // создаем массив, где есть номер заказа
+        $arr_type_items_WITH_POSTING_NUMBER[$item['type']][] = $item;
     }
 }
 
 
 // echo "<pre>";
+// print_r($array_without_posting_number);
 
-// print_r($arr_type_items_WITH_POSTING_NUMBER);
-
-echo "<br>ВСЕГО = ". count($array_MINI) ."<br>";
+echo "<br>ВСЕГО = " . count($array_MINI) . "<br>";
 // Выводм количество элементво каждого массивы
-foreach ($array_without_posting_number as $key=>$temp_3) {
-     echo "Количество элементов по тратам (БЕЗ НОМЕРА ЗАКАЗА) $key = ".count($temp_3)."<br>";
-   } 
+if (isset($array_without_posting_number)) {
+    foreach ($array_without_posting_number as $key => $temp_3) {
+        echo "Количество элементов по тратам (БЕЗ НОМЕРА ЗАКАЗА) $key = " . count($temp_3) . "<br>";
+    }
+}
 // Выводм количество элементво каждого массивы
-foreach ($arr_type_items_WITH_POSTING_NUMBER as $key=>$temp_3) {
-     echo "Количество элементов по тратам (С НОМЕРОМ ЗАКАЗА) $key = ".count($temp_3)."<br>";
-   } 
+foreach ($arr_type_items_WITH_POSTING_NUMBER as $key => $temp_3) {
+    echo "Количество элементов по тратам (С НОМЕРОМ ЗАКАЗА) $key = " . count($temp_3) . "<br>";
+}
 
-// print_r($arr_type_items_WITH_POSTING_NUMBER);
+// print_r($array_without_posting_number);
 // print_r($arr_type_items_WITH_POSTING_NUMBER);
 // die();
-   echo "К****************************************** ZZZZZZZZZZZZZZZZZZZZZZZZZZZ  <br>";
+
+echo "****************************************** ZZZZZZZZZZZZZZZZZZZZZZZZZZZ  <br>";
 require_once "razbor_dannih_article.php";
 
 die();
@@ -142,18 +193,18 @@ function get_min_price_ozon($otchet_article, $arr_all_nomenklatura, $type_price)
 }
 
 
-function make_posting_number ($posting_temp_number) {
-// Функуия вовзращает номер Заказа (удаляю из него номер отправления)
+function make_posting_number($posting_temp_number)
+{
+    // Функуия вовзращает номер Заказа (удаляю из него номер отправления)
     if ($posting_temp_number == '') {
         return false;
     }
-$pos1 = strpos($posting_temp_number, '-');
-$pos2 = strpos($posting_temp_number, '-', $pos1 + strlen('-'));
-if ($pos2 > 0) {
-$pos4  = mb_substr($posting_temp_number, 0, $pos2);
-} else {
-    $pos4 = $posting_temp_number;
-}
-return $pos4;
-
+    $pos1 = strpos($posting_temp_number, '-');
+    $pos2 = strpos($posting_temp_number, '-', $pos1 + strlen('-'));
+    if ($pos2 > 0) {
+        $pos4  = mb_substr($posting_temp_number, 0, $pos2);
+    } else {
+        $pos4 = $posting_temp_number;
+    }
+    return $pos4;
 }

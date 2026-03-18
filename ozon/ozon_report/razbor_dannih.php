@@ -6,6 +6,8 @@ require_once "../mp_functions/report_excel_file.php";
 // $ozon_sebest = get_catalog_tovarov_v_mp($ozon_shop, $pdo, 'all');
 // echo "<pre>";
 // print_r($prod_array);
+// die();
+
 // делаем один последовательный массив в операциями
 foreach ($prod_array as $items) {
     foreach ($items as $item) {
@@ -92,7 +94,8 @@ foreach  ($arr_article as &$one_article_data) {
         $one_article_data['accruals_for_sale']['summa'] =  @$one_article_data['accruals_for_sale']['direct'] + @$one_article_data['accruals_for_sale']['return'];
     }
 // находим суммы за 1 штуку
-    if (isset($one_article_data['count']['summa']) AND ($one_article_data['count']['summa'] !=0)) {
+
+    if (isset($one_article_data['count']['summa']) AND ($one_article_data['count']['summa'] >0)) {
         $one_article_data['amount']['one_item'] = round($one_article_data['amount']['summa']/$one_article_data['count']['summa'] , 2);
         $one_article_data['sale_commission']['one_item'] = round($one_article_data['sale_commission']['summa']/$one_article_data['count']['summa'] , 2);
         $one_article_data['accruals_for_sale']['one_item'] = round($one_article_data['accruals_for_sale']['summa']/$one_article_data['count']['summa'] , 2);
@@ -109,7 +112,8 @@ foreach  ($arr_article as &$one_article_data) {
      }
 
 // *********************** Вычитаем все, где есть артикул **********************
-      $one_article_data['summa_bez_vsego_gde_est_artikul'] = @$one_article_data['accruals_for_sale']['summa'] +
+      $one_article_data['summa_bez_vsego_gde_est_artikul'] = 
+                                    @$one_article_data['accruals_for_sale']['summa'] +
                                     @$one_article_data['sale_commission']['summa'] +   
                                     @$one_article_data['logistika']['summa'] +  
                                     @$one_article_data['amount_ecvairing'] +  
@@ -146,9 +150,7 @@ $arr_sum_all_data['sum_services'] = @$arr_sum_all_data['sum_services'] + @$artic
 
 
 // print_r($arr_sum_all_data);
-
 // echo "Кол-во обработанных Строк : $i<br>";
-
 // Если вдруг появились новые данные, которые не учитываются в разборе
 if (isset($arr_nerazjbrannoe)) {
     $temp = count($arr_nerazjbrannoe);
@@ -176,7 +178,7 @@ $dop_uslugi = 0;
  
 foreach ($arr_article as $key => $item) {
     $one_proc_ot_vsey_summi = round($arr_sum_all_data['sum_accruals_for_sale'] / 100, 4);
-if (isset($item['count']['summa'])) {
+if (isset($item['count']['summa']) AND (($item['count']['summa']) >0)) {
     $arr_article[$key]['proc_item_ot_vsey_summi'] = round($arr_article[$key]['accruals_for_sale']['summa'] / $one_proc_ot_vsey_summi, 4);
 } else {
      $arr_article[$key]['proc_item_ot_vsey_summi'] = 0;

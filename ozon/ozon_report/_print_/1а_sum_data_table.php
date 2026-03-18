@@ -4,6 +4,10 @@
 
 
 $copy_arr_for_sum_table = $arr_for_sum_table;
+
+// echo "<pre>";
+// print_r($copy_arr_for_sum_table);
+// die();
 // Подбиваем суммы продажи и возвратов
 if (($copy_arr_for_sum_table['Продажи']['-'] != 0 )) {
     $arr_for_tink_data['Продажи'] = $copy_arr_for_sum_table['Продажи']['-'];
@@ -37,10 +41,8 @@ if ($copy_arr_for_sum_table['Вознаграждение Ozon']['-']!= 0 ) {
     } else {
     $arr_for_tink_data['Комиссия'] = 0 ;
     }
-// Итого Основных затрат
-$arr_for_tink_data['Основные расходы'] = $arr_for_tink_data['Логистика'] + $arr_for_tink_data['Комиссия'];
-// Процент основных расходов от продаж 
-$procent_osnov_prodaz = round($arr_for_tink_data['Основные расходы']/$one_sell_procent,1);
+
+
 
 // Продвижение и реклама
 if (isset($copy_arr_for_sum_table['Продвижение и реклама'])) {
@@ -53,14 +55,24 @@ foreach ($copy_arr_for_sum_table['Продвижение и реклама'] as 
     }
 
 // Услуги агентов
+// убираем эквайринг в услуги агентов , остальное в логистику убирем
+if (isset($copy_arr_for_sum_table['Услуги агентов']['Эквайринг'])) {
+   $arr_for_tink_data['Услуги агентов'] = $copy_arr_for_sum_table['Услуги агентов']['Эквайринг'];   
+   unset ($copy_arr_for_sum_table['Услуги агентов']['Эквайринг']) ;
+}
+
 if (isset($copy_arr_for_sum_table['Услуги агентов'])) {
 foreach ($copy_arr_for_sum_table['Услуги агентов'] as $agent_cost ){
- $arr_for_tink_data['Услуги агентов'] = @$arr_for_tink_data['Услуги агентов'] + $agent_cost;  
-    unset ($copy_arr_for_sum_table['Услуги агентов']); 
+//  $arr_for_tink_data['Услуги агентов'] = @$arr_for_tink_data['Услуги агентов'] + $agent_cost;
+  $arr_for_tink_data['Логистика'] = @$arr_for_tink_data['Логистика'] + $agent_cost;  
+  
+
 }
-} else {
-    $arr_for_tink_data['Услуги агентов'] = 0;
-    }
+    unset ($copy_arr_for_sum_table['Услуги агентов']); 
+} 
+// else {
+//     $arr_for_tink_data['Услуги агентов'] = 0;
+//     }
 
 
 
@@ -76,10 +88,13 @@ foreach ($copy_arr_for_sum_table as $key=>$prochie_uslugi){
 unset ($copy_arr_for_sum_table[$key]);
 } 
 
-
+// Итого Основных затрат
+$arr_for_tink_data['Основные расходы'] = $arr_for_tink_data['Логистика'] + $arr_for_tink_data['Комиссия'];
+// Процент основных расходов от продаж 
+$procent_osnov_prodaz = round($arr_for_tink_data['Основные расходы']/$one_sell_procent,1);
 
 // Итого Другие расходы
-$arr_for_tink_data['Другие расходы'] = $arr_for_tink_data['Прочее']+ $arr_for_tink_data['Услуги агентов']+$arr_for_tink_data['Реклама'];
+$arr_for_tink_data['Другие расходы'] = $arr_for_tink_data['Прочее'] + $arr_for_tink_data['Реклама'] + $arr_for_tink_data['Услуги агентов'];
 // Процент других услуг от стоимости продаж
 $procent_drugih_prodaz = round($arr_for_tink_data['Другие расходы']/$one_sell_procent,1);
 
@@ -96,6 +111,7 @@ unset($item);
 
 
 // Ищем количество возврата товароы
+if (isset($arr_returns)) {
 foreach ($arr_returns as $returns_item) {
     if ($returns_item['operation_type'] == 'ClientReturnAgentOperation') {
          foreach($returns_item['items'] as $item) {
@@ -104,7 +120,7 @@ foreach ($arr_returns as $returns_item) {
      }
 }
 unset($item);
-
+}
 // вычитаем возвраты из заказов 
 if (isset($arr_returns_item)) {
     foreach ($arr_orders_item as $order_key =>&$orders_item) {
@@ -115,16 +131,32 @@ if (isset($arr_returns_item)) {
         }
     }
 }
+
+
 // находим себестоимость всех закзаов
-foreach ($arr_orders_item as $sku_itemcs => $count_itemcs ) {
-    foreach ($arr_article_products as $sebestoimost_data) {
-        if($sku_itemcs == $sebestoimost_data['sku']) {
-            $arr_sebest[$sku_itemcs] = @$arr_sebest[$sku_itemcs] + $sebestoimost_data['sebestoimost']*$count_itemcs;
+foreach ($arr_article as $sku_itemcs => $itmess ) {
+   foreach ($arr_article_products as $sebestoimost_data) {
+      if($sku_itemcs == $sebestoimost_data['sku']) 
+        {
+            if (isset($itmess['count']['summa'])) {
+           $arr_sebest[$sku_itemcs] = @$arr_sebest[$sku_itemcs] + $sebestoimost_data['sebestoimost']*$itmess['count']['summa'];
+            
+            } else {
+            // $arr_sebest[$sku_itemcs] = @$arr_sebest[$sku_itemcs] + $sebestoimost_data['sebestoimost'] ;
+            $arr_sebest[$sku_itemcs] = 0 ;
+
+            }
         }
     }
 }
 
+
+
+
 $summa_sebes = - array_sum($arr_sebest);
+// echo "<pre>";
+// print_r( $arr_article);
+// die();
 // Процент себестоимости
 $procent_sebestoimosti = round($summa_sebes/$one_sell_procent,1);
 
@@ -172,12 +204,12 @@ $main_expenses = [
 ];
 
 $other_expenses = [
-    'total'   => $arr_for_tink_data['Другие расходы'] ,
+    'total'   => $arr_for_tink_data['Другие расходы'],
     'percent' => $procent_drugih_prodaz,
     'items'   => [
         'Услуги агентов'  => $arr_for_tink_data['Услуги агентов'],
         'Реклама' =>  $arr_for_tink_data['Реклама'],
-        'Остальные' => $arr_for_tink_data['Прочее']
+        'Прочее' => $arr_for_tink_data['Прочее']
     ]
 ];
 
