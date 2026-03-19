@@ -116,7 +116,7 @@ if (isset($print_item['accruals_for_sale']['summa'])) {
 // $arr_real_ozon_data[$sku_ozon]['summa']['amount']  =  get_data_sell_tovar(@$print_item['amount']['summa']);
 $arr_real_ozon_data[$sku_ozon]['summa']['amount']  =   $arr_real_ozon_data[$sku_ozon]['summa']['accruals_for_sale'] +
                                                        $arr_real_ozon_data[$sku_ozon]['summa']['sale_commission'] + 
-                                                        $arr_real_ozon_data[$sku_ozon]['summa']['logistika'];
+                                                       $arr_real_ozon_data[$sku_ozon]['summa']['logistika'];
 
 $arr_summ['Сумма продаж'] = @$arr_summ['Сумма продаж'] + $arr_real_ozon_data[$sku_ozon]['summa']['amount'];
 
@@ -124,7 +124,7 @@ $arr_summ['Сумма продаж'] = @$arr_summ['Сумма продаж'] + $
 /// *******************  Сервисы  **************************
 /**************************************************************************************/
  $arr_real_ozon_data[$sku_ozon]['summa']['services']  =  get_data_sell_tovar(@$print_item['services']['summa']);
- $arr_summ['Сервисы'] = $arr_summ['Сервисы'] +   $arr_real_ozon_data[$sku_ozon]['summa']['services'];
+ $arr_summ['Сервисы'] = $arr_summ['Сервисы'] +  $arr_real_ozon_data[$sku_ozon]['summa']['services'];
 
 /**************************************************************************************/
 /// ******************* Эквайринг  **************************
@@ -146,8 +146,10 @@ if (isset($print_item['proc_item_ot_vsey_summi'])) {
 $arr_summ['Процент распределения стоимости'] = $arr_summ['Процент распределения стоимости'] +  $arr_real_ozon_data[$sku_ozon]['proc_item_ot_vsey_summi'];
 
 /**************************************************************************************/
-// ****************Дополнительные услуги   
+// **************** Дополнительные услуги   
 /**************************************************************************************/
+
+
 $arr_real_ozon_data[$sku_ozon]['summa']['dop_uslugi']  =  get_data_sell_tovar(@$print_item['dop_uslugi']);
 $arr_summ['Сумма распределения доп.услуг'] = $arr_summ['Сумма распределения доп.услуг'] + $arr_real_ozon_data[$sku_ozon]['summa']['dop_uslugi'];
 
@@ -155,7 +157,12 @@ $arr_summ['Сумма распределения доп.услуг'] = $arr_summ
 /**************************************************************************************/
 // Цена за вычетом всех расходов 
 /**************************************************************************************/
-$arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego']  =  get_data_sell_tovar(@$print_item['summa_bez_vsego']);
+if (isset($print_item['summa_bez_vsego'])) {
+    $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego']  =  $print_item['summa_bez_vsego'];
+} else {
+    $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego']  =  0;
+}
+
 $arr_summ['Сумма без всего'] = @$arr_summ['Сумма без всего'] + $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego'];
 
 
@@ -165,14 +172,6 @@ $arr_summ['Сумма без всего'] = @$arr_summ['Сумма без все
 $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_s_ino_tovarami']  =  $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego'] +
                                                                         $arr_real_ozon_data[$sku_ozon]['summa']['prodazh_v_eaes']                  ;
 $arr_summ['Сумма без всего с иностр.товарами'] =  @$arr_summ['Сумма без всего с иностр.товарами'] + $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_s_ino_tovarami'];
-
-
-
-/**************************************************************************************/
-// ***************  Данные по себестоимости
-/**************************************************************************************/
-// $arr_real_ozon_data[$sku_ozon]['min_price']    =  get_data_sell_tovar(@$arr_sebestoimost[$sku_ozon]['min_price']);
-// $arr_real_ozon_data[$sku_ozon]['main_price']   =  get_data_sell_tovar(@$arr_sebestoimost[$sku_ozon]['main_price']);
 
 
 
@@ -239,15 +238,16 @@ if ($arr_real_ozon_data[$sku_ozon]['one_procent_from_accruals_for_sale'] !=0) {
   }
 
 
+/**************************************************************************************/
+// ***************  Данные по себестоимости
+/**************************************************************************************/
+$arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost'] = $arr_real_ozon_data[$sku_ozon]['min_price'] * $arr_real_ozon_data[$sku_ozon]['count']['direct']; 
+$arr_summ['Сумма себестоимость'] = @$arr_summ['Сумма себестоимость'] + $arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost'] ;
 
 /**************************************************************************************/
 // чистая прибыль ///
 /**************************************************************************************/
-
-$arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost'] = $arr_real_ozon_data[$sku_ozon]['min_price'] * $arr_real_ozon_data[$sku_ozon]['count']['summa']; 
 $arr_real_ozon_data[$sku_ozon]['summa']['pribil'] = $arr_real_ozon_data[$sku_ozon]['summa']['bez_vsego_s_ino_tovarami'] - $arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost']; 
-
-$arr_summ['Сумма себестоимость'] = @$arr_summ['Сумма себестоимость'] + $arr_real_ozon_data[$sku_ozon]['summa']['sebestoimost'] ;
 $arr_summ['Сумма прибыль'] = @$arr_summ['Сумма прибыль'] + $arr_real_ozon_data[$sku_ozon]['summa']['pribil'];
 
                            

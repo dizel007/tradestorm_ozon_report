@@ -8,9 +8,8 @@
 
 // }
 
-// echo "<pre>";
-// print_r($one_sku_in_reestr);
-
+// print_r($arr_article);
+// die();
 ///////////// выше удлаить ///////////////////
 
 echo "<link rel=\"stylesheet\" href=\"css/main_ozon_reports.css\">";
@@ -32,8 +31,8 @@ echo <<<HTML
 <th>Комиссия<br>озон</th>
 <th>Прям/обрат<br>логистика</th>
 <th>На р/с</th>
-<th>Эквайринг<br>Штрафы</th>
-<th>Доп.Услуги</th>
+<th>Эквайринг<br>Сервисы</th>
+<th>Доп.Услуги<br>Штрафы</th>
 <th>Итого на р/с<br>Себест-ть</th>
 <th>Итого<br>на р/с</th>
 
@@ -73,9 +72,10 @@ foreach ($arr_article as $key => $one_string_data) {
      } elseif ($one_string_data['delivery_schema'] == "FBO") {
          echo "<a href=\"https://seller.ozon.ru/app/postings/fbo/".$one_string_data['post_number_gruzomesto']."\" target=\"_blank\">".$one_string_data['delivery_schema'] . "</a>";;
      }
-          if (isset($one_string_data['ino'])) {
-            echo " (ino)";
-        }
+        
+     if (isset($one_string_data['ino'])) {echo " (ino)";} // цепляем метку иностранного товара
+     if (isset($one_string_data['proc_rekl'])) {echo " (рекл)"; } // цепляем метку иностранного товара
+
     echo "</td>";
 // Цена в личном кабинете
     echo "<td>" . $one_string_data['accruals_for_sale'] . "</td>";
@@ -103,10 +103,10 @@ foreach ($arr_article as $key => $one_string_data) {
     echo $one_string_data['penalty'];
     echo "</td>";
 // Допр услугуи
-
-// Прямая логистика
     echo "<td class= \"bad_desired_price\">";
     echo $one_string_data['dop_uslugi'] ;
+    echo "<hr>";
+    echo $one_string_data['services_summa'] ;
     echo "</td>";
 
 
@@ -154,12 +154,15 @@ echo "<td class= \"bad_desired_price\">".$arr_sum_article_data['logistika_direct
      "<hr>". $sum_logisk_direct_return."</td>";
 // amount
 echo "<td>".$arr_sum_article_data['amount']."</td>";
-// эквайринг  + штрафы
-$sum_acquiring_penalty = round($arr_sum_article_data['acquiring'] + $arr_sum_article_data['penalty'],0);
-echo "<td class= \"bad_desired_price\">".$arr_sum_article_data['acquiring']." | ".$arr_sum_article_data['penalty'].
-"<hr>". $sum_acquiring_penalty."</td>";
+// эквайринг  + сервисы
+$sum_acquiring_services_summa = round($arr_sum_article_data['acquiring'] + $arr_sum_article_data['services_summa'],0);
+echo "<td class= \"bad_desired_price\">".$arr_sum_article_data['acquiring']." | ".$arr_sum_article_data['services_summa'].
+"<hr>". $sum_acquiring_services_summa."</td>";
 // допрасходы
-echo "<td>".$arr_sum_article_data['dop_uslugi']."</td>";
+
+$sum_dopi_penalty = round($arr_sum_article_data['dop_uslugi'],0);
+echo "<td class= \"bad_desired_price\">".$arr_sum_article_data['dop_uslugi']." | ".$arr_sum_article_data['penalty'].
+"<hr>". $sum_dopi_penalty."</td>";
 
 // на р/с за вычетом всего
 echo "<td>".$arr_sum_article_data['amount_na_rs']."</td>";

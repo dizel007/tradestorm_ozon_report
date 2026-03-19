@@ -153,8 +153,9 @@ if ($type_sort == '') {
 
 // Тянем данные по товаром проданным в страны ЕАЭС
 $arr_data_sell_in_srtani_eaes_temp = get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to, $file_name_ozon_inostran_prodazhi);
+if (isset($arr_data_sell_in_srtani_eaes_temp['products'])) {
 $arr_data_sell_in_srtani_eaes = $arr_data_sell_in_srtani_eaes_temp['products'];
-
+}
 
 
 $summa_prodannogo_v_strani_EAES = $arr_data_sell_in_srtani_eaes_temp['summa_prodannogo'];

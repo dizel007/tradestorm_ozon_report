@@ -28,6 +28,10 @@ if (isset($_GET['data'])) {
     // Достаем токен и ИД клинета
     $mp_article = $params['article'];
     $article_sebest = $params['sebest'];
+    
+    define("ARTICLE_SEBESTOIMOST", $params['sebest']);
+
+
     $acquiring_sum = $params['acquiring'];
     $acquiring_count = $params['acquiring_count'];
     $dop_uslugi = $params['dop_uslugi'];

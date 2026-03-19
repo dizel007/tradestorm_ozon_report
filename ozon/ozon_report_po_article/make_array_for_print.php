@@ -29,11 +29,25 @@ foreach ($arr_article as $key=>&$one_tovar) {
 
 $one_tovar['ino_prodazha'] = 0;
 foreach ($arr_prod_inostran_prodazhi['products'] as $ino_sells_data) {
+    
     if ($ino_sells_data['posting_number'] == $one_tovar['posting_number']) {
         $one_tovar['ino'] = 'ino';
         $one_tovar['accruals_for_sale'] = $ino_sells_data['amount'];
     }
 }
+
+/******************************************************************************** */ 
+// Цепляем стоимость сервисов / ;от рекламных продаж (его в OTHER находим)
+/********************************************************************************* */ 
+// print_r($one_tovar);
+$one_tovar['services_summa'] = 0;
+if (isset($one_tovar['services']))
+foreach ($one_tovar['services'] as $serv_price) {
+//     echo "<br>iiiiiiiiiiiiiiiiiiiiiiiiiii ;";
+// print_r($temp_6666);
+
+   $one_tovar['services_summa'] = $one_tovar['services_summa'] + $serv_price;
+ }
 
 // если есть проданные товары 
 //     
@@ -130,14 +144,18 @@ foreach ($arr_penalty_posting_numbers as $penalty_data) {
 
 
 // считаем итого на р/с
-$one_tovar['amount_na_rs'] = $one_tovar['amount'] +  $one_tovar['acquiring'] + $one_tovar['penalty'];
+$one_tovar['amount_na_rs'] = $one_tovar['amount'] +  
+                             $one_tovar['acquiring'] + 
+                            //  $one_tovar['penalty'] +
+                             $one_tovar['dop_uslugi'] + 
+                             $one_tovar['services_summa'] ;
 
 // Прибыль с заказа 
  /// если есть обратная логистика, то себестоиомсть не вычитаем
     if ( $one_tovar['logistika_return'] != 0 ) {
         $one_tovar['pribil'] = $one_tovar['amount_na_rs'];
     } else {
-        $one_tovar['pribil'] = $one_tovar['amount_na_rs'] - $article_sebest;
+        $one_tovar['pribil'] = $one_tovar['amount_na_rs'] - ARTICLE_SEBESTOIMOST;
     }
 /********************************************************************************************
 Формируем массив с суммами
@@ -149,6 +167,7 @@ $arr_sum_article_data['logistika_return'] = @$arr_sum_article_data['logistika_re
 $arr_sum_article_data['amount'] = @$arr_sum_article_data['amount'] +  $one_tovar['amount'];
 $arr_sum_article_data['acquiring'] = @$arr_sum_article_data['acquiring'] +  $one_tovar['acquiring'];
 $arr_sum_article_data['dop_uslugi'] = @$arr_sum_article_data['dop_uslugi'] +  $one_tovar['dop_uslugi'];
+$arr_sum_article_data['services_summa'] = @$arr_sum_article_data['services_summa'] +  $one_tovar['services_summa'];
 $arr_sum_article_data['penalty'] = @$arr_sum_article_data['penalty'] +  $one_tovar['penalty'];
 $arr_sum_article_data['amount_na_rs'] = @$arr_sum_article_data['amount_na_rs'] +  $one_tovar['amount_na_rs'];
 $arr_sum_article_data['pribil'] = @$arr_sum_article_data['pribil'] +  $one_tovar['pribil'];

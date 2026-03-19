@@ -138,8 +138,8 @@ foreach ($arr_article as $sku_itemcs => $itmess ) {
    foreach ($arr_article_products as $sebestoimost_data) {
       if($sku_itemcs == $sebestoimost_data['sku']) 
         {
-            if (isset($itmess['count']['summa'])) {
-           $arr_sebest[$sku_itemcs] = @$arr_sebest[$sku_itemcs] + $sebestoimost_data['sebestoimost']*$itmess['count']['summa'];
+            if (isset($itmess['count']['direct'])) {
+           $arr_sebest[$sku_itemcs] = @$arr_sebest[$sku_itemcs] + $sebestoimost_data['sebestoimost']*$itmess['count']['direct'];
             
             } else {
             // $arr_sebest[$sku_itemcs] = @$arr_sebest[$sku_itemcs] + $sebestoimost_data['sebestoimost'] ;
