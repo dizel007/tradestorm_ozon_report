@@ -122,7 +122,9 @@ foreach ($one_tovar['services'] as $serv_price) {
 // добавляем врцяную эквайринг 
 
 if ($one_tovar['accruals_for_sale'] != 0) {
-    $one_tovar['acquiring'] = round($acquiring_sum/$acquiring_count,0);
+    // $one_tovar['acquiring'] = round($acquiring_sum/$acquiring_count,0);
+    $one_tovar['acquiring'] = round($one_tovar['accruals_for_sale']*0.01,0);
+    
 } else {
     $one_tovar['acquiring'] = 0;
 }

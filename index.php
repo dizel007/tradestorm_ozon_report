@@ -1,3 +1,9 @@
+<?php
+header ('Location: ozon/',);
+exit;
+?>
+
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
