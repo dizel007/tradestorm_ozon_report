@@ -49,7 +49,7 @@
             <h2 class="section-title">Наши разработки</h2>
             <div class="projects-grid">
                 <div class="project-card">
-                    <a class="project-start-link" href = "ozon">
+                    <a class="project-start-link" href = "ozon_reg">
                         <div class="project-image" style="background-image: url('pics/project1.png')"></div>
                         <div class="project-info">
                             <h3>Финансовый отчет OZON</h3>

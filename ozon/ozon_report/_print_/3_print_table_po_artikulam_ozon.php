@@ -227,18 +227,26 @@ echo "<tr data-article=\"" . htmlspecialchars($item_for_print['sku']) . "\" data
 
 // $sku_for_instruction = 'SKU-'.$temp_per_test;
     // echo "<td>". $sku_for_instruction."<hr>".
+// ссылка по поартикульную таблицу расходов
 
-   echo "<td>". // ссылка по поартикульную таблицу расходов
+   echo "<td>"
+   .$item_for_print['sku'].
+   "</td>";
 
- "<a href=\"../ozon_report_po_article/index_ozon_razbor_article.php?data=".$url_encoded."\" target=\"_blank\">"
-   .$item_for_print['sku']
-   ."</a> <hr>".
+//    .  "<a href=\"../ozon_report_po_article/index_ozon_razbor_article.php?data=".$url_encoded."\" target=\"_blank\">"
+//    .$item_for_print['sku']
+//    ."</a> <hr>".
+
 
 //  $Article_for_instruction = 'артикул-'.$temp_per_test;
 //    "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$Article_for_instruction."\" target=\"_blank\">".$Article_for_instruction."</a> </td>";
- "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$item_for_print['mp_article']."\" target=\"_blank\">"
-    .$item_for_print['mp_article'].
-   "</a> </td>";
+
+
+// "<a href=\"../ozon_data_one_item/?clt=$secret_client_id&art=".$item_for_print['mp_article']."\" target=\"_blank\">"
+//     .$item_for_print['mp_article'].
+//    "</a>
+   
+//    </td>";
 
 
 
@@ -337,11 +345,21 @@ print_two_strings_in_table_two_parametrs($item_for_print['summa']['bez_vsego_s_i
 /************************************************************************************/
 
     $item_for_print['diff_min_price'] >=0? $color_class = 'green_color':$color_class = 'red_color';
+// если товар уцененный и у него нет себестоимости, то не делаем ссылку
+
+if (isset($item_for_print['product_id'])) {
   echo "<td>
         <p class=\"big_font $color_class\">". number_format($item_for_print['summa']['sebestoimost'],0 ,',',' ') ."</p>
         <p class = \"small_font\"><a href =\"https://seller.ozon.ru/app/prices/manager/".$item_for_print['product_id']."/prices\" target=\"_blank\">" .  $item_for_print['min_price']." руб"."</a></p>
         <p class = \"small_font $color_class\">" .  number_format($item_for_print['diff_min_price'],0 ,',','') ." руб". "</p>
         </td>";
+} else {
+
+/// выводим товары где не смогули найти product_id и соответственно не нашли себестоимость товарв
+    echo "<td>
+        <p class=\"big_font $color_class\">". number_format($item_for_print['summa']['sebestoimost'],0 ,',',' ') ."</p>
+        </td>";
+}
 /************************************************************************************/
 // Прибыль считается от себестоимости
 /************************************************************************************/

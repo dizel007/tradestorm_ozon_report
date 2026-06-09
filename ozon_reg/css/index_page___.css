@@ -1,0 +1,197 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+button {
+    background-color: #005bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0045cc;
+}
+.alarm_text {
+    color: red;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.instruction {
+    margin-top: 80px;
+    padding: 20px;
+    border: #0056b3 1px solid;
+    border-radius: 5px;
+    text-align: center;
+}
+.instruction_text {
+    margin-top: 30px;
+    font-style: italic;
+    font-size: 13px;
+}
+.instruction_link {
+    width: 100%;
+    font-size: 13px;
+    padding: 10px 20px;
+    border: #005bff 2px solid;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-weight: 400;
+    text-decoration: none;
+    color: #005bff;
+    transition: 0.3s;
+}
+.instruction_link:hover {
+    background-color: #005bff;
+    border: #005bff 2px solid;
+    color: rgb(255, 255, 255);
+}
+.instruction_pics {
+    width: 100%;
+}
+
+/* Стили для контейнера кнопки PDF */
+.pdf-download-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+.pdf-download-container2 {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+}
+.pdf-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #005bff;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 2px solid transparent;
+}
+.pdf-download-btn:hover {
+    background-color: #0045cc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+.pdf-download-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.pdf-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}
+.pdf-download-btn:hover .pdf-icon {
+    transform: translateY(2px);
+}
+
+/* ===== Улучшенные кнопки Вход / Регистрация ===== */
+.toggle-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+.toggle-btn {
+    flex: 1;
+    padding: 12px 10px;
+    background-color: white;           /* белый фон */
+    border: 2px solid #ccc;            /* серая рамка */
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;                 /* жирный текст */
+    color: #333;                       /* тёмно-серый текст */
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+.toggle-btn:hover {
+    background-color: #e6f0ff;         /* лёгкая подсветка при наведении */
+    border-color: #005bff;
+    color: #005bff;
+}
+.toggle-btn.active {
+    background: #005bff;               /* активная – синий фон */
+    color: white;
+    border-color: #005bff;
+    box-shadow: 0 2px 6px rgba(0, 91, 255, 0.3);
+}
+/* ========================================== */
+
+.form-container {
+    display: none;
+}
+.form-container.active {
+    display: block;
+}
+.error-message {
+    color: red;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #ffe6e6;
+    border-radius: 5px;
+}
+.instruction {
+    margin-top: 40px;
+}
+.pdf-download-container,
+.pdf-download-container2 {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+.pdf-download-container2 {
+    top: 80px;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .pdf-download-container,
+    .pdf-download-container2 {
+        position: static;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .pdf-download-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .toggle-buttons {
+        gap: 8px;
+    }
+    .toggle-btn {
+        font-size: 16px;
+        padding: 10px;
+    }
+}

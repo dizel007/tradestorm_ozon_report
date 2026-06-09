@@ -1,0 +1,217 @@
+/* Общие сбросы */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+}
+
+/* Основная карточка */
+.form-wrapper {
+    background: white;
+    max-width: 520px;
+    width: 100%;
+    padding: 30px 35px 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    transition: 0.3s;
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #222;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Переключатели Вход / Регистрация */
+.toggle-buttons {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0 25px;
+}
+.toggle-btn {
+    flex: 1;
+    padding: 12px 10px;
+    background: white;
+    border: 3px solid #ddd;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    color: #555;
+    border-radius: 40px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+.toggle-btn:hover {
+    background: #eef2ff;
+    border-color: #007bff;
+    color: #007bff;
+}
+.toggle-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+}
+
+/* Формы */
+.form-container {
+    display: none;
+}
+.form-container.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 14px;
+    font-size: 16px;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+button[type="submit"]:hover {
+    background: #0056b3;
+}
+
+/* Сообщения об ошибках */
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    border-left: 5px solid #f5c6cb;
+    font-size: 14px;
+}
+
+/* Инструкция */
+.instruction {
+    margin-top: 40px;
+    padding: 20px;
+    background: #f8f9fc;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+.instruction_link {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+}
+.instruction_link:hover {
+    background: #0056b3;
+    text-decoration: none;
+}
+.instruction_text {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* PDF-кнопки (адаптация под карточку) */
+.pdf-download-container,
+.pdf-download-container2 {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+.pdf-download-container2 {
+    top: 80px;
+}
+.pdf-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: #007bff;
+    padding: 10px 20px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: 0.2s;
+    border: 1px solid #ddd;
+}
+.pdf-download-btn:hover {
+    background: #007bff;
+    color: white;
+    transform: translateY(-2px);
+}
+.pdf-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+    .form-wrapper {
+        padding: 25px 20px;
+    }
+    .pdf-download-container,
+    .pdf-download-container2 {
+        position: static;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+    .pdf-download-container2 {
+        margin-top: 8px;
+    }
+    .pdf-download-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .toggle-btn {
+        font-size: 16px;
+        padding: 10px;
+    }
+}

@@ -41,6 +41,16 @@ if (isset($params['clt']) AND ($params['clt'] !='')) {
     $token = $arr_tokens['ozon_token'];
     $secret_client_id = $arr_tokens['id_clt_base64'];
 
+/**************************************************************************
+ *  достаем информацию о пользователе озона 
+ ***************************************************************************/
+$info_user_string = '';
+$ozon_dop_url = "v1/seller/info";
+$send_data =  "";
+$send_data = json_encode($send_data);
+$data_ozon_user = post_with_data_ozon($token, $client_id, "", $ozon_dop_url);
+$info_user_string = "\"".$data_ozon_user['company']['name']."\" (". $data_ozon_user['company']['ownership_form']." ". $data_ozon_user['company']['legal_name'].")";
+
 
         // Устанавливаем сесии
     require_once '../session_config.php';
@@ -104,9 +114,12 @@ echo <<<HTML
 </head>
 <body>
     <div class="table-container">
+         <div class="info_about_client">$info_user_string </div>
     <div class="form-container">
+     
         <form id="dateForm">
             <div class="form-content">
+   
                 <div class="date-fields">
                     <div class="date-group">
                         <label for="startDate" class="date-label">Начальная дата</label>
@@ -133,9 +146,18 @@ HTML;
 // die();
 if ($priznak_date == 0)  {die ('');} 
 
+
+
+$path_for_user = "../!cache" ."/".$client_id;
+
+if (!is_dir($path_for_user)) {
+    mkdir($path_for_user, 0777, true); // 0777 - права доступа (при необходимости)
+}
+
+
 // формируем название папки и файла
-$file_name_ozon = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")_main_data".".json";
-$file_name_ozon_inostran_prodazhi = "../!cache" ."/".$client_id."/".$client_id."_(".date('Y-m-d').")_inostran_prodazhi".".json";
+$file_name_ozon = $path_for_user."/".$client_id."_(".date('Y-m-d').")_main_data".".json";
+$file_name_ozon_inostran_prodazhi = $path_for_user."/".$client_id."_(".date('Y-m-d').")_inostran_prodazhi".".json";
 $file_name_ozon_small = $client_id."_(".date('Y-m-d').")";
 
 

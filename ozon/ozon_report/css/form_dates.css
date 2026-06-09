@@ -26,7 +26,13 @@
             line-height: 1.5;
             padding: 20px;
         }
-
+.info_about_client {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin:  10px 0px 0px 20px;
+  
+}
         .h80procentov{
             margin: 0px auto;
             margin-top: 50px;
@@ -50,6 +56,7 @@
         /* Стили для формы */
         .form-container {
             padding: 20px;
+padding-top: 5px;
             border-bottom: 1px solid var(--ozon-gray-border);
         }
         
