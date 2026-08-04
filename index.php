@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeStorm | Лучшая аналитика маркетплейсов</title>
+    <title>Аналитика Ozon – отчёты по продажам, юнит-экономика, FBS | TradeStorm</title>
+    <meta name="description" content="Лучшая аналитика для Ozon: детальные отчёты по продажам, комиссиям, логистике и FBS. Автоматический сбор данных через API, юнит-экономика по каждому товару.">
+    <meta name="keywords" content="аналитика Ozon, отчёты по продажам Ozon, юнит-экономика, FBS аналитика, комиссии Ozon, автоматизация маркетплейсов, TradeStorm">
     <link rel="stylesheet" href="css/style.css">
-
-
-
-
 </head>
 <body>
     <!-- Header -->
@@ -16,63 +14,85 @@
         <div class="container">
             <a href="#" class="logo">Trade<span>Storm</span></a>
             <nav class="nav">
-                <a href="#projects">Разработки</a>
-                <a href="#partners">Интеграции</a>
-                <a href="#articles">Блог</a>
+                <!-- <a href="#projects">Разработки</a> -->
+                <a href="#features">Преимущества</a>
                 <a href="#faq">FAQ</a>
                 <a href="#contacts">Контакты</a>
             </nav>
-            <div class="phone"></div>
+            <div class="auth">
+                <a href="registration" class="auth-btn login">Войти / Регистрация</a>
+            </div>
         </div>
     </header>
 
-<!-- Hero Section -->
-<section class="hero">
-    <div class="hero-background">
-        <img src="pics/hero_banner.png" alt="Marketplace Automation" class="hero-image">
-        <div class="hero-overlay"></div>
-    </div>
-    <div class="container">
-        <div class="hero-content">
-            <h1>Автоматизация работы на маркетплейсах</h1>
-            <p>API интеграция, аналитика FBS заказов, умные отчеты и полный контроль вашего бизнеса</p>
-            <p>Юнит-экономика от ТрейдШторм поможет определить чистую прибыль по каждому товару. Достаточно указать себестоимость — сервис автоматически рассчитает, какие позиции приносят больше денег с учетом комиссий, логистики и налогов
-Смотрите расходы и ключевые показатели за разные периоды. Анализируйте, где теряете деньги и как увеличить доход.</p>
-            <a href="#projects" class="btn">Запустить автоматизацию</a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background">
+            <img src="pics/hero_banner.png" alt="Аналитика продаж на Ozon" class="hero-image">
+            <div class="hero-overlay"></div>
         </div>
-    </div>
-</section>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Аналитика продаж на Ozon — полный контроль прибыли и расходов</h1>
+                <p>Детальные отчёты по комиссиям, логистике (FBS/FBO), эквайрингу и скрытым списаниям. Автоматический сбор данных через API Ozon.</p>
+                <p>Наша <strong>юнит-экономика</strong> покажет чистую прибыль с каждого товара с учётом всех затрат: комиссий Ozon, стоимости хранения, рекламы и себестоимости. Вы увидите, какие позиции приносят деньги, а какие — убытки.</p>
+                <a href="registration" class="btn">Получить аналитику Ozon</a>
+            </div>
+        </div>
+    </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="projects">
+    <!-- <section id="projects" class="projects">
         <div class="container">
-            <h2 class="section-title">Наши разработки</h2>
+            <h2 class="section-title">Наши разработки для Ozon</h2>
             <div class="projects-grid">
                 <div class="project-card">
-                    <a class="project-start-link" href = "ozon_reg">
+                    <a class="project-start-link" href="ozon_reg">
                         <div class="project-image" style="background-image: url('pics/project1.png')"></div>
                         <div class="project-info">
-                            <h3>Финансовый отчет OZON</h3>
-                            <p>Поартикульный разбор затрат на товары. Выделяем комиссии, логистику, эквайринг и все возможные затраты</p>
+                            <h3>Финансовый отчёт Ozon</h3>
+                            <p>Поартикульный разбор всех затрат: комиссии, логистика FBS/FBO, эквайринг, возвраты, штрафы. Полная прозрачность расходов.</p>
                         </div>
                     </a>
                 </div>
                 <div class="dimmed-image project-card">
                     <div class="project-image" style="background-image: url('pics/project1.png')"></div>
                     <div class="project-info">
-                        <h3>Финансовый отчет WB</h3>
+                        <h3>Аналитика Wildberries</h3>
                         <p>(в разработке)</p>
                     </div>
                 </div>
                 <div class="dimmed-image project-card">
                     <div class="project-image" style="background-image: url('pics/project1.png')"></div>
                     <div class="project-info">
-                        <h3>Финансовый отчет Яндекс Маркет</h3>
+                        <h3>Аналитика Яндекс Маркет</h3>
                         <p>(в разработке)</p>
                     </div>
                 </div>
-            
+            </div>
+        </div>
+    </section> -->
 
+    <!-- Features (Преимущества для Ozon) -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Почему TradeStorm — лучшая аналитика для Ozon</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <div><img class="unit_economica" src="pics/features/unit_economica.jpg" alt="Юнит-экономика Ozon"></div>
+                    <h3>Точная юнит-экономика для Ozon</h3>
+                    <p>Автоматически рассчитываем чистую прибыль по каждому товару, вычитая все фактические расходы: комиссии Ozon, логистику (FBS и FBO), хранение, рекламу и себестоимость закупки.</p>
+                </div>
+                <div class="feature">
+                    <div><img class="unit_economica" src="pics/features/zatrati_po_stat.jpg" alt="Детализация затрат Ozon"></div>
+                    <h3>Детализация комиссий и логистики Ozon</h3>
+                    <p>Полная структура расходов: комиссия за продажу, логистика FBS, хранение на складе, возвраты, рекламные кампании, упаковка и брак. Никаких скрытых списаний.</p>
+                </div>
+                <div class="feature">
+                    <div><img class="unit_economica" src="pics/features/get_data_api.jpg" alt="API Ozon"></div>
+                    <h3>Автоматический сбор через API Ozon</h3>
+                    <p>Данные подгружаются напрямую из личного кабинета Ozon. Вам не нужно вручную сводить отчёты — всё уже разложено по полкам в удобном дашборде.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -80,140 +100,31 @@
     <!-- Video Section -->
     <section class="video-section">
         <div class="container">
-            <h2 class="section-title">Как автоматизировать маркетплейсы?</h2>
-            <p style="text-align: center; margin-bottom: 40px;">Смотрите видео о наших решениях</p>
+            <h2 class="section-title">Как автоматизировать аналитику Ozon?</h2>
+            <p style="text-align: center; margin-bottom: 40px;">Видеоинструкции по работе с отчётами TradeStorm</p>
             <div class="video-grid">
                 <div class="video-item">
-                      <div class="video-thumb">
+                    <div class="video-thumb">
                         <video class="video_time" id="myVideo" width="240" height="170" 
-                            poster="video/212.jpg" 
+                            poster="video/registration.jpg" 
                             controls preload="none" playsinline>
-                        <source src="video/212.mp4" type="video/mp4">
+                        <source src="video/registration.mp4" type="video/mp4">
                         Ваш браузер не поддерживает видео.
                         </video>
-                    <p>Как подключить аналитику финансовых отчетов для OZON за 5 минут</p>
-                </div>
-                </div>
-
-                <div class="video-item">
-                    <div class="video-thumb"></div>
-                    <p>Как получить отчеты, и как работать с ними</p>
-                </div>
-                <div class="video-item">
-                    <div class="video-thumb"></div>
-                    <p>Создание отчетов в реальном времени</p>
-                </div>
-                <div class="video-item">
-                    <div class="video-thumb"></div>
-                    <p>Разбор FBS: ошибки и оптимизация</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features -->
-    <section class="features">
-        <div class="container">
-            <div class="features-grid">
-                <div class="feature">
-                    <!-- <div class="feature-icon"></div> -->
-                    <div ><img class="unit_economica" src="pics/features/unit_economica.jpg" alt="Юнит экономика по маркетплейсам"></div>
-                    <h3>Реальная юнит-экономика</h3>
-                    <p>Мы автоматически рассчитываем чистую прибыль с каждого проданного товара. Система вычитает из выручки все фактические расходы: комиссии маркетплейсов, логистику, хранение, рекламу и себестоимость закупки.</p>
-                </div>
-                <div class="feature">
-                    <!-- <div class="feature-icon"></div> -->
-                    <div><img class="unit_economica" src="pics/features/zatrati_po_stat.jpg" alt="Детализация затрат по статьям маркетплейса"></div>
-                    <h3>Детализация затрат по статьям</h3>
-                    <p>Вы видите полную структуру расходов: комиссии Ozon/WB, логистика (FBO/FBS), хранение на складе, возвраты, рекламные кампании, упаковка, брак и прочие издержки. Никаких скрытых списаний.</p>
-                </div>
-                <div class="feature">
-                    <!-- <div class="feature-icon"></div> -->
-                    <div><img class="unit_economica" src="pics/features/get_data_api.jpg" alt="Автоматический сбор через API Ozon и Wildberries"></div>
-
-                    <h3>Автоматический сбор через API Ozon и Wildberries</h3>
-                    <p>Данные подгружаются напрямую с маркетплейсов. Вам не нужно вручную сводить отчёты — всё уже разложено по полкам в личном кабинете.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Team Section -->
-    <!-- <section id="team" class="team">
-        <div class="container">
-            <h2 class="section-title">Команда разработки</h2>
-            <div class="team-grid">
-                <div class="team-card">
-                    <div class="team-photo"></div>
-                    <h3>Дмитрий</h3>
-                    <div class="position">Lead API Developer</div>
-                    <p>5 лет интеграций с маркетплейсами, эксперт по Ozon и Wildberries API</p>
-                </div>
-                <div class="team-card">
-                    <div class="team-photo"></div>
-                    <h3>Екатерина</h3>
-                    <div class="position">Data Analyst</div>
-                    <p>Разработка алгоритмов прогнозирования и аналитических отчетов</p>
-                </div>
-                <div class="team-card">
-                    <div class="team-photo"></div>
-                    <h3>Андрей</h3>
-                    <div class="position">DevOps Engineer</div>
-                    <p>Обеспечение стабильной работы API и безопасности данных</p>
-                </div>
-            </div>
-        </div>
-    </section> -->
-
-    <!-- Partners -->
-    <section id ="partners" class="partners">
-        <div class="container">
-            <h2 class="section-title">Интеграции с площадками</h2>
-            <div class="partners-grid">
-                <span class="partner-item">Wildberries API</span>
-                <span class="partner-item">Ozon Seller API</span>
-                <span class="partner-item">Yandex Market</span>
-    
-            </div>
-        </div>
-    </section>
-
-    <!-- Online Control -->
-    <section class="features">
-        <div class="container">
-            <div class="features-grid">
-                <div class="feature">
-                    <!-- <div class="feature-icon"></div> -->
-                    <div>
-                        <img class="technical_support" src="pics/teh_podderzhka.jpg" alt="Детализация затрат по статьям маркетплейса">
                     </div>
-
-                    <h3>Мониторинг 24/7</h3>
-                    <p>Отслеживайте работу своей магазина через API в реальном времени. Мы можете моментально увидить, что товар перестал давать прибыль и вытягивает с Вас деньги</p>
-                    <br>
-                   <a href="#projects" class="btn">Запустить автоматизацию</a> 
+                    <p>Регистрация и подключение API Ozon для получения отчётов</p>
                 </div>
-                
-            </div>
-        </div>
-    </section>
-
-    <!-- Articles Section -->
-    <section id="articles" class="articles">
-        <div class="container">
-            <h2 class="section-title">Блог об автоматизации</h2>
-            <div class="articles-grid">
-                <div class="article-card">
-                    <h3>Чем сервис отличается от других</h3>
-                    <p>Скорость работы, простой и удобный интерфейс, и мы не просто выдаем Вам расчеты и цифры, а позволяем сравнить их с данными в личном кабинете</p>
+                <div class="video-item">
+                    <div class="video-thumb"></div>
+                    <p>Как читать финансовый отчёт по FBS-заказам Ozon</p>
                 </div>
-                <div class="article-card">
-                    <h3>Сколько кабинетов можно подключить</h3>
-                    <p>На данный момент не ограничения по кабинетам. Пока всю бесплатно, но в дальнейшем планируется плата в размере 500руб/месяц за каждый кабинет</p>
+                <div class="video-item">
+                    <div class="video-thumb"></div>
+                    <p>Создание отчётов по юнит-экономике в реальном времени</p>
                 </div>
-                <div class="article-card">
-                    <h3>Для чего сервис аналитики маркетплейсов нужен</h3>
-                    <p>Мы можете в ежедненом редиме отслеживать динамику не только продаж, но и динамику прибыли, учитывая все траты, комиссии и себестоимости товаров</p>
+                <div class="video-item">
+                    <div class="video-thumb"></div>
+                    <p>Разбор ошибок FBS и оптимизация расходов на Ozon</p>
                 </div>
             </div>
         </div>
@@ -222,31 +133,31 @@
     <!-- FAQ Section -->
     <section id="faq" class="faq">
         <div class="container">
-            <h2 class="section-title">Часто задаваемые вопросы</h2>
+            <h2 class="section-title">Часто задаваемые вопросы об аналитике Ozon</h2>
             <div class="faq-grid">
                 <div class="faq-item">
-                    <h3>Сколько времени занимает интеграция API?</h3>
-                    <p>Базовая интеграция занимает от 1 до 7 дней. Сложные проекты с кастомной аналитикой — по согласованию.</p>
+                    <h3>Какие данные о продажах Ozon вы собираете?</h3>
+                    <p>Все: выручка, комиссии, логистика (FBS/FBO), эквайринг, хранение, рекламные расходы, возвраты, штрафы и прочие списания.</p>
                 </div>
                 <div class="faq-item">
-                    <h3>Какие маркетплейсы вы поддерживаете?</h3>
-                    <p>Wildberries, Ozon, Yandex Market</p>
+                    <h3>Как быстро подключается аналитика через API Ozon?</h3>
+                    <p>Базовая интеграция занимает 1–2 дня. Вы получаете готовый отчёт в личном кабинете TradeStorm.</p>
                 </div>
                 <div class="faq-item">
-                    <h3>Как происходит автоматизация FBS заказов?</h3>
-                    <p>Система автоматически получает заказы по API, формирует этикетки, обновляет остатки и отправляет уведомления.</p>
+                    <h3>Что такое юнит-экономика и как она считается для Ozon?</h3>
+                    <p>Это расчёт чистой прибыли на единицу товара. Мы вычитаем из цены продажи все комиссии, логистику, хранение, рекламу и себестоимость.</p>
                 </div>
                 <div class="faq-item">
-                    <h3>Можно ли настроить кастомные отчеты?</h3>
-                    <p>Да, мы разрабатываем любые отчеты под ваши задачи: по продажам, остаткам, рейтингам, комиссиям и т.д.</p>
+                    <h3>Можно ли настроить отчёт под свои задачи?</h3>
+                    <p>Да, мы разрабатываем кастомные дашборды: по группам товаров, по складам, по периодам, с фильтрацией по FBS/FBO.</p>
                 </div>
                 <div class="faq-item">
-                    <h3>Как обеспечивается безопасность?</h3>
-                    <p>Все ключи API хранятся в зашифрованном виде, используется двухфакторная аутентификация и HTTPS протоколы.</p>
+                    <h3>Как обеспечивается безопасность ключей API Ozon?</h3>
+                    <p>Все ключи хранятся в зашифрованном виде, доступ только по HTTPS, двухфакторная аутентификация.</p>
                 </div>
                 <div class="faq-item">
-                    <h3>Есть ли техническая поддержка?</h3>
-                    <p>Круглосуточная поддержка через email. Среднее время ответа — 60 минут.</p>
+                    <h3>Есть ли поддержка по работе с отчётами?</h3>
+                    <p>Круглосуточная поддержка по email и в чате. Среднее время ответа — 30 минут.</p>
                 </div>
             </div>
         </div>
@@ -258,23 +169,16 @@
             <div class="footer-grid">
                 <div>
                     <h3>TradeStorm</h3>
-                    <p>Автоматизация маркетплейсов<br>и аналитика FBS заказов</p>
+                    <p>Лучшая аналитика для Ozon<br>и автоматизация маркетплейсов</p>
                 </div>
                 <div>
                     <h3>Контакты</h3>
-                    <!-- <a href="tel:+74994033216">+7 (499) 403-32-16</a> -->
                     <a href="mailto:info@tradestorm.ru">info@tradestorm.ru</a>
                     <p>г. Москва, ул. Льва Толстого, 16<br>БЦ "Морозов", офис 405</p>
                 </div>
-                <div>
-                    <h3>Реквизиты</h3>
-                    <p>ООО "Торговые Системы"</p>
-                    <p>ИНН 9705143827</p>
-                    <p>ОГРН 1237700123456</p>
-                </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 TradeStorm. Все права защищены.</p>
+                <p>&copy; 2025 TradeStorm. Все права защищены.</p>
                 <a href="#">Политика конфиденциальности</a>
                 <a href="#">Договор оферты</a>
             </div>
@@ -282,28 +186,9 @@
     </footer>
 
     <?php
-    // PHP код для динамических элементов
     $current_year = date('Y');
-    echo "<script>console.log('TradeStorm - автоматизация маркетплейсов, текущий год: " . $current_year . "');</script>";
-    
-    // Пример функции для получения данных по API
-    /*
-    function getMarketplaceStats() {
-        // Подключение к API маркетплейсов
-        return [
-            'total_orders' => 15000,
-            'avg_rating' => 4.8,
-            'revenue' => 25000000
-        ];
-    }
-    */
+    echo "<script>console.log('TradeStorm - аналитика Ozon, текущий год: " . $current_year . "');</script>";
     ?>
 </body>
-
-    <script type="text/javascript" src="js/script_video.js"></script>
-
+<script type="text/javascript" src="js/script_video.js"></script>
 </html>
-
-
-
-

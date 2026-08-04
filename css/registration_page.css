@@ -1,0 +1,414 @@
+/* Общие сбросы */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+}
+
+/* Основная карточка */
+.form-wrapper {
+    background: white;
+    max-width: 520px;
+    width: 100%;
+    padding: 30px 35px 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    transition: 0.3s;
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #222;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Переключатели Вход / Регистрация */
+.toggle-buttons {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0 25px;
+}
+.toggle-btn {
+    flex: 1;
+    padding: 12px 10px;
+    background: white;
+    border: 3px solid #ddd;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    color: #555;
+    border-radius: 40px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+.toggle-btn:hover {
+    background: #eef2ff;
+    border-color: #007bff;
+    color: #007bff;
+}
+.toggle-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+}
+
+/* Формы */
+.form-container {
+    display: none;
+}
+.form-container.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 14px;
+    font-size: 16px;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+}
+
+button  {
+    /* width: 100%; */
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+button :hover {
+    background: #0056b3;
+}
+
+/* Сообщения об ошибках */
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 12px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    border-left: 5px solid #f5c6cb;
+    font-size: 14px;
+}
+
+/* Инструкция */
+.instruction {
+    margin-top: 40px;
+    padding: 20px;
+    background: #f8f9fc;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+.instruction_link {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+}
+.instruction_link:hover {
+    background: #0056b3;
+    text-decoration: none;
+}
+.instruction_text {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* PDF-кнопки (адаптация под карточку) */
+.pdf-download-container,
+.pdf-download-container2 {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+.pdf-download-container2 {
+    top: 80px;
+}
+.pdf-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: #007bff;
+    padding: 10px 20px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: 0.2s;
+    border: 1px solid #ddd;
+}
+.pdf-download-btn:hover {
+    background: #007bff;
+    color: white;
+    transform: translateY(-2px);
+}
+.pdf-icon {
+    width: 18px;
+    height: 18px;
+}
+
+
+
+/*  Таблица с магазинами*/
+        .client-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .client-table th, .client-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .client-table th {
+            background-color: #f2f2f2;
+        }
+        .logout-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+
+
+        /* Контейнер для кнопок под таблицей */
+.table-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px;
+    flex-wrap: wrap; /* для адаптивности */
+}
+
+/* Общий стиль для кнопок действий */
+.action-btn {
+    display: inline-flex;
+    
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 14px;
+    border: 1px solid transparent;
+    transition: 0.2s ease;
+    cursor: pointer;
+    background: white;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Кнопка "Добавить магазин" */
+.add-btn {
+    background: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+.add-btn:hover {
+    background: #218838;
+    border-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Кнопка "Выйти" */
+.logout-btn {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+.logout-btn:hover {
+    background: #c82333;
+    border-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+/*  */
+.success-message {
+    color: green; 
+    background: #e6ffe6; 
+    padding: 10px; 
+    border-radius: 5px; 
+    margin-bottom: 15px;
+}
+
+/* состояние магазина */
+ .deleted-row {
+            background-color: #f8d7da !important;
+            color: #721c24;
+        }
+ .deleted-badge {
+    text-align: center;
+            background: #dc3545;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+        }
+ .active-badge {
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+        }
+    
+
+
+/* Общий стиль для маленьких кнопок в таблице */
+.table-action-btn {
+     width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 14px;
+    height: 34px;                /* фиксированная высота, чтобы обе были одинаковыми */
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    background: transparent;
+    transition: background 0.2s, transform 0.1s;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+/* Ссылка "Редактировать" – синяя */
+.btn-edit {
+    background: #007bff;
+}
+.btn-edit:hover {
+    background: #0056b3;
+}
+
+/* Кнопка "Восстановить" – зелёная */
+.btn-restore {
+    background: #28a745;
+}
+.btn-restore:hover {
+    background: #218838;
+}
+
+/* Убираем лишние отступы у формы внутри ячейки */
+td form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+/* Фокус (для доступности) */
+.table-action-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.3);
+}
+.btn-restore:focus {
+    box-shadow: 0 0 0 2px rgba(40,167,69,0.3);
+}
+
+.inactive-badge {
+    background: #6c757d;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+}
+
+/* Кнопка "Продлить" (жёлтая) */
+.btn-pay {
+    background: #ffc107;
+    color: #212529;
+}
+.btn-pay:hover {
+    background: #e0a800;
+}
+
+
+/* Если кнопки занимают всю ширину на маленьких экранах */
+@media (max-width: 480px) {
+    .table-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .action-btn {
+        justify-content: center;
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+    .form-wrapper {
+        padding: 25px 20px;
+    }
+    .pdf-download-container,
+    .pdf-download-container2 {
+        position: static;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+    .pdf-download-container2 {
+        margin-top: 8px;
+    }
+    .pdf-download-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .toggle-btn {
+        font-size: 16px;
+        padding: 10px;
+    }
+}

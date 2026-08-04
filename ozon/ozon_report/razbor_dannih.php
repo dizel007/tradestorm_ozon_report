@@ -189,8 +189,8 @@ $summ_dop_uslugi_compensation = @$dop_uslugi + @$dop_compensation;
 foreach ($arr_article as $key => $item) {
     $one_proc_ot_vsey_summi = round($arr_sum_all_data['sum_accruals_for_sale'] / 100, 4);
 
-    if (isset($item['count']['summa']) and (($item['count']['summa']) != 0)) {
-        $arr_article[$key]['proc_item_ot_vsey_summi'] = round($arr_article[$key]['accruals_for_sale']['summa'] / $one_proc_ot_vsey_summi, 4);
+    if (isset($item['count']['summa']) and (($item['count']['summa']) > 0)) {
+       $arr_article[$key]['proc_item_ot_vsey_summi'] = round($arr_article[$key]['accruals_for_sale']['summa'] / $one_proc_ot_vsey_summi, 4);
     } else {
         $arr_article[$key]['proc_item_ot_vsey_summi'] = 0;
     }

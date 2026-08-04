@@ -5,6 +5,8 @@
 // echo  "ПРОШЛИ КОННЕКТ<br>";
 require_once ("../../main_info.php");
 require_once "../mp_functions/ozon_api_functions.php";
+require_once '../session_config.php';
+require_once("../auth_check.php");
 
 
       try {  
@@ -13,6 +15,14 @@ require_once "../mp_functions/ozon_api_functions.php";
         } catch (PDOException $e) {
           print "Has errors: " . $e->getMessage();  die();
         }
+
+
+ $auth = checkAuth($pdo);
+if (!$auth['loggedIn']) {
+    header('Location: ../../registration/index.php');
+    exit();
+}
+$user = $auth['user'];
 
 
 $queryString = $_SERVER['QUERY_STRING'] ?? '';
@@ -29,32 +39,58 @@ if (isset($params['clt']) AND ($params['clt'] !='')) {
 // Достаем токен и ИД клинета
     $secret_client_id = $params['clt'];
 
-    $sth = $pdo->prepare("SELECT * from `tokens` WHERE id_clt_base64 =:id_clt_base64");
+    $sth = $pdo->prepare("SELECT * from `shops` WHERE id_clt_base64 =:id_clt_base64");
     $sth->execute(array("id_clt_base64" => $secret_client_id));
     $arr_tokens = $sth->fetch(PDO::FETCH_ASSOC);
+
     
+
+//  echo "<pre>";
+// print_r($arr_tokens);
+// die('ffff666');
+
     // если не нашли клиетна в БД то уходим на начало
-    if (!isset($arr_tokens['id_client'])) {
+    if (!isset($arr_tokens['client_id'])) {
       header('Location: ../');  
     } 
-    $client_id = $arr_tokens['id_client'];
+    $client_id = $arr_tokens['client_id'];
     $token = $arr_tokens['ozon_token'];
     $secret_client_id = $arr_tokens['id_clt_base64'];
+// die('ffff');
+
+/**************************************************************************
+ *  высчитываем сколько дней до конца периода 
+ ***************************************************************************/
+
+
+$timestamp1 = strtotime(date('Y-m-d'));
+$timestamp2 = strtotime($arr_tokens['subscription_end']);
+$diffDays = ($timestamp2 - $timestamp1) / 86400;
+$days = (int)$diffDays;
+$hoursFraction = ($diffDays - $days) * 24;
+$hours = (int)$hoursFraction;
+
+
+$time_to_end = "до конца оплаченного периода {$days} дней, {$hours} часов";
+$time_to_end = '';
+
+// echo "diffDays =$diffDays";
 
 /**************************************************************************
  *  достаем информацию о пользователе озона 
  ***************************************************************************/
 $info_user_string = '';
 $ozon_dop_url = "v1/seller/info";
-$send_data =  "";
-$send_data = json_encode($send_data);
+// $send_data =  "";
+// $send_data = json_encode($send_data);
 $data_ozon_user = post_with_data_ozon($token, $client_id, "", $ozon_dop_url);
-$info_user_string = "\"".$data_ozon_user['company']['name']."\" (". $data_ozon_user['company']['ownership_form']." ". $data_ozon_user['company']['legal_name'].")";
 
+// $info_user_string = "\"".$data_ozon_user['company']['name']."\" (". $data_ozon_user['company']['ownership_form']." ". $data_ozon_user['company']['legal_name'].")";
+$info_user_string = "\"".$data_ozon_user['company']['name']."\" ";
 
-        // Устанавливаем сесии
-    require_once '../session_config.php';
-    session_start();
+// print_r($info_user_string);
+// die();
+
     // Регенерация ID сессии для защиты от фиксации
     session_regenerate_id(true);
         $_SESSION['id_client'] = $client_id;
@@ -114,7 +150,8 @@ echo <<<HTML
 </head>
 <body>
     <div class="table-container">
-         <div class="info_about_client">$info_user_string </div>
+         <div class="info_about_client">$info_user_string  $time_to_end</div>
+  
     <div class="form-container">
      
         <form id="dateForm">
