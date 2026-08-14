@@ -1,7 +1,7 @@
 <?php
-require_once "config.php";
+// require_once "config.php";
 $mail_path = ""; 
-require_once "mailer/send_mail.php";
+// require_once "mailer/send_mail.php";
 require_once ("_no_git/secret_info.php");  
 session_start();
 
@@ -14,6 +14,10 @@ if ($session_order_number != $order_number)  {
 }
 
 
+
+echo  "<pre>";
+print_r($_SESSION);
+die();
 
 /************************************************************************************************/
     try {  

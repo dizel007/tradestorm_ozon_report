@@ -1,6 +1,6 @@
 <?php
-require_once 'config.php';
-require_once "_no_git/secret_info.php";
+// require_once 'config.php';
+require_once "../_no_git/secret_info.php";
 
 
 //**********************************************************************************************
@@ -12,27 +12,27 @@ $ozon_link = 'https://payapi.ozon.ru/v1/createOrder'; // ссылка для м�
 $dateTime = new DateTime();
 $dateTime->modify('+15 minutes');
 $expiresAt = $dateTime->format('Y-m-d\TH:i:s\Z'); // Дата время окончания оплаты
-$extId = $orderData['order_number']; // Уникальный номер оплаты
-$amount = ['currencyCode' => '643', 'value' => $orderData['total_amount']*100];
+$extId = '111a1a1a1sцуцуцd12r'; // Уникальный номер оплаты
+$amount = ['currencyCode' => '643', 'value' => 1*100];
 $fingerprint = sprintf("%s%s%s%s%s%s%s%s", $accessKey, $expiresAt, $extId, $fiscalizationType, $paymentAlgorithm, $amount['currencyCode'], $amount['value'], $secretKey);
 $requestSign = hash('sha256', $fingerprint);
 
 // Адреса перехода при удачно и неудачной оплате
-$successUrl = "https://gardenborders.ru/pay_ok_ozon.php/?order_number=".$extId;
+$successUrl = "https://tradestorm.ru/pay_ok_ozon.php/?order_number=".$extId;
 $failUrl = "https://gardenborders.ru/pay/no_order/?order_number=".$extId;
 
 // данные товаров
-foreach ($orderData['cart_items'] as $cart_items) {
+
 $array_items[] = array ( 
-        "extId"=>    $cart_items['article'] ,
-        "name"=>     $cart_items['name'],
-        "price"=>    ['currencyCode' => '643', 'value' => $cart_items['price']*100], 
-        "quantity"=> $cart_items['quantity'],
+        "extId"=>    '1mon' ,
+        "name"=>     'оплата за 1 месяц',
+        "price"=>    ['currencyCode' => '643', 'value' => 1*100], 
+        "quantity"=> 1,
         "type"=>     "TYPE_PRODUCT",
         "unitType"=> "UNIT_PIECE",
         "vat"=>      "VAT_NONE"
       );
-}
+
 
 
 
@@ -60,11 +60,13 @@ $send_json = json_encode($send_data);
 
 $result_query_finance_ozon = post_with_data_ozon_finance($send_json, $ozon_link) ;
 // вносим ссылку на оплату в заказ 
-$stmt = $pdo->prepare("UPDATE orders SET link_ozon_finance = :link_ozon_finance WHERE order_number = :extId");
-$stmt->execute([
-    'link_ozon_finance' => $result_query_finance_ozon['order']['payLink'],
-    'extId' => $extId
-]);
+// $stmt = $pdo->prepare("UPDATE orders SET link_ozon_finance = :link_ozon_finance WHERE order_number = :extId");
+// $stmt->execute([
+//     'link_ozon_finance' => $result_query_finance_ozon['order']['payLink'],
+//     'extId' => $extId
+// ]);
+
+
 
 
 if (isset($result_query_finance_ozon['order']['payLink'])) {

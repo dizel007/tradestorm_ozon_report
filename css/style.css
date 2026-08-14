@@ -583,3 +583,90 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #005bff;
 }
+
+
+
+        /* Дополнительные стили для тарифов (если в основном CSS их нет) */
+        .tariff-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .tariff-card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 30px 25px;
+            width: 280px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+        .tariff-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .tariff-card.recommended {
+            background: #fff;
+            border: 2px solid #005bff;
+            position: relative;
+        }
+        .tariff-card.recommended::before {
+            content: "Рекомендуем";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #005bff;
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .tariff-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        .tariff-card .price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #005bff;
+            margin: 10px 0 5px;
+        }
+        .tariff-card .period {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+        .tariff-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 30px;
+            text-align: left;
+        }
+        .tariff-card ul li {
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .tariff-card ul li:last-child {
+            border-bottom: none;
+        }
+        .tariff-card .btn {
+            display: inline-block;
+            background: #005bff;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .tariff-card .btn:hover {
+            background: #005bff;
+        }
+        .tariff-card.recommended .btn {
+            background: #005bff;
+        }

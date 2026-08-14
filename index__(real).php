@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аналитика маркетплейсов – отчёты по продажам, юнит-экономика, FBS | TradeStorm</title>
+    <title>Аналитика Ozon – отчёты по продажам, юнит-экономика, FBS | TradeStorm</title>
     <meta name="description" content="Лучшая аналитика для Ozon: детальные отчёты по продажам, комиссиям, логистике и FBS. Автоматический сбор данных через API, юнит-экономика по каждому товару.">
     <meta name="keywords" content="аналитика Ozon, отчёты по продажам Ozon, юнит-экономика, FBS аналитика, комиссии Ozon, автоматизация маркетплейсов, TradeStorm">
     <link rel="stylesheet" href="css/style.css">
@@ -15,7 +15,7 @@
     <!-- Header -->
     <header class="header">
         <div class="container">
-            <a href="#" class="logo">Trade<span>Storm</span></a>
+            <a href="#" class="logo">Marketplace<span>Statistics</span></a>
             <nav class="nav">
                 <a href="#features">Преимущества</a>
                 <a href="#faq">FAQ</a>
@@ -36,8 +36,8 @@
         </div>
         <div class="container">
             <div class="hero-content">
-                <h1>Аналитика продаж на маркетплейсах — полный контроль прибыли и расходов</h1>
-                <p>Детальные отчёты по комиссиям, логистике (FBS/FBO), эквайрингу и скрытым списаниям. Автоматический сбор данных через API.</p>
+                <h1>Аналитика продаж на Ozon — полный контроль прибыли и расходов</h1>
+                <p>Детальные отчёты по комиссиям, логистике (FBS/FBO), эквайрингу и скрытым списаниям. Автоматический сбор данных через API Ozon.</p>
                 <p>Наша <strong>юнит-экономика</strong> покажет чистую прибыль с каждого товара с учётом всех затрат: комиссий Ozon, стоимости хранения, рекламы и себестоимости. Вы увидите, какие позиции приносят деньги, а какие — убытки.</p>
                 <a href="registration" class="btn">Получить аналитику Ozon</a>
             </div>
@@ -47,21 +47,21 @@
     <!-- Features (Преимущества для Ozon) -->
     <section id="features" class="features">
         <div class="container">
-            <h2 class="section-title">Почему TradeStorm — лучшая аналитика для маркетплейсов</h2>
+            <h2 class="section-title">Почему TradeStorm — лучшая аналитика для Ozon</h2>
             <div class="features-grid">
                 <div class="feature">
                     <div><img class="unit_economica" src="pics/features/unit_economica.jpg" alt="Юнит-экономика Ozon"></div>
-                    <h3>Точная юнит-экономика для маркетплейсов</h3>
+                    <h3>Точная юнит-экономика для Ozon</h3>
                     <p>Автоматически рассчитываем чистую прибыль по каждому товару, вычитая все фактические расходы: комиссии Ozon, логистику (FBS и FBO), хранение, рекламу и себестоимость закупки.</p>
                 </div>
                 <div class="feature">
                     <div><img class="unit_economica" src="pics/features/zatrati_po_stat.jpg" alt="Детализация затрат Ozon"></div>
-                    <h3>Детализация комиссий и логистики </h3>
+                    <h3>Детализация комиссий и логистики Ozon</h3>
                     <p>Полная структура расходов: комиссия за продажу, логистика FBS, хранение на складе, возвраты, рекламные кампании, упаковка и брак. Никаких скрытых списаний.</p>
                 </div>
                 <div class="feature">
                     <div><img class="unit_economica" src="pics/features/get_data_api.jpg" alt="API Ozon"></div>
-                    <h3>Автоматический сбор через API </h3>
+                    <h3>Автоматический сбор через API Ozon</h3>
                     <p>Данные подгружаются напрямую из личного кабинета Ozon. Вам не нужно вручную сводить отчёты — всё уже разложено по полкам в удобном дашборде.</p>
                 </div>
             </div>
@@ -71,7 +71,7 @@
     <!-- Video Section -->
     <section class="video-section">
         <div class="container">
-            <h2 class="section-title">Как автоматизировать аналитику маркетплейсов?</h2>
+            <h2 class="section-title">Как автоматизировать аналитику Ozon?</h2>
             <p style="text-align: center; margin-bottom: 40px;">Видеоинструкции по работе с отчётами TradeStorm</p>
             <div class="video-grid">
                 <div class="video-item">
@@ -137,7 +137,7 @@
     <!-- Tariff Section (добавлен) -->
     <section id="tariff" class="tariff">
         <div class="container">
-            <h2 class="section-title">Выберите тариф</h2>
+            <h2 class="section-title">Выберите тариф для аналитики Ozon</h2>
             <div class="tariff-grid">
                 <div class="tariff-card">
                     <h3>Пробный</h3>
@@ -149,7 +149,7 @@
                         <li>API Ozon</li>
                         <li>Поддержка в чате</li>
                     </ul>
-                    <a href="registration" class="btn">Начать</a>
+                    <a href="registration" class="btn">Начать пробный период</a>
                 </div>
                 <div class="tariff-card recommended">
                     <h3>Месячный</h3>
@@ -163,21 +163,6 @@
                     </ul>
                     <a href="registration" class="btn">Подключить</a>
                 </div>
-
-                                <div class="tariff-card">
-                    <h3>Годовой</h3>
-                    <div class="price">13188</div>
-                    <div class="period">1 год</div>
-                    <ul>
-                        <li>Полный доступ к отчётам</li>
-                        <li>Юнит-экономика по товарам</li>
-                        <li>API Ozon</li>
-                        <li>Поддержка в чате</li>
-                    </ul>
-                    <a href="registration" class="btn">Подключить</a>
-                </div>
-
-
             </div>
         </div>
     </section>
