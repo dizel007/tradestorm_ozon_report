@@ -16,27 +16,27 @@ function setRememberToken($pdo, $userId) {
 // ---------------------------------------------------------------------
 // Отправка запроса к Ozon API (возвращает ответ или false)
 // ---------------------------------------------------------------------
-function post_with_data_ozon($token, $client_id, $data, $url) {
-    $ch = curl_init('https://api-seller.ozon.ru/' . $url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Api-Key: ' . $token,
-        'Client-Id: ' . $client_id,
-        'Content-Type: application/json'
-    ]);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_HEADER, false);
+// function post_with_data_ozon($token, $client_id, $data, $url) {
+//     $ch = curl_init('https://api-seller.ozon.ru/' . $url);
+//     curl_setopt($ch, CURLOPT_HTTPHEADER, [
+//         'Api-Key: ' . $token,
+//         'Client-Id: ' . $client_id,
+//         'Content-Type: application/json'
+//     ]);
+//     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+//     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+//     curl_setopt($ch, CURLOPT_HEADER, false);
 
-    $response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+//     $response = curl_exec($ch);
+//     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//     curl_close($ch);
 
-    if (intdiv($http_code, 100) !== 2) {
-        return false;
-    }
-    return json_decode($response, true);
-}
+//     if (intdiv($http_code, 100) !== 2) {
+//         return false;
+//     }
+//     return json_decode($response, true);
+// }
 
 // ---------------------------------------------------------------------
 // Проверка токена Ozon (нужны права Report и Product)

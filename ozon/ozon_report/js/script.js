@@ -4,7 +4,7 @@ document.getElementById('dateForm').addEventListener('submit', function(e) {
     
     const startDate = new Date(document.getElementById('startDate').value);
     const endDate = new Date(document.getElementById('endDate').value);
-    const client_id = document.getElementById('clientId').value;
+    const data = document.getElementById('data').value;
 
     if (startDate && endDate) {
         if (startDate > endDate) {
@@ -29,7 +29,7 @@ document.getElementById('dateForm').addEventListener('submit', function(e) {
         const params = new URLSearchParams({
             dateFrom: start_date,
             dateTo: end_date,
-            clt: client_id
+            data: data
         });
 
        window.location.href = `?${params.toString()}`;

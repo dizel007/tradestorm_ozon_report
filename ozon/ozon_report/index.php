@@ -4,6 +4,7 @@
 *********************************************************************************************************/
 // echo  "ПРОШЛИ КОННЕКТ<br>";
 require_once ("../../main_info.php");
+require_once("../../_no_git/secret_info.php");
 require_once "../mp_functions/ozon_api_functions.php";
 require_once '../session_config.php';
 require_once("../auth_check.php");
@@ -31,19 +32,18 @@ $queryString = $_SERVER['QUERY_STRING'] ?? '';
 parse_str($queryString, $params);
 // echo "<pre>";
 // print_r($params);
+// // die();
+// 
 // находим ID клиента
-if (isset($params['clt']) AND ($params['clt'] !='')) {
-
-
-
+if (isset($params['data']) AND ($params['data'] !='')) {
 // Достаем токен и ИД клинета
-    $secret_client_id = $params['clt'];
+    $secret_client_id_repeat = $params['data'];
+    $secret_client_id = decryptData($params['data']);
+
 
     $sth = $pdo->prepare("SELECT * from `shops` WHERE id_clt_base64 =:id_clt_base64");
     $sth->execute(array("id_clt_base64" => $secret_client_id));
     $arr_tokens = $sth->fetch(PDO::FETCH_ASSOC);
-
-    
 
 //  echo "<pre>";
 // print_r($arr_tokens);
@@ -55,7 +55,7 @@ if (isset($params['clt']) AND ($params['clt'] !='')) {
     } 
     $client_id = $arr_tokens['client_id'];
     $token = $arr_tokens['ozon_token'];
-    $secret_client_id = $arr_tokens['id_clt_base64'];
+    $secret_client_id =  $arr_tokens['id_clt_base64'];
 // die('ffff');
 
 /**************************************************************************
@@ -91,7 +91,7 @@ $info_user_string = "\"".$data_ozon_user['company']['name']."\" ";
 // print_r($info_user_string);
 // die();
 
-    // Регенерация ID сессии для защиты от фиксации
+// Регенерация ID сессии для защиты от фиксации
     session_regenerate_id(true);
         $_SESSION['id_client'] = $client_id;
         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];      // для дополнительной привязки
@@ -99,7 +99,7 @@ $info_user_string = "\"".$data_ozon_user['company']['name']."\" ";
         $_SESSION['last_activity'] = time();
      
 } else {
-    
+    die('Не нашли файл с дssssssssssssssssssssssssssssssssssанными');
  header('Location: ../');
 
     die('Не нашли файл с данными');
@@ -123,20 +123,15 @@ if (isset($params['dateTo'])) {$date_to = $params['dateTo'];} else {$date_to = d
 
 // Настраиваем тип сортировки если он есть 
 if (isset($params['type_sort'])) {
-
     $type_sort = base64_decode($params['type_sort']);
- 
-    // Удаляем этот параметр
+     // Удаляем этот параметр
     unset($params['type_sort']);
     // формируем Query строку без этого парамаетра, чтобы он постоянно не прилипал к строке при кажой сортировке
-    $queryString = http_build_query($params);
-
-
-
+    // $queryString = http_build_query($params);
 } else {
    $type_sort = ''; 
 }
-
+// die('ffffffffffffffffffffffff');
 //// Отрисовываем форму вводы ДАТ
 echo <<<HTML
 
@@ -155,6 +150,9 @@ echo <<<HTML
     <div class="form-container">
      
         <form id="dateForm">
+            
+
+            
             <div class="form-content">
    
                 <div class="date-fields">
@@ -172,11 +170,11 @@ echo <<<HTML
                         <button type="submit" class="submit-btn">Запросить данные</button>
                  </div>
              </div>
-            <input hidden type="text" id = "clientId" value="$secret_client_id">
+           <input hidden type="text" id = "data" value="$secret_client_id_repeat">
         </form>
        </div>
     </div>
- <script src="css/script.js" type="text/javascript"></script>
+ <script src="js/script.js" type="text/javascript"></script>
 
 HTML;
 
@@ -220,21 +218,22 @@ $arr_data_sell_in_srtani_eaes = $arr_data_sell_in_srtani_eaes_temp['products'];
 $summa_prodannogo_v_strani_EAES = $arr_data_sell_in_srtani_eaes_temp['summa_prodannogo'];
 
 
-// echo "<pre>";
-// print_r($arr_data_sell_in_srtani_eaes);
-// die();
-// Берем из БД себестоимость и желаемую цену 
+//********************************************************************************************************************
+// Берем ОЗОНА себестоимость 
 require_once "get_sebestoimost.php";
-
+//********************************************************************************************************************
 // берем данные из файла
 $prod_array = json_decode(file_get_contents($file_name_ozon) ,true);
 
 // echo "<pre>";
 // print_r ($prod_array);
 
+
+
 require_once "razbor_dannih.php";
 
-die();
+// die();
+// 
 
 function query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to) {
     // echo "Период запроса с ($date_from) по  ($date_to)<br>";

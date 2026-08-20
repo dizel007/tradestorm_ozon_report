@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update->execute(['token' => $token, 'expiry' => $expiry, 'id' => $user['id']]);
 
             // Ссылка для сброса (замените на ваш домен)
-            $reset_link = "http://" . $_SERVER['HTTP_HOST'] . "".$domen_name."registration/reset_password.php?token=" . $token;
+            $reset_link = "https://" . $_SERVER['HTTP_HOST'] . "".$domen_name."registration/reset_password.php?token=" . $token;
 
             // Отправка письма
             $subject = "Восстановление пароля в TradeStorm";

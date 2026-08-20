@@ -229,9 +229,7 @@ echo "<tr data-article=\"" . htmlspecialchars($item_for_print['sku']) . "\" data
     // echo "<td>". $sku_for_instruction."<hr>".
 // ссылка по поартикульную таблицу расходов
 
-   echo "<td>"
-   .$item_for_print['sku'].
-   "</td>";
+   echo "<td>".$item_for_print['sku']."<br>".$item_for_print['mp_article']."</td>";
 
 //    .  "<a href=\"../ozon_report_po_article/index_ozon_razbor_article.php?data=".$url_encoded."\" target=\"_blank\">"
 //    .$item_for_print['sku']

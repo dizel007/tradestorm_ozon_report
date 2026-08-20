@@ -6,7 +6,7 @@
 // $ozon_sebest = get_catalog_tovarov_v_mp($ozon_shop, $pdo, 'all');
 // echo "<pre>";
 // print_r($prod_array);
-// die();
+// die('RAZBO DAANIJ');
 
 // делаем один последовательный массив в операциями
 foreach ($prod_array as $items) {

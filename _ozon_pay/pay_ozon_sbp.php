@@ -7,57 +7,83 @@ require_once "../_no_git/secret_info.php";
 // Формируем массиа для созжания платежа в озон банке
 //**********************************************************************************************/
 
-// ссылка для метода озон эквайринга
+
+; // ссылка для метода озон эквайринга
 $dateTime = new DateTime();
 $dateTime->modify('+15 minutes');
 $expiresAt = $dateTime->format('Y-m-d\TH:i:s\Z'); // Дата время окончания оплаты
-$extId = '22665986546464654213'; // Уникальный номер оплаты
-$amount = ['currencyCode' => '643', 'value' => 1*100];
+$extId = '111a1a1a1sцуцуцd12r'; // Уникальный номер оплаты
+
+$month_price = 1.99;
+
+$amount = ['currencyCode' => '643', 'value' => $month_price*100];
 $fingerprint = sprintf("%s%s%s%s%s%s%s%s", $accessKey, $expiresAt, $extId, $fiscalizationType, $paymentAlgorithm, $amount['currencyCode'], $amount['value'], $secretKey);
 $requestSign = hash('sha256', $fingerprint);
 
 // Адреса перехода при удачно и неудачной оплате
-$successUrl = "https://tradestorm.ru/_ozon_pay/pay_ok_ozon.php/?order_number=".$extId;
+$redirectUrl = "https://tradestorm.ru/_ozon_pay/pay_ok_ozon.php/?order_number_edirectUrlr=".$extId;
+$successUrl = "https://tradestorm.ru/_ozon_pay/pay_ok_ozon.php/?order_number_successUrl22=".$extId;
+
 $failUrl    = "https://tradestorm.ru/_ozon_pay/pay_false_ozon.php?order_number=".$extId;
 
-// данные товаров
-
-$array_items[] = array ( 
-        "extId"=>    '1 month' ,
-        "name"=>     'оплата за 1 месяц',
-        "price"=>    ['currencyCode' => '643', 'value' => 1*100], 
-        "quantity"=> 1,
-        "type"=>     "TYPE_SERVICE",
-        "unitType"=> "UNIT_PIECE",
-        "vat"=>      "VAT_NONE"
-      );
 
 
+$order = array(
+"amount"=> $amount,
+"enableFiscalization" => false,
+"expiresAt" =>   $expiresAt,  //Дата истечения платёжной ссылки заказа.
+
+"failUrl" => $failUrl,
+"items"=> array (
+    "name" => "Оплата за месяц",
+    "price"=> $amount,
+    "quantity" => 1,
+    "type" => 'TYPE_SERVICE', // услуга
+    "vat" => 'VAT_NONE'
+    ),
+ "paymentAlgorithm" => $paymentAlgorithm,
+ "successUrl" => $successUrl,
+);
 
 
 
 $send_data = array (
+// *************** required
 "accessKey"=> $accessKey,
 "amount"=> $amount,
-"enableFiscalization"=> false,
-"expiresAt"=> $expiresAt,
-"extId"=> $extId ,
-"failUrl"=> $failUrl,
-"fiscalizationPhone"=> "79122020299",
+"extId" => '111a1a1a1sцуцуцd12r',
+"order" => $order,
+
+"payType" => "SBP",
+"redirectUrl" => $redirectUrl,
+"requestSign" => $requestSign,
+
+
+// *************** END  required
+
+
+
+// "expiresAt"=> $expiresAt,
+// "extId"=> $extId ,
+// "failUrl"=> $failUrl,
+// "fiscalizationPhone"=> "79122020299",
 "fiscalizationType"=> $fiscalizationType,
-"items"=> $array_items,
+
 "mode"=> "MODE_FULL",
 "paymentAlgorithm"=> $paymentAlgorithm,
 "receiptEmail" =>"dizel007@yandex.ru",
-"requestSign" => $requestSign,
-"successUrl"=> $successUrl
+
 
 );
 
+
+echo  "<pre>";
+
+print_r($send_data);
 $send_json = json_encode($send_data);
 
 
-$result_query_finance_ozon = ozonFinancePaycreateOrder($send_json) ;
+$result_query_finance_ozon = ozonFinancePayCreateSbpPayment($send_json) ;
 // вносим ссылку на оплату в заказ 
 // $stmt = $pdo->prepare("UPDATE orders SET link_ozon_finance = :link_ozon_finance WHERE order_number = :extId");
 // $stmt->execute([
@@ -81,8 +107,8 @@ die();
 *********  Функция обновляния данных на ОЗОН
 ************************************************************************************************************** */
 
-function ozonFinancePaycreateOrder($send_data) {
-$ozon_link = 'https://payapi.ozon.ru/v1/createOrder';
+function ozonFinancePayCreateSbpPayment($send_data) {
+$ozon_link = 'https://payapi.ozon.ru/v1/createPayment';
 	$ch = curl_init($ozon_link);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		// 'Api-Key:' . '',

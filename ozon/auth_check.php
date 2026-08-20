@@ -1,6 +1,7 @@
 <?php
 // auth_check.php – проверка авторизации и получение данных пользователя
 
+require_once "../../registration/functions.php";
 if (session_status() === PHP_SESSION_NONE) {
         // Устанавливаем сесии
     

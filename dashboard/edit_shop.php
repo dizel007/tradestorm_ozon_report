@@ -1,7 +1,8 @@
 <?php
 require_once("../main_info.php");
 require_once("../vendor/autoload.php");
-require_once("functions.php");
+require_once("../ozon/mp_functions/ozon_api_functions.php");
+require_once("../registration/functions.php");
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -27,7 +28,7 @@ if (isset($_SESSION['user_id'])) {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 if (!$user) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit();
 }
 
@@ -71,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         } elseif ($action === 'delete_shop') {
             $update = $pdo->prepare("UPDATE `shops` SET `deleted` = 1 WHERE `id` = :id AND `seller_id` = :seller_id");
             $update->execute(['id' => $shop_id, 'seller_id' => $user['id']]);
-            header('Location: index.php?deleted=1');
+            header('Location: dashboard.php?deleted=1');
             exit();
         }
     }
@@ -160,14 +161,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         <!-- Блок с кнопкой удаления и ссылкой назад -->
         <div class="bottom-actions">
             <div class="left">
-                <form action="#" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить этот магазин? Это действие можно отменить только через поддержку.');">
+                <form action="#" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить этот магазин?');">
                     <input type="hidden" name="action" value="delete_shop">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
                     <button type="submit" class="delete-btn-small">🗑 Удалить</button>
                 </form>
             </div>
             <div class="right">
-                <a href="index.php">← Вернуться к списку</a>
+                <a href="dashboard.php">← Вернуться к списку</a>
             </div>
         </div>
     </div>

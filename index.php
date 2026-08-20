@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аналитика маркетплейсов – отчёты по продажам, юнит-экономика, FBS | TradeStorm</title>
+    <title>TradeStorm | Аналитика маркетплейсов – отчёты по продажам, юнит-экономика</title>
     <meta name="description" content="Лучшая аналитика для Ozon: детальные отчёты по продажам, комиссиям, логистике и FBS. Автоматический сбор данных через API, юнит-экономика по каждому товару.">
     <meta name="keywords" content="аналитика Ozon, отчёты по продажам Ozon, юнит-экономика, FBS аналитика, комиссии Ozon, автоматизация маркетплейсов, TradeStorm">
     <link rel="stylesheet" href="css/style.css">
@@ -195,6 +195,13 @@
                     <a href="mailto:info@tradestorm.ru">info@tradestorm.ru</a>
                     <p>г. Екатеринбург, ул.Бебеля, 11Б<br> офис 2405</p>
                 </div>
+               <div>
+                    <h3>Реквизиты</h3>
+                    <p>ИП Зелизко Дмитрий Иванович⁠</p>
+                    <p>ИНН: 860223446952</p>
+                    <p>Адрес: Свердловская область, город Екатеринбург</p>
+                </div>
+
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 TradeStorm. Все права защищены.</p>

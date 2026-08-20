@@ -1,6 +1,5 @@
 <?php
 
-
 // echo  "ПРОШЛИ КОННЕКТ<br>";
 // require_once ("../main_info.php");
 require_once '../pdo_functions/pdo_functions.php'; // подключаем функции  взаимодейцстя  с БД
