@@ -1,7 +1,170 @@
 <?php
-// require_once 'config.php';
-require_once "../_no_git/secret_info.php";
 
+// echo  "ПРОШЛИ КОННЕКТ<br>";
+
+require_once ("../main_info.php");
+require_once "../_no_git/secret_info.php";
+require_once("../vendor/autoload.php");
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
+// Проверка, авторизован ли уже пользователь
+$user = null;
+$autoLogin = false;
+
+if (isset($_SESSION['user_id'])) {
+    $stmt = $pdo->prepare("SELECT * FROM `sellers` WHERE `id` = :id");
+    $stmt->execute(['id' => $_SESSION['user_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($user) {
+        $autoLogin = true;
+    } else {
+        session_destroy();
+    }
+}
+
+if (!$autoLogin && isset($_COOKIE['remember_token'])) {
+    $token = $_COOKIE['remember_token'];
+    $stmt = $pdo->prepare("SELECT * FROM `sellers` WHERE `remember_token` = :token AND `remember_token_expiry` > NOW()");
+    $stmt->execute(['token' => $token]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($user) {
+        $_SESSION['user_id'] = $user['id'];
+        $autoLogin = true;
+        setRememberToken($pdo, $user['id']);
+    } else {
+        setcookie('remember_token', '', time() - 3600, '/', '', false, true);
+    }
+}
+
+if ($autoLogin && $user) {
+    // Уже авторизован, перенаправляем на dashboard
+    $id_shop = (decryptData($_GET['data']) ?? '');
+    $period = trim($_GET['period'] ?? '');
+}
+
+
+//*********************************************************************************************************** */
+// запрашиваем ценe на продление за выбранный период
+//*********************************************************************************************************** */
+     if (empty($period)) {
+        die ('Не смогли определить период для оплаты');
+     }
+
+    $stmt = $pdo->prepare("SELECT `price_count` FROM `prices` WHERE `price_name` = :price_name");
+    $stmt->execute(['price_name' => $period]);
+    $arr_summa = $stmt->fetch(PDO::FETCH_ASSOC);
+    $summa = $arr_summa['price_count']*100; // сумма для оплаты
+
+if ($summa < 50) {
+     die ('Не смогли определить сумму для оплаты');
+}
+
+
+//*********************************************************************************************************** */
+// dвытаскиваем ID магазина, для которого будем проблять период
+//*********************************************************************************************************** */
+     if (empty($id_shop)) {
+        die ('Не смогли найти магазин для оплаты');
+     }
+
+    $stmt = $pdo->prepare("SELECT * FROM `shops` WHERE `id` = :id_shop");
+    $stmt->execute(['id_shop' => $id_shop]);
+    $shop = $stmt->fetch(PDO::FETCH_ASSOC);
+echo "<pre>";
+print_r($shop);
+
+
+//*********************************************************************************************************** */
+// вытаскиваем почту плательщика 
+//*********************************************************************************************************** */
+$seller_id = $shop['seller_id'];
+     if (empty($seller_id)) {
+        die ('Не смогли найти почту плательщика');
+     }
+
+    $stmt = $pdo->prepare("SELECT email FROM `sellers` WHERE `id` = :seller_id");
+    $stmt->execute(['seller_id' => $seller_id]);
+    $email_array = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$email = $email_array['email'];
+echo "<pre>";
+print_r($email);
+
+
+
+
+
+
+//**********************************************************************************************
+// Формируем массив для создания заказа в БД
+//**********************************************************************************************/
+
+    $subscription_start = date('Y-m-d H:i:s');
+    $subscription_end = date('Y-m-d H:i:s', strtotime('+7 days'));
+    $product_name = 'paid for: '. $period;
+    $orderNumber = 'ord-' . date('Ymd') . '-'. $shop['seller_id']. '-'. $shop['client_id'].'-'. uniqid();
+   
+
+
+// Подготавливаем запрос (исправлены плейсхолдеры)
+$insert = $pdo->prepare("INSERT INTO `paid_orders` 
+    (`client_id`, `user_email`, `shop_id`,  `summa`, `created_at`, `order_number`, `status`, `updated_at`, `product_name`)
+    VALUES (:client_id, :user_email, :shop_id, :summa, :created_at, :order_number, :status, :updated_at, :product_name)");
+
+// Выполняем с корректными данными
+$insert->execute([
+    'client_id'    => 1,
+    'user_email'   => 'user@example.com', // или из сессии
+    'shop_id'      => 1,
+    'summa'      => $summa,
+    'created_at'   =>   $subscription_start,
+    'order_number' => $orderNumber,
+    'status'       => 1, // можно константой: STATUS_NEW = 1
+    'updated_at'   =>  $subscription_end ,
+    'product_name' => $product_name,
+]);
+
+
+
+
+    // $subscription_start = date('Y-m-d H:i:s');
+    // $subscription_end = date('Y-m-d H:i:s', strtotime('+7 days'));
+    // $subscription_status = 'trial';
+    // $secret_token = base64_encode($token);
+
+    // $insertShop = $pdo->prepare("INSERT INTO `shops` 
+    //     (`seller_id`, `client_id`, `ozon_token`, `id_clt_base64`, `date`, `subscription_start`, `subscription_end`, `subscription_status`)
+    //     VALUES (:seller_id, :client_id, :ozon_token, :id_clt_base64, :date, :start, :end, :status)");
+    // try {
+    //     $insertShop->execute([
+    //         'seller_id' => $userId,
+    //         'client_id' => $client_id,
+    //         'ozon_token' => $token,
+    //         'id_clt_base64' => $secret_token,
+    //         'date' => date('Y-m-d H:i:s'),
+    //         'start' => $subscription_start,
+    //         'end' => $subscription_end,
+    //         'status' => $subscription_status
+    //     ]);
+    // } catch (PDOException $e) {
+    //     if ($e->errorInfo[1] == 1062) {
+    //         $error = "Этот магазин (Client ID) уже добавлен.";
+    //     } else {
+    //         $error = "Ошибка добавления магазина: " . $e->getMessage();
+    //     }
+    //     if (isset($userId)) {
+    //         $pdo->prepare("DELETE FROM `sellers` WHERE `id` = ?")->execute([$userId]);
+    //     }
+    // }
 
 //**********************************************************************************************
 // Формируем массиа для созжания платежа в озон банке
@@ -56,7 +219,7 @@ $send_data = array (
 
 $send_json = json_encode($send_data);
 
-
+die('<br>JNGHFDRF V OZON');
 $result_query_finance_ozon = ozonFinancePaycreateOrder($send_json) ;
 // вносим ссылку на оплату в заказ 
 // $stmt = $pdo->prepare("UPDATE orders SET link_ozon_finance = :link_ozon_finance WHERE order_number = :extId");

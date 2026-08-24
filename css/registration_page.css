@@ -145,10 +145,26 @@ button :hover {
     font-weight: 500;
     transition: 0.2s;
 }
+
+.instruction_link_white {
+    border-radius: 10px;
+    color: #007bff;
+    background: #fcfcfc;
+    border: 1px solid #007bff;
+}
+
 .instruction_link:hover {
     background: #0056b3;
     text-decoration: none;
 }
+
+.instruction_link_white:hover {
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+
+}
+
 .instruction_text {
     margin-top: 15px;
     font-size: 13px;
@@ -410,5 +426,14 @@ td form {
     .toggle-btn {
         font-size: 16px;
         padding: 10px;
+    }
+    .none_see {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .none_see {
+        display: none;
     }
 }

@@ -7,13 +7,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-try {
-    $pdo = new PDO('mysql:host=' . $host . ';dbname=' . $db . ';charset=utf8', $user, $password);
-    $pdo->exec('SET NAMES utf8');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Ошибка подключения к БД: " . $e->getMessage());
-}
 
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -158,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/registration_page.css">
 </head>
 <body>
-    <div class="pdf-download-container">
+    <div class="pdf-download-container none_see">
         <a href="../ozon/files/doc1.pdf" download class="pdf-download-btn">
             <svg class="pdf-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                 <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
@@ -166,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Скачать инструкцию по подключению (PDF)
         </a>
     </div>
-    <div class="pdf-download-container2">
+    <div class="pdf-download-container2 none_see">
         <a href="../ozon/files/doc2.pdf" download class="pdf-download-btn">
             <svg class="pdf-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                 <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
@@ -227,15 +220,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <button type="submit">Зарегистрироваться</button>
             </form>
-        </div>
 
-        <div class="instruction">
-            <a class="instruction_link" href="https://seller.ozon.ru/app/settings/api-keys" target="_blank">Ссылка в личный кабинет Ozon</a>
+                    <div class="instruction">
+            <a class="instruction_link instruction_link_white" href="https://seller.ozon.ru/app/settings/api-keys" target="_blank">Ссылка в личный кабинет Ozon</a>
             <p class="instruction_text">
                 * Для получения отчетов требуется сгенерировать ключ (ozon_token) с типами токена <b>Admin read-only</b>. 
-                Ключ отобразится только 1 раз. С типом токена Report можно только смотреть отчеты Ozon, никаких изменений в кабинете произвести не получится.
+                Ключ отобразится только 1 раз. Никаких изменений в кабинете произвести не получится.
             </p>
         </div>
+        
+        </div>
+
+
     </div>
 
     <script>

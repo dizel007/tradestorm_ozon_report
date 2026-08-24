@@ -1,3 +1,34 @@
+
+<?php
+// echo  "ПРОШЛИ КОННЕКТ<br>";
+
+require_once ("main_info.php");
+require_once "_no_git/secret_info.php";
+require_once("vendor/autoload.php");
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+try {
+    $pdo = new PDO('mysql:host=' . $host . ';dbname=' . $db . ';charset=utf8', $user, $password);
+    $pdo->exec('SET NAMES utf8');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Ошибка подключения к БД: " . $e->getMessage());
+}
+//*********************************************************************************************************** */
+// запрашиваем цены на продление
+//*********************************************************************************************************** */
+
+    $stmt = $pdo->prepare("SELECT * FROM `prices` ");
+    $stmt->execute([]);
+    $prices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ( $prices as $price) {
+        $catalog_price[$price['price_name']]= $price['price_count'];
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -153,7 +184,7 @@
                 </div>
                 <div class="tariff-card recommended">
                     <h3>Месячный</h3>
-                    <div class="price">1 299 ₽</div>
+                    <div class="price"><?= $catalog_price['month'] ?> ₽</div>
                     <div class="period">в месяц</div>
                     <ul>
                         <li>Все функции пробного</li>
@@ -166,7 +197,7 @@
 
                                 <div class="tariff-card">
                     <h3>Годовой</h3>
-                    <div class="price">13188</div>
+                    <div class="price"><?= $catalog_price['year'] ?></div>
                     <div class="period">1 год</div>
                     <ul>
                         <li>Полный доступ к отчётам</li>

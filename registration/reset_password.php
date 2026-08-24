@@ -18,19 +18,19 @@ try {
 
 $error = null;
 $success = false;
-$token = $_GET['token'] ?? '';
-
-if (empty($token)) {
+$reset_token = $_GET['token'] ?? '';
+if (empty($reset_token)) {
     die("Неверная ссылка восстановления.");
 }
 
 // Проверяем токен
-$stmt = $pdo->prepare("SELECT id FROM `sellers` WHERE `reset_token` = :token AND `reset_token_expiry` > NOW()");
-$stmt->execute(['token' => $token]);
+$stmt = $pdo->prepare("SELECT id FROM `sellers` WHERE `reset_token` = :reset_token AND `reset_token_expiry` > NOW()");
+$stmt->execute(['reset_token' => $reset_token]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
 if (!$user) {
+    // echo date('Y-m-d H:m:s');
     die("Ссылка недействительна или истекла. Запросите восстановление заново.");
 }
 

@@ -206,8 +206,7 @@ foreach ($clients as &$client) {
     $client['is_subscription_active'] = strtotime($client['subscription_end']) > time();
     // Общая активность магазина (не удалён и подписка активна)
     $client['is_active'] = ($client['deleted'] == 0 && $client['is_subscription_active']);
-    $client['data_clt'] = encryptData($client['id_clt_base64']); ;
-
+    $client['data_clt'] = encryptData($client['id']); ;
 
     }
 unset($client);
@@ -320,7 +319,7 @@ unset($client);
                                         ✏️ Редактировать
                                     </a>
                                 <?php else: ?>
-                                    <a href="../_ozon_pay/form_pay_order.php" class="table-action-btn btn-pay" style="background: #ffc107; color: #212529;">
+                                    <a href="../_ozon_pay/form_pay_order.php?data=<?=  urlencode($client['data_clt'])   ?>" class="table-action-btn btn-pay" style="background: #ffc107; color: #212529;">
                                         💳 Продлить
                                     </a>
                                 <?php endif; ?>
