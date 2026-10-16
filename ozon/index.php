@@ -1,3 +1,3 @@
 <?php
-// переход на регистрацию с этой папк
-header('Location: ../registration/', true, 301);
+        header('Location: ../registration/index.php');
+        exit();

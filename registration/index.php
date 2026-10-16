@@ -1,12 +1,21 @@
 <?php
 require_once("../main_info.php");
+require_once("../_no_git/secret_info.php");
 require_once("../vendor/autoload.php");
-require_once("functions.php");
+require_once("../registration/functions.php");
+
+use App\Ozon\OzonClient;  
+use App\Ozon\Service\FinanceService;
+
+
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// echo "<pre>";
+// print_r($_POST);
+// die();
 
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -44,7 +53,7 @@ if (!$autoLogin && isset($_COOKIE['remember_token'])) {
 
 if ($autoLogin && $user) {
     // Уже авторизован, перенаправляем на dashboard
-    header('Location: ../dashboard/dashboard.php');
+    header('Location: ../dashboard/');
     exit();
 }
 
@@ -68,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($user && password_verify($password, $user['password_hash'])) {
                     $_SESSION['user_id'] = $user['id'];
                     setRememberToken($pdo, $user['id']);
-                    header('Location: ../dashboard/dashboard.php');
+                    header('Location: ../dashboard');
                     exit();
                 } else {
                     $error = "Неверный email или пароль";
@@ -84,12 +93,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $error = "Некорректный email";
             } else {
+
+
                 $stmt = $pdo->prepare("SELECT id FROM `sellers` WHERE `email` = :email");
                 $stmt->execute(['email' => $email]);
                 if ($stmt->fetch()) {
+
                     $error = "Пользователь с таким email уже зарегистрирован";
                 } else {
-                    $priznak = check_ozon_token($token, $client_id, $pdo);
+                    
+///////////////////////////////////////////////////////////////////
+
+
+$priznak = 0;
+$today = date('Y-m-d');
+$ozon    = new OzonClient($token, $client_id);
+$finance = new FinanceService($ozon);
+
+$temp_priz = $finance->getAccrualsByDay( $today,  $today, '');
+if (isset($temp_priz['last_id'])) {$priznak++;}
+
+    // Проверка Product
+    $data = ["cursor" => "","filter" => ["visibility" => "ALL"], "limit" => 1];
+    $temp_priz_2 = $ozon->post("v5/product/info/prices", $data);
+if (isset($temp_priz_2['items'][0])) {$priznak++;}
+
+/////////////////////////////////////////////////////////////////////////////
+
                     if ($priznak == 2) {
                         $password_hash = password_hash($password, PASSWORD_DEFAULT);
                         $insert = $pdo->prepare("INSERT INTO `sellers` (`email`, `password_hash`) VALUES (:email, :password_hash)");
@@ -130,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $_SESSION['user_id'] = $userId;
                             setRememberToken($pdo, $userId);
                             send_many_emails('dizel007@yandex.ru', 'Новая регистрация в TradeStorm', 'Новый пользователь: ' . $email, $mail_for_send_letter, $mail_pass);
-                            header('Location: ../dashboard/dashboard.php');
+                            header('Location: ../dashboard');
                             exit();
                         }
                     } else {
@@ -141,6 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">

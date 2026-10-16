@@ -1,0 +1,34 @@
+        .form-wrapper { max-width: 600px; }
+        .back-link { display: inline-block; margin-top: 20px; }
+        /* Маленькая красная кнопка удаления */
+        .delete-btn-small {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            font-size: 0.8em;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .delete-btn-small:hover {
+            background: #b52d3a;
+        }
+        .bottom-actions {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bottom-actions .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .bottom-actions .right a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .bottom-actions .right a:hover {
+            text-decoration: underline;
+        }

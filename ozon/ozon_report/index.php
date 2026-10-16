@@ -1,137 +1,97 @@
 <?php
-/**********************************************************************************************************
- *     ***************    Получаем массив всех транзакций
-*********************************************************************************************************/
+
+
 // echo  "ПРОШЛИ КОННЕКТ<br>";
+require_once("../../_no_git/secret_info.php");
 require_once ("../../main_info.php");
 require_once("../../_no_git/secret_info.php");
-require_once "../mp_functions/ozon_api_functions.php";
-require_once '../session_config.php';
 require_once("../auth_check.php");
+require_once '../../vendor/autoload.php';
+
+require_once "function_report/razbor_type_item.php";
+require_once "function_report/razbor_type_posting_number.php";
+
+use App\Ozon\OzonClient;
+use App\Ozon\Service\ProductService;
+use App\Ozon\Service\FinanceService;
 
 
-      try {  
-        $pdo = new PDO('mysql:host='.$host.';dbname='.$db.';charset=utf8', $user, $password);
-        $pdo->exec('SET NAMES utf8');
-        } catch (PDOException $e) {
-          print "Has errors: " . $e->getMessage();  die();
-        }
+/**********************************************************************************************************
+ *     ***************    Получаем массив всех транзакций
+ *********************************************************************************************************/
 
-
- $auth = checkAuth($pdo);
-if (!$auth['loggedIn']) {
-    header('Location: ../../registration/index.php');
-    exit();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-$user = $auth['user'];
+
+try {
+    $pdo = new PDO('mysql:host=' . $host . ';dbname=' . $db . ';charset=utf8', $user, $password);
+    $pdo->exec('SET NAMES utf8');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Ошибка подключения к БД: " . $e->getMessage());
+}
 
 
-$queryString = $_SERVER['QUERY_STRING'] ?? '';
-
-// Разобрать вручную
-parse_str($queryString, $params);
-// echo "<pre>";
-// print_r($params);
-// // die();
-// 
-// находим ID клиента
-if (isset($params['data']) AND ($params['data'] !='')) {
-// Достаем токен и ИД клинета
-    $secret_client_id_repeat = $params['data'];
-    $secret_client_id = decryptData($params['data']);
-
-
-    $sth = $pdo->prepare("SELECT * from `shops` WHERE id_clt_base64 =:id_clt_base64");
-    $sth->execute(array("id_clt_base64" => $secret_client_id));
-    $arr_tokens = $sth->fetch(PDO::FETCH_ASSOC);
-
-//  echo "<pre>";
-// print_r($arr_tokens);
-// die('ffff666');
-
-    // если не нашли клиетна в БД то уходим на начало
-    if (!isset($arr_tokens['client_id'])) {
-      header('Location: ../');  
-    } 
-    $client_id = $arr_tokens['client_id'];
-    $token = $arr_tokens['ozon_token'];
-    $secret_client_id =  $arr_tokens['id_clt_base64'];
-// die('ffff');
-
-/**************************************************************************
- *  высчитываем сколько дней до конца периода 
- ***************************************************************************/
-
-
-$timestamp1 = strtotime(date('Y-m-d'));
-$timestamp2 = strtotime($arr_tokens['subscription_end']);
-$diffDays = ($timestamp2 - $timestamp1) / 86400;
-$days = (int)$diffDays;
-$hoursFraction = ($diffDays - $days) * 24;
-$hours = (int)$hoursFraction;
-
-
-$time_to_end = "до конца оплаченного периода {$days} дней, {$hours} часов";
-$time_to_end = '';
-
-// echo "diffDays =$diffDays";
-
-/**************************************************************************
- *  достаем информацию о пользователе озона 
- ***************************************************************************/
-$info_user_string = '';
-$ozon_dop_url = "v1/seller/info";
-// $send_data =  "";
-// $send_data = json_encode($send_data);
-$data_ozon_user = post_with_data_ozon($token, $client_id, "", $ozon_dop_url);
-
-// $info_user_string = "\"".$data_ozon_user['company']['name']."\" (". $data_ozon_user['company']['ownership_form']." ". $data_ozon_user['company']['legal_name'].")";
-$info_user_string = "\"".$data_ozon_user['company']['name']."\" ";
-
-// print_r($info_user_string);
-// die();
-
-// Регенерация ID сессии для защиты от фиксации
-    session_regenerate_id(true);
-        $_SESSION['id_client'] = $client_id;
-        $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];      // для дополнительной привязки
-        $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-        $_SESSION['last_activity'] = time();
-     
+if (isset($_GET['data'])) {
+    $url_data = ($_GET['data']);
+    $stmt = $pdo->prepare("SELECT * FROM `shops` WHERE `id` = :id");
+    $stmt->execute(['id' => decryptData($_GET['data'])]);
+    $shop = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($shop) {
+        $autoLogin = true;
+        $token = $shop['ozon_token'];
+        $client_id = $shop['client_id'];
+        $seller_id = $shop['seller_id'];
+    } else {
+        session_destroy();
+    }
 } else {
-    die('Не нашли файл с дssssssssssssssssssssssssssssssssssанными');
- header('Location: ../');
-
-    die('Не нашли файл с данными');
+        header('Location: ../../registration/index.php');
+        exit();
 }
 
-$priznak_date = 1; 
+
+$ozon    = new OzonClient($token, $client_id);
+$product = new ProductService($ozon);
+$finance = new FinanceService($ozon);
+
+//===================================================================================================================
+// Получаем название кабинета в озоне 
+//===================================================================================================================
+
+  $info = $ozon->post("v1/seller/info");
+
+    if ($info && isset($info['company']['name'])) {
+        $seller_shop_name_from_ozon  = $info['company']['name'] ;
+    } else {
+        $seller_shop_name_from_ozon = 'Нет данных';
+    }
+
+ //**** получаем себестоимость товараов *****************************************************************************************************/
+$arr_article_products  = $product->getSebestoimostTovarov();
+//******************************************************************************************************
+//******************************************************************************************************
 // Настраиваем дату начала отпроса
-if (isset($params['dateFrom'])) { $date_from = $params['dateFrom'];} 
-else {
+if (isset($_GET['dateFrom'])) {
+    $date_from = $_GET['dateFrom'];
+} else {
     $date = date('Y-m-d');
     $day = '01';
     $month = date('m', strtotime($date));
     $year = date('Y', strtotime($date));
-    $date_from = $year.'-'.$month.'-'.$day;
-    $priznak_date = 0; 
-    
+    $date_from = $year . '-' . $month . '-' . $day;
+    $priznak_date = 0;
 }
 
 // Настраиваем дату окончания
-if (isset($params['dateTo'])) {$date_to = $params['dateTo'];} else {$date_to = date('Y-m-d');}
-
-// Настраиваем тип сортировки если он есть 
-if (isset($params['type_sort'])) {
-    $type_sort = base64_decode($params['type_sort']);
-     // Удаляем этот параметр
-    unset($params['type_sort']);
-    // формируем Query строку без этого парамаетра, чтобы он постоянно не прилипал к строке при кажой сортировке
-    // $queryString = http_build_query($params);
+if (isset($_GET['dateTo'])) {
+    $date_to = $_GET['dateTo'];
 } else {
-   $type_sort = ''; 
+    $date_to = date('Y-m-d');
 }
-// die('ffffffffffffffffffffffff');
+
+
 //// Отрисовываем форму вводы ДАТ
 echo <<<HTML
 
@@ -139,22 +99,23 @@ echo <<<HTML
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/form_dates.css">
-    <title>TradeStorm - аналитика</title>
     
+    <link rel="stylesheet" href="css/form_dates.css?v=<?php echo filemtime('css/form_dates.css'); ?>">
+    <link rel="stylesheet" href="css/sku_table.css?v=<?php echo filemtime('css/sku_table.css'); ?>">
+
+
+
+
+    <title>OZON - аналитика</title>
 </head>
 <body>
     <div class="table-container">
-         <div class="info_about_client">$info_user_string  $time_to_end</div>
+         <div class="info_about_client">$seller_shop_name_from_ozon</div>
   
     <div class="form-container">
-     
-        <form id="dateForm">
-            
+        <form id="dateForm" method="get">
 
-            
             <div class="form-content">
-   
                 <div class="date-fields">
                     <div class="date-group">
                         <label for="startDate" class="date-label">Начальная дата</label>
@@ -165,163 +126,122 @@ echo <<<HTML
                         <input type="date" id="endDate" class="date-input" value="$date_to" required>
                   </div>
                 </div>
-                
+
                  <div class="date-group">
                         <button type="submit" class="submit-btn">Запросить данные</button>
                  </div>
              </div>
-           <input hidden type="text" id = "data" value="$secret_client_id_repeat">
+            <input hidden type="text" id="url_data" value="$url_data">
+
         </form>
        </div>
     </div>
- <script src="js/script.js" type="text/javascript"></script>
+
+<script src="js/script.js?v= <?php echo filemtime('js/script.js'); ?>"></script>
 
 HTML;
 
-// die();
-if ($priznak_date == 0)  {die ('');} 
-
-
-
-$path_for_user = "../!cache" ."/".$client_id;
-
-if (!is_dir($path_for_user)) {
-    mkdir($path_for_user, 0777, true); // 0777 - права доступа (при необходимости)
+if (!isset($_GET['dateFrom'], $_GET['dateTo'])) {
+    die('');
 }
 
+    
 
-// формируем название папки и файла
-$file_name_ozon = $path_for_user."/".$client_id."_(".date('Y-m-d').")_main_data".".json";
-$file_name_ozon_inostran_prodazhi = $path_for_user."/".$client_id."_(".date('Y-m-d').")_inostran_prodazhi".".json";
-$file_name_ozon_small = $client_id."_(".date('Y-m-d').")";
+// =================================================================================
+//===============   запрашиваем баланс с ОЗОНа ========================================
+// =================================================================================
 
+$ozon_array_balance = $finance->getBalance($date_from, $date_to);
 
-// Непосредственный запрос данных с озона и сохранение данных в файл
-//*********************************************************************************************************************** */
-// если вернулись сюда с параметров изменения типа сортировки массива, то новые данные не запрашиваем
-if ($type_sort == '') {
-   
-        $prod_array = query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to);
-        file_put_contents($file_name_ozon,json_encode($prod_array, JSON_UNESCAPED_UNICODE));
-        if ($prod_array === false) {die('НЕТ ДАННЫХ для выдачи');} // Если нам ничего ОЗон не вернул
-}
-//*********************************************************************************************************************** */
+/******************************************************************************
+ *  ЗАПРОС фин отчета по проанным товарам  С ОЗОНА (ВСЕ ДАТЫ)
+ ******************************************************************************/
 
-
-// Тянем данные по товаром проданным в страны ЕАЭС
-$arr_data_sell_in_srtani_eaes_temp = get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to, $file_name_ozon_inostran_prodazhi);
-if (isset($arr_data_sell_in_srtani_eaes_temp['products'])) {
-$arr_data_sell_in_srtani_eaes = $arr_data_sell_in_srtani_eaes_temp['products'];
+//  Запрос товаров проданных в РФ
+$dir = '../!cache/' . "sellet_".$seller_id;
+if (!is_dir($dir)) {
+    mkdir($dir, 0775, true);
 }
 
+$file_name_ozon_mainSell = $dir . '/' . $client_id . '_main_data.json';
+$finance->getAccrualsByDay( $date_from,  $date_to, $file_name_ozon_mainSell);
 
-$summa_prodannogo_v_strani_EAES = $arr_data_sell_in_srtani_eaes_temp['summa_prodannogo'];
+$data_by_days = json_decode(file_get_contents($file_name_ozon_mainSell), true);
+
+//  Запрос инстранных товаров
+
+$file_name_ozon_inostran_prodazhi = $dir . '/' .$client_id . "_ino_main_data" . ".json";
+
+$arr_sell_v_strani_EAES =  $finance->getBuyoutEaes( $date_from,  $date_to, $file_name_ozon_inostran_prodazhi);
+/******************************************************************************
+ * КОНЕЦ запроса данных с озона (ВСЕ ДАТЫ)
+ ******************************************************************************/
 
 
-//********************************************************************************************************************
-// Берем ОЗОНА себестоимость 
-require_once "get_sebestoimost.php";
-//********************************************************************************************************************
-// берем данные из файла
-$prod_array = json_decode(file_get_contents($file_name_ozon) ,true);
+ /// Разбиваем массив по категориям расходов ///////////////////////////////
+foreach ($data_by_days as $one_data) {
+    $category[$one_data['accrued_category']] = $one_data['accrued_category'];
+    if (isset($one_data['accrued_category'])) {
+        $arr_by_accrued_category[$one_data['accrued_category']][] = $one_data;
+    } else {
+        $arr_other[] = $one_data;  // или любой другой массив
+    }
+}
+////////////////////////////////////////////////////////////////////
+if (isset($arr_other)) {
+    echo "<br>НАйден массив без категории<br>";
+}
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// берем из JSON файла статьи всех расходов с ID и названием и описанием
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+$type_fees = json_decode(file_get_contents('spravochnik/types_spend.json'), true);
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//  Разбираем массив по категориям затрат
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+if (isset ($arr_by_accrued_category['ITEM'])) {
+    $sum_array = razbor_ITEM_category($sum_array, $arr_by_accrued_category['ITEM'], $type_fees);
+}
+if (isset ($arr_by_accrued_category['NON_ITEM'])) {
+$sum_array = razbor_NON_ITEM_category($sum_array, $arr_by_accrued_category['NON_ITEM'], $type_fees);
+}
+if (isset ($arr_by_accrued_category['POSTING'])) {
+$sum_array = razbor_POSTING_category($sum_array, $arr_by_accrued_category['POSTING'], $type_fees);
+}
+foreach ($sum_array as $item_sum) {
+    foreach ($item_sum as $key_sum=>$sum) {
+        @$sum_array_al_data[$key_sum] += $sum;
+   }
+}
+
+//===============================================================================================
+// цепляем иностарнные продажи *************************
+//===============================================================================================
+$ino_summa = 0;
+if (isset ($arr_sell_v_strani_EAES['products'])) {
+foreach ($arr_sell_v_strani_EAES['products'] as $ino_sku=>$ino_tovar) {
+    foreach ($sum_array as $sku=>&$tovar) {
+        if ($ino_sku == $sku) {
+            $tovar['ino_prodazhi'] = $ino_tovar['amount'];
+            $ino_summa += $ino_tovar['amount'];
+            break 1;
+        }
+    }
+}
+
+}
+$sum_array_to_redakt = $sum_array;
+
+/******************************************************************************************
+ * выводим на печать нашу таблицу
+ * весь вывод сделал в отдельном файле
+ * 
+ ****************************************************************************************/
 // echo "<pre>";
-// print_r ($prod_array);
+// print_r($ozon_array_balance );
 
+require_once "print_info/print_sku_table.php";
 
-
-require_once "razbor_dannih.php";
-
-// die();
-// 
-
-function query_report_data_from_api_ozon($token, $client_id, $date_from, $date_to) {
-    // echo "Период запроса с ($date_from) по  ($date_to)<br>";
-$ozon_link = 'v3/finance/transaction/list';
-$send_data = array(
-    "filter" => array(
-        "date" => array (
-            "from" => $date_from."T00:00:00.000Z",
-            "to"=> $date_to."T00:00:00.000Z"
-    ),
-        "operation_type" => [],
-        "posting_number" => "",
-        "transaction_type" => "all"
-    ),
-    "page" => 1,
-    "page_size" => 1000
-);
-
-
-$send_data = json_encode($send_data);
-$res = send_injection_on_ozon($token, $client_id, $send_data, $ozon_link );
-
-// если ошибка при обмене то выводим е
-if (isset($res['message'])) {
-    // echo "<pre>";
-    print_r($res);
-    die('ОШИБКА ПРИ ЗАПРОСЕ');
-}
-
-$page_count = $res['result']['page_count'];
-// $row_count = $res['result']['row_count'];
-for ($i=1; $i <=$page_count; $i ++) {
-    $send_data = array(
-        "filter" => array(
-            "date" => array (
-                "from" => $date_from."T00:00:00.000Z",
-                "to"=> $date_to."T00:00:00.000Z"
-        ),
-            "operation_type" => [],
-            "posting_number" => "",
-            "transaction_type" => "all"
-        ),
-        "page" => $i,
-        "page_size" => 1000
-    );
-    $send_data = json_encode($send_data);
-    $res = send_injection_on_ozon($token, $client_id, $send_data, $ozon_link );
-    $prod_array[] = $res['result']['operations'];
-
-}
-if (isset($prod_array)) {return  $prod_array;}
-else {return false;}
-}
-
-
-/*****************************************************************************************************************
- * Функция получения данных о продажах товаров в страны ЕАЭС 
- *****************************************************************************************************************/
-
-function get_data_sell_in_srtani_eaes($token, $client_id, $date_from, $date_to, $file_name_ozon_inostran_prodazhi)
-{
-    $ozon_dop_url = "v1/finance/products/buyout";
-    $send_data = '
-            {
-            "date_from": "' . $date_from . '",
-            "date_to": "' . $date_to . '"
-            }';
-    $arr_sell_v_strani_EAES = send_injection_on_ozon($token, $client_id, $send_data, $ozon_dop_url);
-
-    if (isset($arr_sell_v_strani_EAES)) {
-           file_put_contents($file_name_ozon_inostran_prodazhi,json_encode($arr_sell_v_strani_EAES, JSON_UNESCAPED_UNICODE));
-    }
-
-$summa_prodazh = 0;
-    foreach ($arr_sell_v_strani_EAES['products'] as $items) {
-        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['sku'] = $items['sku'];
-        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['offer_id'] = $items['offer_id'];
-        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['amount'] = @$new_arr_sell_v_strani_EAES['products'][$items['sku']]['amount'] + $items['amount'];
-        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['quantity'] = @$new_arr_sell_v_strani_EAES['products'][$items['sku']]['quantity'] + $items['quantity'];
-        $new_arr_sell_v_strani_EAES['products'][$items['sku']]['seller_price_per_instance'] = @$new_arr_sell_v_strani_EAES['products'][$items['sku']]['seller_price_per_instance'] + $items['seller_price_per_instance'];
-
-        $summa_prodazh = $summa_prodazh + $items['amount'];
-    }
- $new_arr_sell_v_strani_EAES['summa_prodannogo'] = $summa_prodazh;
- $new_arr_sell_v_strani_EAES['date_from'] = $date_from;
- $new_arr_sell_v_strani_EAES['date_to'] = $date_to;
-
-    unset ($arr_sell_v_strani_EAES);
-
-    return $new_arr_sell_v_strani_EAES;
-}
+die();
