@@ -7,6 +7,12 @@ require_once "../_no_git/secret_info.php";
 require_once("../vendor/autoload.php");
 require_once ("ozon_pay_function.php");
 
+use App\Ozon\OzonPay;
+
+
+
+// die('ddddddddddddddddddddfff');
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -32,6 +38,9 @@ if (isset($_SESSION['user_id'])) {
     }
 }
 
+
+
+
 if (!$autoLogin && isset($_COOKIE['remember_token'])) {
     $token = $_COOKIE['remember_token'];
     $stmt = $pdo->prepare("SELECT * FROM `sellers` WHERE `remember_token` = :token AND `remember_token_expiry` > NOW()");
@@ -51,6 +60,9 @@ if ($autoLogin && $user) {
     $id_shop = (decryptData($_GET['data']) ?? '');
     $period = trim($_GET['period'] ?? '');
 }
+
+
+
 
 
 //*********************************************************************************************************** */
@@ -78,6 +90,9 @@ if ($summa < 100) {
      die ('Не смогли определить сумму для оплаты');
 }
 
+// die('dddddddrtrt56rtrtdddddddddddddfff');
+
+
 //////////////////////////////////////////
 // $summa = 200; ///////////////////////////
 //////////////////////////////////////////
@@ -96,6 +111,9 @@ if ($summa < 100) {
 // print_r($shop);
 
 
+
+
+
 //*********************************************************************************************************** */
 // вытаскиваем почту плательщика 
 //*********************************************************************************************************** */
@@ -109,8 +127,10 @@ $seller_id = $shop['seller_id'];
     $email_array = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $email = $email_array['email'];
-// echo "<pre>";
-// print_r($email);
+
+
+
+// die('dddddddrtrt56rtrtdddddddddddddfff');
 
 //**********************************************************************************************
 // Формируем массив для создания заказа в БД
@@ -130,12 +150,14 @@ $email = $email_array['email'];
 // Проверяем, есть ли уже активный заказ для этого клиента и магазина
 //**********************************************************************************************/
 
-    $checkSql = "SELECT COUNT(*) FROM `paid_orders` 
-                 WHERE `client_id` = :client_id 
-                 AND `shop_id` = :shop_id 
-                 AND `summa` = :summa 
-                 AND `updated_at` > NOW() 
-                 AND `status` = 'readyForPay'"; // можно добавить условие на статус
+$checkSql = "SELECT COUNT(*) FROM `paid_orders` 
+             WHERE `client_id` = :client_id 
+             AND `shop_id` = :shop_id 
+             AND `summa` = :summa 
+             AND `created_at` >= NOW() - INTERVAL 15 MINUTE
+             AND `created_at` <= NOW()
+             AND `updated_at` > NOW() 
+             AND `status` = 'readyForPay'"; // можно добавить условие на статус
     $checkStmt = $pdo->prepare($checkSql);
     $checkStmt ->execute([
         'client_id' => $client_id,
@@ -148,7 +170,7 @@ $email = $email_array['email'];
 
 if ($activeCount > 0) {
     // Есть заказ на оплату – можно либо выдать сообщение, либо обновить существующую
-    echo "У данного клиента уже есть активная оплата для этого магазина";
+    // echo "У данного клиента уже есть активная оплата для этого магазина";
     // при необходимости можно продлить существующую запись, обновив subscription_end
    // переводим на оплату этого заказа сразу
 
@@ -166,8 +188,11 @@ if ($activeCount > 0) {
 
      $GetPayOrder = $stmt->fetch(PDO::FETCH_ASSOC) ?? '';
 
+// echo "<pre>";
+// print_r($GetPayOrder);
 
-       print_r( $GetPayOrder);
+// print_r($email);
+// die('<br>ddttttt');
 
 
      $order_id = $GetPayOrder['id'];
@@ -177,12 +202,8 @@ if ($activeCount > 0) {
      if (empty($payLink)) {
           echo ", но отсутствует ссылка на оплату";
     // отменяем этот заказа. Статус cancelled
-    
-echo "<br>*****************************************************<br>";
     $result_status_update = updateStatusOrderPay ($pdo, $order_id, 'cancelled');
     // echo  $result_status_update;
-echo "<br>*******************************************<br>";
-
      } else {
       
       header('Location: '.$payLink);
@@ -235,49 +256,43 @@ require_once "make_data_for_ozon_pay.php";
 // die('<br>JNGHFDRF V OZON');
 
 
+$ozon_payment = new OzonPay($shop['ozon_token'],$shop['client_id']);
+// echo "<pre>";
+// print_r($ozon_payment);
+
+$result_query_finance_ozon = $ozon_payment->post('v1/createOrder', $data_for_pay);
+
+// echo "<pre>";
+// print_r($result_query_finance_ozon);
+// $pay_order = $ozon_payment->post();
+
+
+
 // $result_query_finance_ozon = ozonFinancePaycreateOrder($send_json) ;
 
+
+if (isset($result_query_finance_ozon['order']['payLink'])) {
+    $payLink = $result_query_finance_ozon['order']['payLink'];
+
+// сохраняем ссылку на оплату в заказ и обновляем статус заказа
+updateStatusOrderPay ($pdo, $newId, 'readyForPay'); // обновляем статус заказа
+
+// добавляем ссылку на оплату в заказ
+updatePayLinkOrderPay ($pdo, $newId, $payLink); 
+}
+
+
+die();
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 $successUrl___ = "../_ozon_pay/pay_ok_ozon.php/?data=".urlencode(encryptData($extId));
 header('Location: '.$successUrl___);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if (isset($result_query_finance_ozon['order']['payLink'])) {
-    $payLink = $result_query_finance_ozon['order']['payLink'];
 
- // сохраняем ссылку на оплату в заказ и обновляем статус заказа
-
-updateStatusOrderPay ($pdo, $newId, 'readyForPay'); // обновляем статус заказа
-updatePayLinkOrderPay ($pdo, $newId, $payLink); // добавляем ссылку на оплату в заказ
-    // $update = $pdo->prepare("UPDATE `paid_orders` 
-    //                      SET `status` = :status, 
-    //                          `link_ozon_pay` = :link_ozon_pay 
-    //                      WHERE `id` = :newId");
-
-    //         try {
-    //             $update->execute([
-    //                 'status'       => 'readyForPay',
-    //                 'link_ozon_pay'   => $payLink,
-    //                 'newId' => $newId
-    //             ]);
-
-    //             if ($update->rowCount() > 0) {
-    //                 echo "Статус заказа $orderNumber обновлён.";
-    //             } else {
-    //                 echo "Заказ с номером $orderNumber не найден.";
-    //             }
-    //         } catch (PDOException $e) {
-    //             error_log("Ошибка: " . $e->getMessage());
-    //             echo "Ошибка обновления.";
-    //         }
-
-
-    //  header('Location: '.$payLink);
-}
 
 
 // print_r($result_query_finance_ozon);
-
-die('dddd');
+//  header('Location: '.$payLink);
+ die('Проблема с оплатой');
 
     

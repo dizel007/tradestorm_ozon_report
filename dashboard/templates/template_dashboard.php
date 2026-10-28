@@ -51,6 +51,7 @@
                         <tr>
                             <th>пп</th>
                             <th>Название магазина</th>
+                            <th>Отчет по заказам</th>
                             <th>Фин.отчет</th>
                             <th>Окончание подписки</th>
                             <th>Состояние подписки</th>
@@ -83,7 +84,15 @@
                                         <?= htmlspecialchars($client['shop_name']) ?>
                                     </span>
                                 </td>
-
+<!-- аналитичиский отчет  -->
+                                <td class="icon_width" data-label="Фин.отчет">
+                                    <?php if ($isActive && $client['shop_name'] !== 'Нет данных'): ?>
+                                        <a href="../ozon/ozon_fbs_fbo_clusters?data=<?= urlencode($client['data_clt']) ?>" class="shop-name-link" title="Финансовый отчёт">
+                                            📊
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+<!-- финансовый отчкее -->
                                 <td class="icon_width" data-label="Фин.отчет">
                                     <?php if ($isActive && $client['shop_name'] !== 'Нет данных'): ?>
                                         <a href="../ozon/ozon_report?data=<?= urlencode($client['data_clt']) ?>" class="shop-name-link" title="Финансовый отчёт">
@@ -91,6 +100,7 @@
                                         </a>
                                     <?php endif; ?>
                                 </td>
+
 
                                 <td class="small_width" data-label="Окончание подписки">
                                     <?php

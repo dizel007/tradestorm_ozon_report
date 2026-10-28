@@ -51,9 +51,9 @@ if ($autoLogin && $user) {
 }
 
 
-print_r($order_number);
+// print_r($order_number);
 
-echo  "<pre>";
+// echo  "<pre>";
 // достаем номер заказа, который оплачен
 
 
@@ -67,9 +67,9 @@ if (!empty($order_number)) {
 }
 
 
-
-print_r($order);
-
+// echo "<pre>";
+// print_r($order);
+// die();
 
 // получаем на сколько дней нужно продлить дату следующей оплаты
     $order_summa = $order['summa']/100;
@@ -94,17 +94,12 @@ $new_update_date = 1;
 
 $new_update_date = extendSubscription($subscription_end['subscription_end'], $update_period['update_period']);
 
-// echo "<br>";
-// echo "Lfnf - ";
-
-// echo  $ff;
-// echo "<br>";
 
 updateStatusOrderPay ($pdo, $order['id'], 'paid');
 update_Paid_Preiod_In_Shops ($pdo, $order['shop_id'], $new_update_date);
 update_Status_In_Shops ($pdo, $order['shop_id'], 'active');
 // print_r($order);
- header('Location: ../../dashboard/dashboard.php');
+
 // die();
 
 
@@ -114,5 +109,6 @@ update_Status_In_Shops ($pdo, $order['shop_id'], 'active');
 
 // формируем content для письма
 // require_once "mailer/shablon_order_email.php";
-// send_many_emails($EMAIL_for_letters, 'ПРИШЕЛ ЗАКАЗ',  $content, $mail_for_send_letter, $mail_pass);
+send_many_emails('dizel007@yandex.ru', 'ПРИШЕЛ ЗАКАЗ',  'fffffff', $mail_for_send_letter, $mail_pass);
 
+ header('Location: ../../dashboard/');

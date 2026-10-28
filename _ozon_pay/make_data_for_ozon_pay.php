@@ -27,7 +27,7 @@ $array_items[] = array (
 
 
 
-$send_data = array (
+$data_for_pay = array (
         "accessKey"=> $accessKey,
         "amount"=> $amount,
         "enableFiscalization"=> false,
@@ -45,4 +45,4 @@ $send_data = array (
 
 );
 
-$send_json = json_encode($send_data);
+// $send_json = json_encode($send_data);

@@ -52,7 +52,7 @@ $arr_article_products  = $product->getSebestoimostTovarov();
 // ВЫчитываем основные продажи
 //****************************************************************************************************** 
 ///  Запрос товаров проданных в РФ
-$dir = '../!cache/' . "sellet_".$seller_id;
+$dir = '../../_cache/' . 'seller_'.$seller_id.'/ozon_finans_report/';
 $file_name_ozon_mainSell = $dir . '/' . $client_id . '_main_data.json';
 $data_by_days = json_decode(file_get_contents($file_name_ozon_mainSell), true);
 //  Запрос инстранных товаров
@@ -107,10 +107,12 @@ $arr_posting_orders = razbor_POSTING_by_posting_numbers($arr_posting_orders, $ar
 // $arr_item_orders  - массив без СКУ и номеров заказа
 // просто буем его суммировать и добавлять к расходам
 $summa_nerazobrannogo_iz_massiva_ITEM = 0;
+if (isset($arr_item_orders[$sku_ozon])) {
 foreach ($arr_item_orders[$sku_ozon] as $key => $amount_arr) {
     foreach ($amount_arr as $amount_z) {
         $summa_nerazobrannogo_iz_massiva_ITEM += $amount_z;
     }
+}
 }
 unset($arr_item_orders[$sku_ozon]);
 
@@ -129,11 +131,20 @@ foreach ($arr_by_accrued_category['NON_ITEM'] as $b) {
 }
 
 $sum_array = razbor_POSTING_category($sum_array, $arr_by_accrued_category['POSTING'], $type_fees);
+
+
+
+// echo "<pre>";
+// print_r($ino_prodazhi['products']);
+// print_r($Arr[$sku_ozon] );
+// die();
+
 foreach ($sum_array as $item_sku) {
-    @$all_summ_seller_price += $item_sku['seller_price'];
+    @$all_summ_sale_amount += $item_sku['sale_amount'];
 }
-$one_procent_ot_sum_seller_price = $all_summ_seller_price / 100;
-$porc_kotori_nuzhno_raspredelit = $sum_array[$sku_ozon]['seller_price'] /  $one_procent_ot_sum_seller_price;
+
+$one_procent_ot_sum_sale_amount = $all_summ_sale_amount / 100;
+$porc_kotori_nuzhno_raspredelit = @$sum_array[$sku_ozon]['sale_amount'] /  $one_procent_ot_sum_sale_amount;
 // сумма рекламы и прочей херни, которую не привязвли к СКУ 
 $summa_non_item_dlia_sku = $summa_non_item_bez_viborki_po_postingam * $porc_kotori_nuzhno_raspredelit / 100;
 
@@ -206,7 +217,7 @@ foreach ($Arr as $sku => &$item_order) {
             }
 
 //// Посчитаем сколько денег должны нам перевести на Р/С (как вЛК ОЗОНЕ)
-            $posting['deneg_na_rs'] =  @$posting['seller_price'] +
+            $posting['deneg_na_rs'] =  @$posting['sale_amount'] +
                                        @$posting['commission']  +
                                        @$posting['Логистика'] +
                                        @$posting['Обратная логистика'] +
@@ -226,17 +237,17 @@ foreach ($Arr as $sku => &$item_order) {
 //================================================================================================
 //                            Добавляем иностанные продажи 
 //================================================================================================
+if (isset($ino_prodazhi['products'])) {
+    foreach ($ino_prodazhi['products'] as $jh=>&$ino_items ) {
+        if (($ino_items['posting_number'] == $post)) {
+            @$posting['sale_amount'] += $ino_items['amount'];
+            @$posting['article']  = $posting['article'].'(ino)';
+            @$posting['ino']  = '_ino_';
+            unset ($ino_prodazhi['products'][$jh]); // удаляем то ч 
+        }
 
-foreach ($ino_prodazhi['products'] as $jh=>&$ino_items ) {
-    if (($ino_items['posting_number'] == $post)) {
-        @$posting['seller_price'] += $ino_items['amount'];
-        @$posting['article']  = $posting['article'].'(ino)';
-        @$posting['ino']  = '_ino_';
-        unset ($ino_prodazhi['products'][$jh]); // удаляем то ч 
     }
-
 }
-
 //================================================================================================
 //                            Считаем прибыль на Р/С 
 //================================================================================================
@@ -246,7 +257,7 @@ foreach ($ino_prodazhi['products'] as $jh=>&$ino_items ) {
                            @$posting['sebestoimost']; 
 // если иностранные продажи и ЮЛ продажи, то добавляем сумму из отчета по иностранным продажам 
     if (isset($posting['ino'])) {
-        @$posting['pribil'] += $posting['seller_price'];
+        @$posting['pribil'] += $posting['sale_amount'];
      }
 
 
@@ -266,7 +277,6 @@ $data = $Arr[$sku_ozon];
 // echo "<pre>";
 // print_r($ino_prodazhi['products']);
 // print_r($data );
-
 // die();
 
 //==========================================================================================================

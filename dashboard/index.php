@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 'end'            => $subscription_end,
                                 'status'         => $subscription_status
                             ]);
-                            header('Location: ');
+                            header('Location: index.php');
                             exit();
                         } catch (PDOException $e) {
                             if ($e->errorInfo[1] == 1062) {

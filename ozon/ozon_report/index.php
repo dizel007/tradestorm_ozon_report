@@ -19,7 +19,7 @@ use App\Ozon\Service\FinanceService;
 /**********************************************************************************************************
  *     ***************    Получаем массив всех транзакций
  *********************************************************************************************************/
-
+set_time_limit(300);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -47,6 +47,7 @@ if (isset($_GET['data'])) {
         session_destroy();
     }
 } else {
+    die('ddd');
         header('Location: ../../registration/index.php');
         exit();
 }
@@ -150,29 +151,35 @@ if (!isset($_GET['dateFrom'], $_GET['dateTo'])) {
 // =================================================================================
 //===============   запрашиваем баланс с ОЗОНа ========================================
 // =================================================================================
-
+// echo "<pre>";
 $ozon_array_balance = $finance->getBalance($date_from, $date_to);
+
+
 
 /******************************************************************************
  *  ЗАПРОС фин отчета по проанным товарам  С ОЗОНА (ВСЕ ДАТЫ)
  ******************************************************************************/
 
-//  Запрос товаров проданных в РФ
-$dir = '../!cache/' . "sellet_".$seller_id;
+
+$dir = '../../_cache/' . 'seller_'.$seller_id.'/ozon_finans_report/';
 if (!is_dir($dir)) {
-    mkdir($dir, 0775, true);
+    mkdir($dir, 0777, true);
 }
 
+//  Запрос инстранных товаров
+$file_name_ozon_inostran_prodazhi = $dir . '/' .$client_id . "_ino_main_data" . ".json";
+$arr_sell_v_strani_EAES =  $finance->getBuyoutEaes( $date_from,  $date_to, $file_name_ozon_inostran_prodazhi);
+
+
+//  Запрос товаров проданных в РФ
 $file_name_ozon_mainSell = $dir . '/' . $client_id . '_main_data.json';
 $finance->getAccrualsByDay( $date_from,  $date_to, $file_name_ozon_mainSell);
 
 $data_by_days = json_decode(file_get_contents($file_name_ozon_mainSell), true);
 
-//  Запрос инстранных товаров
 
-$file_name_ozon_inostran_prodazhi = $dir . '/' .$client_id . "_ino_main_data" . ".json";
 
-$arr_sell_v_strani_EAES =  $finance->getBuyoutEaes( $date_from,  $date_to, $file_name_ozon_inostran_prodazhi);
+
 /******************************************************************************
  * КОНЕЦ запроса данных с озона (ВСЕ ДАТЫ)
  ******************************************************************************/
@@ -183,6 +190,7 @@ foreach ($data_by_days as $one_data) {
     $category[$one_data['accrued_category']] = $one_data['accrued_category'];
     if (isset($one_data['accrued_category'])) {
         $arr_by_accrued_category[$one_data['accrued_category']][] = $one_data;
+        
     } else {
         $arr_other[] = $one_data;  // или любой другой массив
     }
@@ -191,6 +199,12 @@ foreach ($data_by_days as $one_data) {
 if (isset($arr_other)) {
     echo "<br>НАйден массив без категории<br>";
 }
+
+
+// echo "<pre>";
+// print_r($arr_by_accrued_category);
+
+// die();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // берем из JSON файла статьи всех расходов с ID и названием и описанием
@@ -210,12 +224,22 @@ $sum_array = razbor_NON_ITEM_category($sum_array, $arr_by_accrued_category['NON_
 if (isset ($arr_by_accrued_category['POSTING'])) {
 $sum_array = razbor_POSTING_category($sum_array, $arr_by_accrued_category['POSTING'], $type_fees);
 }
+
+// echo "<pre>";
+// print_r($sum_array);
+
+// // die();
+
+if (isset($sum_array)) {
 foreach ($sum_array as $item_sum) {
     foreach ($item_sum as $key_sum=>$sum) {
         @$sum_array_al_data[$key_sum] += $sum;
    }
 }
-
+} else {
+    echo "Нет данных для выдачи";
+    die();
+}
 //===============================================================================================
 // цепляем иностарнные продажи *************************
 //===============================================================================================

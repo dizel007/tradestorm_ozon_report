@@ -3,6 +3,7 @@ ozon/!cache/
 _no_git/
 main_info.php
 vendor/
+_cache
 
 
 

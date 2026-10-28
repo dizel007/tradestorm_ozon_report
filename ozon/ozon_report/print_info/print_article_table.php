@@ -51,6 +51,18 @@ $columns = [
             '_default' => null,
         ],
     ],
+
+
+
+    'count' => [
+        'label'    => 'К-во',
+        'text'     => true,
+        'sortable' => true,
+        'width'    => '40px',
+        'hide'     => 'md',
+    ],
+
+
     'date_order' => [
         'label'    => 'Дата',
         'text'     => true,
@@ -78,7 +90,7 @@ $columns = [
         'width'    => '60px',
         'hide'     => 'lg',
     ],
-    'seller_price' => [
+    'sale_amount' => [
         'label'    => 'Цена пр-ца',
         'sortable' => true,
         'width'    => '70px',
@@ -87,7 +99,7 @@ $columns = [
     'commission' => [
         'label'    => 'Ком-я',
         'sortable' => true,
-        'width'    => '60px',
+        'width'    => '70px',
     ],
     'Логистика' => [
         'label'    => 'Лог-ка',

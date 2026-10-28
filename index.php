@@ -183,9 +183,9 @@ try {
                     <a href="registration" class="btn">Начать</a>
                 </div>
                 <div class="tariff-card recommended">
-                    <h3>Месячный</h3>
-                    <div class="price"><?= $catalog_price['month'] ?> ₽</div>
-                    <div class="period">в месяц</div>
+                    <h3>Суточный</h3>
+                    <div class="price"><?= $catalog_price['day'] ?> ₽</div>
+                    <div class="period">за день</div>
                     <ul>
                         <li>Все функции пробного</li>
                         <li>Неограниченные отчёты</li>
@@ -196,9 +196,9 @@ try {
                 </div>
 
                                 <div class="tariff-card">
-                    <h3>Годовой</h3>
-                    <div class="price"><?= $catalog_price['year'] ?></div>
-                    <div class="period">1 год</div>
+                    <h3>Месячный</h3>
+                    <div class="price"><?= $catalog_price['month'] ?></div>
+                    <div class="period">1 месяц</div>
                     <ul>
                         <li>Полный доступ к отчётам</li>
                         <li>Юнит-экономика по товарам</li>

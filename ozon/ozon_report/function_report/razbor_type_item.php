@@ -52,6 +52,7 @@ foreach ($posting_item_array as $posting_item) {
    foreach ($posting_item['posting']['products'] as $products) {
        $sku = $products['sku'];
        // перебираем delivery 
+       $quantity = $products['quantity'];
     //    print_r($posting_item);
     //    echo count($posting_item['posting']['products']);
     //    print_r($products);
@@ -64,13 +65,13 @@ foreach ($posting_item_array as $posting_item) {
 
              /// прямая логистика (добавляем проданный товар)
             if ($delivery_serveces['type_id'] == 32) {
-              @$sum_array[$sku]['count_direct'] ++; 
+              @$sum_array[$sku]['count_direct'] += $quantity ; 
 
             }
             /// обратная логистика (добавляем возвратный товар) 
              elseif ($delivery_serveces['type_id'] == 59)  {
               
-              @$sum_array[$sku]['count_return'] ++;
+              @$sum_array[$sku]['count_return'] += $quantity;
             }
 
             @$sum_array[$sku][$description_type] += $delivery_serveces['accrued']['amount'];

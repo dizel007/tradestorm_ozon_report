@@ -1,4 +1,4 @@
 <?php
 
-
-echo "NO PAY";
+ header('Location: ../dashboard/');
+die ("NO PAY");

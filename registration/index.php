@@ -8,7 +8,6 @@ use App\Ozon\OzonClient;
 use App\Ozon\Service\FinanceService;
 
 
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -191,14 +190,7 @@ if (isset($temp_priz_2['items'][0])) {$priznak++;}
             Скачать инструкцию по подключению (PDF)
         </a>
     </div>
-    <div class="pdf-download-container2 none_see">
-        <a href="../ozon/files/doc2.pdf" download class="pdf-download-btn">
-            <svg class="pdf-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-            </svg>
-            Скачать инструкцию по работе (PDF)
-        </a>
-    </div>
+
     <div class="form-wrapper">
         <h2>TradeStorm</h2>
 

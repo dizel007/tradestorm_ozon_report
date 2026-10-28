@@ -20,6 +20,7 @@ foreach ($posting_item_array as $posting_item) {
 
    foreach ($posting_item['posting']['products'] as $products) {
        $sku = $products['sku'];
+       $quantity = $products['quantity'];
 
        if (isset($products['delivery']))  {
         foreach ($products['delivery']['services'] as $delivery_serveces) {
@@ -28,6 +29,11 @@ foreach ($posting_item_array as $posting_item) {
             // если логистика отрицательная, то добавляем признак возврата
             if ($delivery_serveces['type_id'] == 59) {
                 @$arr_posting_orders[$sku][$order_number][$unit_number]['_return_'] = 1;
+                @$arr_posting_orders[$sku][$order_number][$unit_number]['count'] = $quantity;
+
+            } elseif ($delivery_serveces['type_id'] == 32) {
+              @$arr_posting_orders[$sku][$order_number][$unit_number]['count'] = $quantity;
+
             }
             // запоняем массив доставкой
 
@@ -40,7 +46,8 @@ foreach ($posting_item_array as $posting_item) {
 
           foreach ($products['commission'] as $type_commission=> $delivery_commission) {
 
-          if (($type_commission == 'sale_amount') OR ($type_commission == 'sale_commission') OR 
+          if (($type_commission == 'sale_commission') OR 
+        //   if (($type_commission == 'sale_amount') OR ($type_commission == 'sale_commission') OR 
                ($type_commission == 'coinvestment') OR ($type_commission == 'bonus') ) { 
             continue;
           }
@@ -174,42 +181,47 @@ foreach ($item['item_fees'] as $fees) {
 // разбираем все траты, где есть номер отправления,
 //===================================================================================
 
-foreach ($arr_item_orders[$sku_poisk] as $unit_numer=>&$item_c) {
-        $temp_1 = explode('-', $unit_numer);
-        $order_number = implode('-', array_slice($temp_1, 0, 2));
-//// 
-    if (isset($arr_posting_orders[$sku_poisk][$order_number][$unit_numer])) {
-        foreach ($item_c as $trat_j=>$amount_j) {
-            $arr_posting_orders[$sku_poisk][$order_number][$unit_numer][$trat_j] = $amount_j;
-            unset ($arr_item_orders[$sku_poisk][$unit_numer][$trat_j]);
-            if (count($arr_item_orders[$sku_poisk][$unit_numer]) == 0) {
-                unset ($arr_item_orders[$sku_poisk][$unit_numer]);
+// echo "<pre>";
+// print_R($sku_poisk);
+// print_R($arr_item_orders);
 
+if (isset($arr_item_orders[$sku_poisk])) {
+    foreach ($arr_item_orders[$sku_poisk] as $unit_numer=>&$item_c) {
+            $temp_1 = explode('-', $unit_numer);
+            $order_number = implode('-', array_slice($temp_1, 0, 2));
+    //// 
+            if (isset($arr_posting_orders[$sku_poisk][$order_number][$unit_numer])) {
+                foreach ($item_c as $trat_j=>$amount_j) {
+                    $arr_posting_orders[$sku_poisk][$order_number][$unit_numer][$trat_j] = $amount_j;
+                    unset ($arr_item_orders[$sku_poisk][$unit_numer][$trat_j]);
+                    if (count($arr_item_orders[$sku_poisk][$unit_numer]) == 0) {
+                        unset ($arr_item_orders[$sku_poisk][$unit_numer]);
+
+                    }
+                }
             }
-        }
     }
-}
 
 //============================================================================================
 // Разбираем где есть номер заказа и ровным слоем размазываем по всем заказам
 //============================================================================================
 
-foreach ($arr_item_orders[$sku_poisk] as $unit_numer=>&$item_c) {
-        $temp_1 = explode('-', $unit_numer);
-        $order_number = implode('-', array_slice($temp_1, 0, 2));
-    if (isset($arr_posting_orders[$sku_poisk][$order_number]) ) {
-        foreach ($arr_posting_orders[$sku_poisk][$order_number] as $unit_number=>$z) {
-           foreach ($item_c as $trat_j=>$amount_j) {
-             $arr_posting_orders[$sku_poisk][$order_number][$unit_number][$trat_j] = round ($amount_j / count($arr_posting_orders[$sku_poisk][$order_number]),2) ;
-              unset ($arr_item_orders[$sku_poisk][$unit_numer][$trat_j]);
-            if (count($arr_item_orders[$sku_poisk][$order_number]) == 0) {
-                unset ($arr_item_orders[$sku_poisk][$order_number]);
+    foreach ($arr_item_orders[$sku_poisk] as $unit_numer=>&$item_c) {
+            $temp_1 = explode('-', $unit_numer);
+            $order_number = implode('-', array_slice($temp_1, 0, 2));
+        if (isset($arr_posting_orders[$sku_poisk][$order_number]) ) {
+            foreach ($arr_posting_orders[$sku_poisk][$order_number] as $unit_number=>$z) {
+            foreach ($item_c as $trat_j=>$amount_j) {
+                $arr_posting_orders[$sku_poisk][$order_number][$unit_number][$trat_j] = round ($amount_j / count($arr_posting_orders[$sku_poisk][$order_number]),2) ;
+                unset ($arr_item_orders[$sku_poisk][$unit_numer][$trat_j]);
+                if (count($arr_item_orders[$sku_poisk][$order_number]) == 0) {
+                    unset ($arr_item_orders[$sku_poisk][$order_number]);
+                }
             }
         }
-      }
+        }
     }
 }
-
 
 /***
  * 

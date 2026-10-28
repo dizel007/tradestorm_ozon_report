@@ -119,8 +119,8 @@ function updatePayLinkOrderPay ($pdo, $order_id, $payLink) {
     $result = '';
      // сохраняем ссылку на оплату в заказ и обновляем статус заказа
     $update = $pdo->prepare("UPDATE `paid_orders` 
-                         SET `link_ozon_pay` = :link_ozon_pay
-                         WHERE `id` = :id");
+                             SET `link_ozon_pay` = :link_ozon_pay
+                             WHERE `id` = :id");
 
             try {
                 $update->execute([
@@ -144,32 +144,32 @@ return $result;
 *********  Функция обновляния данных на ОЗОН
 ************************************************************************************************************** */
 
-function ozonFinancePaycreateOrder($send_data) {
-$ozon_link = 'https://payapi.ozon.ru/v1/createOrder';
-	$ch = curl_init($ozon_link);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-		// 'Api-Key:' . '',
-		// 'Client-Id:' . $client_id_ozon, 
-		'Content-Type:application/json'
-	));
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $send_data); 
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($ch, CURLOPT_HEADER, false);
-	$res = curl_exec($ch);
+// function ozonFinancePaycreateOrder($send_data) {
+// $ozon_link = 'https://payapi.ozon.ru/v1/createOrder';
+// 	$ch = curl_init($ozon_link);
+// 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+// 		// 'Api-Key:' . '',
+// 		// 'Client-Id:' . $client_id_ozon, 
+// 		'Content-Type:application/json'
+// 	));
+// 	curl_setopt($ch, CURLOPT_POSTFIELDS, $send_data); 
+// 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+// 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+// 	curl_setopt($ch, CURLOPT_HEADER, false);
+// 	$res = curl_exec($ch);
 
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Получаем HTTP-код
+//     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE); // Получаем HTTP-код
 
-	// curl_close($ch);
+// 	// curl_close($ch);
 	
-	$res = json_decode($res, true);
+// 	$res = json_decode($res, true);
 
-    if (intdiv($http_code,100) > 2) {
-        echo     '<br>Результат обмена ozonPay (с данными POST): '.$http_code. "<br>";
-		echo "<pre>";
-        print_r($res);
-        }
+//     if (intdiv($http_code,100) > 2) {
+//         echo     '<br>Результат обмена ozonPay (с данными POST): '.$http_code. "<br>";
+// 		echo "<pre>";
+//         print_r($res);
+//         }
 
-    return($res);	
-    }
+//     return($res);	
+//     }
 

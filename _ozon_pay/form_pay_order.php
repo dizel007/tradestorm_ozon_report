@@ -43,13 +43,13 @@ $tariffs = [
         'features' => ['Все базовые функции', 'Расширенные возможности', 'Приоритетная поддержка', ],
         'recommended' => true,
     ],
-    'year' => [
-        'label' => 'Год',
-        'price' => $catalog_price['year'],
-        'duration' => '365 дней',
-        'features' => ['Все функции', 'Поддержка 24/7', 'Персональный менеджер',],
-        'recommended' => false,
-    ],
+    // 'year' => [
+    //     'label' => 'Год',
+    //     'price' => $catalog_price['year'],
+    //     'duration' => '365 дней',
+    //     'features' => ['Все функции', 'Поддержка 24/7', 'Персональный менеджер',],
+    //     'recommended' => false,
+    // ],
 ];
 ?>
 <!DOCTYPE html>
@@ -91,7 +91,7 @@ $tariffs = [
         </form>
 
         <div style="text-align: center; margin-top: 20px;">
-            <a href="../dashboard/dashboard.php" class="back-link">← На главную</a>
+            <a href="../dashboard/" class="back-link">← На главную</a>
         </div>
     </div>
 
