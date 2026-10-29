@@ -116,18 +116,39 @@ try {
                     </div>
                     <p>Регистрация и подключение API Ozon для получения отчётов</p>
                 </div>
+
                 <div class="video-item">
-                    <div class="video-thumb"></div>
+                    <div class="video-thumb">
+                         <video class="video_time" id="myVideo" width="240" height="170" 
+                            poster="video/main_report.jpg" 
+                            controls preload="none" playsinline>
+                        <source src="video/main_report.mp4" type="video/mp4">
+                        Ваш браузер не поддерживает видео.
+                        </video>
+
+                    </div>
                     <p>Как читать финансовый отчёт по FBS-заказам Ozon</p>
                 </div>
+
                 <div class="video-item">
-                    <div class="video-thumb"></div>
+                    <div class="video-thumb">
+                          <video class="video_time" id="myVideo" width="240" height="170" 
+                           poster="video/posting_report.jpg" 
+                            controls preload="none" playsinline>
+                        <source src="video/posting_report.mp4" type="video/mp4">
+                        Ваш браузер не поддерживает видео.
+                        </video>
+
+                    </div>
+ 
                     <p>Создание отчётов по юнит-экономике в реальном времени</p>
                 </div>
-                <div class="video-item">
+
+
+                <!-- <div class="video-item">
                     <div class="video-thumb"></div>
                     <p>Разбор ошибок FBS и оптимизация расходов на Ozon</p>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
