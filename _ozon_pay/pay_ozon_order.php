@@ -271,18 +271,30 @@ $result_query_finance_ozon = $ozon_payment->post('v1/createOrder', $data_for_pay
 // $result_query_finance_ozon = ozonFinancePaycreateOrder($send_json) ;
 
 
-if (isset($result_query_finance_ozon['order']['payLink'])) {
+// if (isset($result_query_finance_ozon['order']['payLink'])) {
+//     $payLink = $result_query_finance_ozon['order']['payLink'];
+
+// // сохраняем ссылку на оплату в заказ и обновляем статус заказа
+// updateStatusOrderPay ($pdo, $newId, 'readyForPay'); // обновляем статус заказа
+
+// // добавляем ссылку на оплату в заказ
+// updatePayLinkOrderPay ($pdo, $newId, $payLink); 
+// }
+
+if (!empty($result_query_finance_ozon['order']['payLink'])) {
     $payLink = $result_query_finance_ozon['order']['payLink'];
+    updateStatusOrderPay($pdo, $newId, 'readyForPay');
+    updatePayLinkOrderPay($pdo, $newId, $payLink);
 
-// сохраняем ссылку на оплату в заказ и обновляем статус заказа
-updateStatusOrderPay ($pdo, $newId, 'readyForPay'); // обновляем статус заказа
-
-// добавляем ссылку на оплату в заказ
-updatePayLinkOrderPay ($pdo, $newId, $payLink); 
+    header('Location: ' . $payLink);
+    exit;
 }
 
+error_log('OzonPay createOrder failed: ' . print_r($result_query_finance_ozon, true));
+die('Не удалось создать платёж. Попробуйте позже.');
 
-die();
+
+// die();
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 $successUrl___ = "../_ozon_pay/pay_ok_ozon.php/?data=".urlencode(encryptData($extId));
 header('Location: '.$successUrl___);

@@ -51,10 +51,8 @@
                         <tr>
                             <th>пп</th>
                             <th>Название магазина</th>
-                            <th>Отчет по заказам</th>
-                            <th>Фин.отчет</th>
-                            <th>Окончание подписки</th>
-                            <th>Состояние подписки</th>
+                            <th>Окончание<br>подписки</th>
+                            <th>Состояние<br>подписки</th>
                             <th>Действие</th>
                             <th>Продление</th>
                         </tr>
@@ -78,29 +76,20 @@
                                         $nameClass = 'shop-name-active';
                                     } else {
                                         $nameClass = 'shop-name-inactive';
+                                        $ozon_report_link = "#";
                                     }
                                     ?>
-                                    <span class="<?= $nameClass ?>">
-                                        <?= htmlspecialchars($client['shop_name']) ?>
-                                    </span>
+                                <span class="<?= htmlspecialchars($nameClass, ENT_QUOTES, 'UTF-8') ?>">
+                                <?php if ($isActive): ?>
+                                    <a href="../ozon/reportmenu.php?data=<?= urlencode($client['data_clt']) ?>"
+                                    class="shop-name-link">
+                                        <?= htmlspecialchars($client['shop_name'], ENT_QUOTES, 'UTF-8') ?>
+                                    </a>
+                                <?php else: ?>
+                                    <?= htmlspecialchars($client['shop_name'], ENT_QUOTES, 'UTF-8') ?>
+                                <?php endif; ?>
+                            </span>
                                 </td>
-<!-- аналитичиский отчет  -->
-                                <td class="icon_width" data-label="Фин.отчет">
-                                    <?php if ($isActive && $client['shop_name'] !== 'Нет данных'): ?>
-                                        <a href="../ozon/ozon_fbs_fbo_clusters?data=<?= urlencode($client['data_clt']) ?>" class="shop-name-link" title="Финансовый отчёт">
-                                            📊
-                                        </a>
-                                    <?php endif; ?>
-                                </td>
-<!-- финансовый отчкее -->
-                                <td class="icon_width" data-label="Фин.отчет">
-                                    <?php if ($isActive && $client['shop_name'] !== 'Нет данных'): ?>
-                                        <a href="../ozon/ozon_report?data=<?= urlencode($client['data_clt']) ?>" class="shop-name-link" title="Финансовый отчёт">
-                                            📊
-                                        </a>
-                                    <?php endif; ?>
-                                </td>
-
 
                                 <td class="small_width" data-label="Окончание подписки">
                                     <?php

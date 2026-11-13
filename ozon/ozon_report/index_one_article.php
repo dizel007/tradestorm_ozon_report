@@ -9,6 +9,7 @@ require_once '../../vendor/autoload.php';
 require_once "function_report/razbor_type_item.php";
 require_once "function_report/razbor_type_posting_number.php";
 
+require_once("../ozon_authorization.php");
 use App\Ozon\OzonClient;
 use App\Ozon\Service\ProductService;
 
@@ -23,19 +24,10 @@ try {
 }
 
 $url_data = ($_GET['data']);
-if (isset($_GET['data'])) {
-    $stmt = $pdo->prepare("SELECT * FROM `shops` WHERE `id` = :id");
-    $stmt->execute(['id' => decryptData($_GET['data'])]);
-    $shop = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($shop) {
-        $autoLogin = true;
-        $token = $shop['ozon_token'];
-        $client_id = $shop['client_id'];
-        $seller_id = $shop['seller_id'];
-    } else {
-        session_destroy();
-    }
-}
+
+$url_data = ($_GET['data']);
+[$token , $client_id, $seller_id, $shop_id] = ozon_authorization ($pdo);
+
 
 
 
@@ -160,6 +152,20 @@ $count_posting  = count($j);
 //  сумму которю нужно будет разить между всем количеством отправлений
 $summa_for_each_posting = round(($summa_non_item_dlia_sku + $summa_nerazobrannogo_iz_massiva_ITEM - $summa_unset_for_orders) / $count_posting, 2);
 
+
+// echo "<pre>";
+// print_r($sum_array['5872903185'] );
+// print_r($all_summ_sale_amount);
+// echo "<br>";
+// print_r($summa_non_item_dlia_sku);
+// echo "<br>";
+// print_r($summa_nerazobrannogo_iz_massiva_ITEM);
+// echo "<br>";
+// print_r($summa_unset_for_orders);
+// echo "<br>";
+// print_r($j);
+
+
 // die();
 
 
@@ -184,13 +190,16 @@ $arr_dop_strafi = [
     'Отгрузка в нерекомендованный слот',
 ];
 
+// echo "<pre>";
+// print_r($Arr);
+// echo "</pre>";
 
 // цепляем к массиву себестоимсть и артикул
 foreach ($Arr as $sku => &$item_order) {
     foreach ($item_order as $order => &$item_posting) {
         foreach ($item_posting as $post => &$posting) {
             $posting['article'] = $prod_arr[$sku];
-            $posting['sebestoimost'] = $sebes_arr[$sku];
+            $posting['sebestoimost'] = $sebes_arr[$sku]*$posting['count'];
                 
 
 ////  Все дополнительные расходы
@@ -273,7 +282,7 @@ if (isset($ino_prodazhi['products'])) {
 
 
 $data = $Arr[$sku_ozon];
-
+unset($Arr);
 // echo "<pre>";
 // print_r($ino_prodazhi['products']);
 // print_r($data );

@@ -1,6 +1,4 @@
 <?php
-
-
 // echo  "ПРОШЛИ КОННЕКТ<br>";
 require_once("../../_no_git/secret_info.php");
 require_once ("../../main_info.php");
@@ -10,6 +8,8 @@ require_once '../../vendor/autoload.php';
 
 require_once "function_report/razbor_type_item.php";
 require_once "function_report/razbor_type_posting_number.php";
+
+require_once("../ozon_authorization.php");
 
 use App\Ozon\OzonClient;
 use App\Ozon\Service\ProductService;
@@ -32,25 +32,9 @@ try {
     die("Ошибка подключения к БД: " . $e->getMessage());
 }
 
-
-if (isset($_GET['data'])) {
-    $url_data = ($_GET['data']);
-    $stmt = $pdo->prepare("SELECT * FROM `shops` WHERE `id` = :id");
-    $stmt->execute(['id' => decryptData($_GET['data'])]);
-    $shop = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($shop) {
-        $autoLogin = true;
-        $token = $shop['ozon_token'];
-        $client_id = $shop['client_id'];
-        $seller_id = $shop['seller_id'];
-    } else {
-        session_destroy();
-    }
-} else {
-    die('ddd');
-        header('Location: ../../registration/index.php');
-        exit();
-}
+ 
+$url_data = ($_GET['data']);
+[$token , $client_id, $seller_id, $shop_id] = ozon_authorization ($pdo , '../../registration');
 
 
 $ozon    = new OzonClient($token, $client_id);
@@ -111,9 +95,12 @@ echo <<<HTML
 </head>
 <body>
     <div class="table-container">
-         <div class="info_about_client">$seller_shop_name_from_ozon</div>
+           <div class="info_about_client"><h2 class="form-title">Разбор финансового отчета</h2></div>
+        
+           <div class="info_about_client">$seller_shop_name_from_ozon</div>
   
     <div class="form-container">
+       
         <form id="dateForm" method="get">
 
             <div class="form-content">
@@ -174,11 +161,12 @@ $arr_sell_v_strani_EAES =  $finance->getBuyoutEaes( $date_from,  $date_to, $file
 //  Запрос товаров проданных в РФ
 $file_name_ozon_mainSell = $dir . '/' . $client_id . '_main_data.json';
 $finance->getAccrualsByDay( $date_from,  $date_to, $file_name_ozon_mainSell);
-
 $data_by_days = json_decode(file_get_contents($file_name_ozon_mainSell), true);
 
 
-
+// echo "<pre>";
+// print_r($data_by_days);
+// die();
 
 /******************************************************************************
  * КОНЕЦ запроса данных с озона (ВСЕ ДАТЫ)

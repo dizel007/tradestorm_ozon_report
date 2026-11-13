@@ -28,12 +28,13 @@ echo <<<HTML
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <link rel="stylesheet" href="css/form_dates.css?v=<?php echo filemtime('css/form_dates.css'); ?>">
+    <link rel="stylesheet" href="css/sell_fbo_fbs_table.css?v=<?php echo filemtime('css/form_dates.css'); ?>">
 
     <title>Отчет по заказам OZON</title>
 </head>
 <body>
     <div class="table-container">
+        <div class="info_about_client"><h2 class="form-title">Отчет по заказанным товарам</h2></div>
          <div class="info_about_client">$seller_shop_name_from_ozon</div>
   
     <div class="form-container">

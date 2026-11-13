@@ -1,7 +1,7 @@
 <?php 
 
 // echo "<pre>";
-// print_r($sum_array_to_redakt);
+// print_r($arr_real_ozon_data);
 // die();
 
 //==========================================================
@@ -141,8 +141,11 @@ $sum_no_sku_trati         = 0;
 $all_sum_seller           = 0;
 $one_procent_no_sku_trati = 0;
 
+$url_data = urlencode($url_data);
 
-  $url_data = urlencode($url_data);
+// Сюда сохраним разбивку NO_SKU (статья расхода => сумма)
+$no_sku_rows = [];
+
 // Нам нужна сумма продаж по цене продавца, чтобы найти 1% от суммы всех продаж
 foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
     @$all_sum_seller += $item_for_print['sale_amount'];
@@ -151,6 +154,8 @@ foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
     if ($sku_ozon == 'NO_SKU') {
         foreach ($item_for_print as $key_no_sku => $serv) {
             $sum_no_sku_trati += getUnitNumber($item_for_print, $key_no_sku);
+            $no_sku_rows[$key_no_sku] = (float)$serv;
+           
         }
         $one_procent_no_sku_trati = $sum_no_sku_trati / 100;
         unset($sum_array_to_redakt[$sku_ozon]);
@@ -208,18 +213,25 @@ foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
 // ==========================================================================
 //***************************************************************************
 
-    $sale_amount = getUnitNumber($item_for_print, "sale_amount");
-    $commission   = getUnitNumber($item_for_print, "commission");
-    $logistika    = getUnitNumber($item_for_print, "Логистика")
-                  + getUnitNumber($item_for_print, "Обратная логистика")
-                  + getUnitNumber($item_for_print, "Доставка до места выдачи силами Ozon");
-    $equairing    = getUnitNumber($item_for_print, "Эквайринг");
+    $sale_amount   = getUnitNumber($item_for_print, "sale_amount");
+    
+    $commission    = getUnitNumber($item_for_print, "commission");
+
+    $logistika     = getUnitNumber($item_for_print, "Логистика")
+                   + getUnitNumber($item_for_print, "Обратная логистика")
+                   + getUnitNumber($item_for_print, "Обработка отправления Drop-off")
+                   + getUnitNumber($item_for_print, "Доставка до места выдачи силами Ozon");
+
+    $equairing     = getUnitNumber($item_for_print, "Эквайринг");
+
     $ino_prodazhi  = getUnitNumber($item_for_print, "ino_prodazhi");
 
     // Считаем всё, что осталось из отчёта (СЕРВИСЫ)
     $service = 0;
     foreach ($item_for_print as $key_2 => $serv) {
         $service += getUnitNumber($item_for_print, $key_2);
+        @$arr_services[$sku_ozon][$key_2] += $serv;
+
     }
     unset($sum_array_to_redakt[$sku_ozon]);
 
@@ -236,6 +248,8 @@ foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
     // получаем сумму за вычетом NO_SKU трат
     $viplata_na_rs = round($price_without_comm_and_logist + $summa_raspredelenia_no_sku_trat, 2);
 
+
+   
     $article_sebestoimost = $sebestoimost * $count_for_raschet;
 
     $pribil = round($viplata_na_rs - $article_sebestoimost + $ino_prodazhi, 2);
@@ -249,7 +263,7 @@ foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
     /////////////////////////////////////////
     // суммируем все цены и количества
     /////////////////////////////////////////
-    $sum_sale_amount                   += $sale_amount;
+    $sum_sale_amount                  += $sale_amount;
     $sum_commission                    += $commission;
     $sum_logistika                     += $logistika;
     $sum_equairing                     += $equairing;
@@ -299,10 +313,7 @@ foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
     $name_ozon_safe = htmlspecialchars((string)$name_ozon, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     echo "<td><a class=\"tovar_name\" href=\"https://www.ozon.ru/product/$sku_ozon\" target=\"_blank\" title=\"{$name_ozon_safe}\">{$name_ozon_safe}</a></td>";
 
-    // Артикул и СКУ 
-    // Если нет заказанных, возвращенных и проданных товаров, то ссылку на подробных позаказный отчет не включаем
-  
-  if ( ($count_direct ==0) AND (($count_return =0)) ) {
+   if ( ($count_direct ==0) AND (($count_return =0)) ) {
       echo "<td>".$article_ozon . " <hr>". $sku_ozon . "</td>";
     
   } else {
@@ -314,7 +325,6 @@ foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
         . "</a>"
         . "</td>";
   }
-
 
     // Количество заказанных товаров (шт)
     echo "<td>" . colorNum($count_direct) . "</td>";
@@ -354,7 +364,7 @@ foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
     echo "<td>" . moneyNum($ino_prodazhi) . "</td>";
 
     // Себестоимость: цена за штуку и общая
-    echo '<td><a href=https://seller.ozon.ru/app/prices/manager/'.$product_id.'/prices target="_blank">' . moneyNum($sebestoimost) . "</a><br>" . moneyNum($article_sebestoimost) . "</td>";
+    echo "<td>" . moneyNum($sebestoimost) . "<br>" . moneyNum($article_sebestoimost) . "</td>";
 
     // Прибыль: на штуку и общая
     echo "<td>" . moneyNum($sthuka_pribil) . "<br>" . moneyNum($pribil) . "</td>";
@@ -469,13 +479,59 @@ $compare_rows = [
 
 <!-- ================== Ссылка в личный кабинет Ozon ================== -->
 <div class="export-bar">
-    <a href="https://seller.ozon.ru/app/finances/accruals"
+    <a href="https://seller.ozon.ru/app/finances/balance"
        target="_blank"
        rel="noopener noreferrer"
        class="ozon-cabinet-btn">
         🏪 Открыть личный кабинет Ozon
     </a>
 </div>
+
+
+
+
+
+
+<!-- ================== ТАБЛИЦА РАСХОДОВ NO_SKU ================== -->
+<?php
+// $no_sku_rows заполняется выше при разборе массива NO_SKU
+// $sum_no_sku_trati — общая сумма этих расходов
+?>
+<div class="h100proc_artikul" style="margin-top: 10px;">
+    <h3 class="shapka_tabla">Расходы столбца Доп.услуги (реклама, штрафы, сервисы)</h3>
+
+    <?php if (empty($no_sku_rows)): ?>
+        <p class="no-sku-empty">Расходы NO_SKU отсутствуют.</p>
+    <?php else: ?>
+        <table class="real_money fl-table">
+            <thead>
+            <tr>
+                <th>Статья расхода</th>
+                <th>Сумма (руб)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($no_sku_rows as $label => $amount): ?>
+                <tr>
+                    <td><?= htmlspecialchars((string)$label, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
+                    <td><?= moneyNum($amount) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+            <tr class="total-row">
+                <td><b>ИТОГО</b></td>
+                <td><b><?= moneyNum($sum_no_sku_trati) ?></b></td>
+            </tr>
+            </tfoot>
+        </table>
+    <?php endif; ?>
+</div>
+
+
+
+
+
 
 <!-- SheetJS для клиентского экспорта (никаких запросов к серверу) -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -486,6 +542,8 @@ $compare_rows = [
 <?php
 $jsFile = 'js/sku_table.js';
 $jsVer  = file_exists($jsFile) ? filemtime($jsFile) : time();
+
+// echo "<pre>";
+// print_r($arr_services);
 ?>
 <script src="js/sku_table.js?v=<?= $jsVer ?>" defer></script>
-

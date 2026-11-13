@@ -41,6 +41,16 @@ foreach ($posting_item_array as $posting_item) {
             }
    //// закончили перебирать delivery
        }
+
+  //======================================================================
+  // т.к. delivery нет в FRBS то отдельно добавляем количество для этой доставки
+  //======================================================================
+       if ($delivery_schema == 'Rfbs') {
+          @$arr_posting_orders[$sku][$order_number][$unit_number]['count'] = $quantity;
+       }
+
+
+
        // перебираем commission 
        if (isset($products['commission']))  {
 
@@ -124,16 +134,22 @@ foreach ($arr_posting_orders as $sku=> &$g_orders) {
             if (($t_unit_number == $unit_number) AND ($sku_poisk == $sku) ){
                 // добавялем статью расход в наш накопительный массив у удаляем из общего массив NON_ITEM
                 // echo "$unit_number";
+
+                if ( $description_type == 'Перечисление за доставку от покупателя') {
+                    $postings['Логистика'] = $non_item['non_item_fee']['accrued']['amount'];
+
+                } else {
                    @$postings[$description_type] += $non_item['non_item_fee']['accrued']['amount'];
-                   $summa_unset_for_orders += $non_item['non_item_fee']['accrued']['amount'];
-                   unset($non_item_array[$i_for_delete]);
+                    $summa_unset_for_orders += $non_item['non_item_fee']['accrued']['amount'];
+                    unset($non_item_array[$i_for_delete]);
+                }
             } 
       }
      }
    }
 }
 
-
+// 
 
      }
 

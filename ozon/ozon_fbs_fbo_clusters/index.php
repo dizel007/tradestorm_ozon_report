@@ -14,7 +14,7 @@ require_once '../../vendor/autoload.php';
 require_once 'functions_orders_fbo_fbs.php';
 require_once 'print_all_orders.php';
 
-
+require_once "../ozon_authorization.php";
 
 use App\Ozon\OzonClient;
 use App\Ozon\Service\ProductService;
@@ -37,26 +37,26 @@ try {
     die("Ошибка подключения к БД: " . $e->getMessage());
 }
 
-
-if (isset($_GET['data'])) {
-    $url_data = ($_GET['data']);
-    $stmt = $pdo->prepare("SELECT * FROM `shops` WHERE `id` = :id");
-    $stmt->execute(['id' => decryptData($_GET['data'])]);
-    $shop = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($shop) {
-        $autoLogin = true;
-        $token = $shop['ozon_token'];
-        $client_id = $shop['client_id'];
-        $seller_id = $shop['seller_id'];
-        $shop_id = $shop['id'];
-    } else {
-        session_destroy();
-    }
-} else {
-        header('Location: ../../registration/index.php');
-        exit();
-}
-
+$url_data = ($_GET['data']);
+[$token , $client_id, $seller_id, $shop_id] = ozon_authorization ($pdo , '../../registration');
+// if (isset($_GET['data'])) {
+//     $url_data = ($_GET['data']);
+//     $stmt = $pdo->prepare("SELECT * FROM `shops` WHERE `id` = :id");
+//     $stmt->execute(['id' => decryptData($_GET['data'])]);
+//     $shop = $stmt->fetch(PDO::FETCH_ASSOC);
+//     if ($shop) {
+//         $autoLogin = true;
+//         $token = $shop['ozon_token'];
+//         $client_id = $shop['client_id'];
+//         $seller_id = $shop['seller_id'];
+//         $shop_id = $shop['id'];
+//     } else {
+//         session_destroy();
+//     }
+// } else {
+//         header('Location: ../../registration/index.php');
+//         exit();
+// }
 
 $ozon    = new OzonClient($token, $client_id);
 $product = new ProductService($ozon);

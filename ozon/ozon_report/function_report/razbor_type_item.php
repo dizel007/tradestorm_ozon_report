@@ -25,17 +25,12 @@ return $sum_array;
  ********************************************************************************************************************/
 
 function razbor_NON_ITEM_category(&$sum_array, $non_item_array, $type_fees) {
-
-foreach ($non_item_array as $non_item) {
-        // print_r($item);
-  
-        // изменям код траты на название 
-        $description_type = change_id_by_description_spend($type_fees, $non_item['non_item_fee']['type_id']);
-        // симмируем все траты     
-       @$sum_array['NO_SKU'][$description_type] += $non_item['non_item_fee']['accrued']['amount'];
-  
-  
-}
+    foreach ($non_item_array as $non_item) {
+          // изменям код траты на название 
+            $description_type = change_id_by_description_spend($type_fees, $non_item['non_item_fee']['type_id']);
+          // симмируем все траты     
+        @$sum_array['NO_SKU'][$description_type] += $non_item['non_item_fee']['accrued']['amount'];
+    }
 return $sum_array;
 }
 
@@ -48,56 +43,74 @@ return $sum_array;
 function razbor_POSTING_category(&$sum_array, $posting_item_array, $type_fees) {
 
 foreach ($posting_item_array as $posting_item) {
-    $unit_number = $posting_item['unit_number'];
+    // $unit_number = $posting_item['unit_number'];
+
+   $delivery_schema = $posting_item['posting']['delivery_schema'];
    foreach ($posting_item['posting']['products'] as $products) {
        $sku = $products['sku'];
-       // перебираем delivery 
+
        $quantity = $products['quantity'];
-    //    print_r($posting_item);
-    //    echo count($posting_item['posting']['products']);
-    //    print_r($products);
-    //    die();
+           
+  //======================================================================
+  // перебираем delivery 
+  //======================================================================
+
        if (isset($products['delivery']))  {
         //   @$sum_array[$sku]['delivery_summa'] += $products['delivery']['total_accrued']['amount'];
         foreach ($products['delivery']['services'] as $delivery_serveces) {
             $description_type = change_id_by_description_spend($type_fees, $delivery_serveces['type_id']);
-            @$arr_status [$description_type] ++;
-
-             /// прямая логистика (добавляем проданный товар)
+            // @$arr_status [$description_type] ++;
+  //======================================================================
+  // прямая логистика (добавляем проданный товар)
+  //======================================================================
             if ($delivery_serveces['type_id'] == 32) {
               @$sum_array[$sku]['count_direct'] += $quantity ; 
 
             }
-            /// обратная логистика (добавляем возвратный товар) 
+  //======================================================================
+  // обратная логистика (добавляем возвратный товар) 
+  //======================================================================
              elseif ($delivery_serveces['type_id'] == 59)  {
-              
-              @$sum_array[$sku]['count_return'] += $quantity;
+               @$sum_array[$sku]['count_return'] += $quantity;
             }
-
+  //======================================================================
+  // Суммируем сервисы
+  //======================================================================
             @$sum_array[$sku][$description_type] += $delivery_serveces['accrued']['amount'];
            
         }
-   //// закончили перебирать delivery
+ //****************************************************************************       
+ // закончили перебирать delivery
+ //****************************************************************************       
        }
-       // перебираем commission 
+  //======================================================================
+  // т.к. delivery нет в FRBS то отдельно добавляем количество для этой доставки
+  //======================================================================
+       if ($delivery_schema == 'Rfbs') {
+                 @$sum_array[$sku]['count_direct'] += $quantity ; 
+       }
+
+  //======================================================================
+  // перебираем commission 
+  //======================================================================
+
        if (isset($products['commission']))  {
           foreach ($products['commission'] as $type_commission=> $delivery_commission) {
-            // добавляем еще возвраты если 
-
-
-            if ($type_commission == 'commission_ratio') {
-                continue;
-            // @$sum_array[$sku][$type_commission] = $delivery_commission;
-            } else {
-                @$sum_array[$sku][$type_commission] += $delivery_commission['amount'];
-            }
+  //======================================================================
+  // добавляем еще возвраты если 
+  //======================================================================
+       if ($type_commission == 'commission_ratio') {
+           continue;
+          // @$sum_array[$sku][$type_commission] = $delivery_commission;
+       } else {
+            @$sum_array[$sku][$type_commission] += $delivery_commission['amount'];
+              }
         }
-   //// закончили перебирать commission
+  //======================================================================
+  // закончили перебирать commission
+  //======================================================================
        }
-
-
-  }
- 
+    }
 }
 // print_r($arr_status);
 return $sum_array;

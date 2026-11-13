@@ -46,9 +46,10 @@ $columns = [
         'width' => '120px',
         'hide'  => 'md',
         'link'  => [
-            'fbs'      => 'https://seller.ozon.ru/app/postings/fbs/{id}',
-            'fbo'      => 'https://seller.ozon.ru/app/postings/fbo/{id}',
-            '_default' => null,
+            'fbs'       => 'https://seller.ozon.ru/app/postings/fbs/{id}',
+            'rfbs'      => 'https://seller.ozon.ru/app/postings/fbs/{id}',
+            'fbo'       => 'https://seller.ozon.ru/app/postings/fbo/{id}',
+            '_default'  => null,
         ],
     ],
 
