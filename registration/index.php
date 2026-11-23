@@ -158,12 +158,12 @@ if (isset($temp_priz_2['items'][0])) {$priznak++;}
                         if (!$error) {
                             $_SESSION['user_id'] = $userId;
                             setRememberToken($pdo, $userId);
-                            send_many_emails('dizel007@yandex.ru', 'Новая регистрация в TradeStorm', 'Новый пользователь: ' . $email, $mail_for_send_letter, $mail_pass);
+                            send_many_emails('dizel007@yandex.ru', 'Новая регистрация в TradeStorm', 'Новый пользователь: '.$userId.' Email:' . $email, $mail_for_send_letter, $mail_pass);
                             header('Location: ../dashboard');
                             exit();
                         }
                     } else {
-                        $error = "Токен или ID клиента неверны (требуются роли Report и Product read-only)";
+                        $error = "Токен или ID клиента неверны (требуются роль токена Admin read-only)";
                     }
                 }
             }
@@ -182,14 +182,7 @@ if (isset($temp_priz_2['items'][0])) {$priznak++;}
     <link rel="stylesheet" href="../css/registration_page.css">
 </head>
 <body>
-    <div class="pdf-download-container none_see">
-        <a href="../ozon/files/doc1.pdf" download class="pdf-download-btn">
-            <svg class="pdf-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-            </svg>
-            Скачать инструкцию по подключению (PDF)
-        </a>
-    </div>
+
 
     <div class="form-wrapper">
         <h2>TradeStorm</h2>
@@ -240,7 +233,7 @@ if (isset($temp_priz_2['items'][0])) {$priznak++;}
                 </div>
                 <div class="form-group">
                     <label for="reg_token">Ozon Token (API-ключ):</label>
-                    <input type="text" id="reg_token" name="token" required placeholder="токен с правами Report и Product read-only">
+                    <input type="text" id="reg_token" name="token" required placeholder="токен с правами Admin read-only">
                 </div>
                 <button type="submit">Зарегистрироваться</button>
             </form>

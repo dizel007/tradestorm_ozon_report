@@ -219,9 +219,14 @@ foreach ($clients as &$client) {
 
     if ($info && isset($info['company']['name'])) {
         $client['shop_name'] = $info['company']['name'] . " (" . $info['company']['legal_name'] . ")";
+        $client['active_token'] = true;
     } else {
-        $client['shop_name'] = 'Нет данных';
+        $client['shop_name'] = 'Не смогли получить данные. Возможно токен истек';
+        $client['active_token'] = false;
+  
     }
+
+    // print_r($client);
 
     $client['is_subscription_active'] = strtotime($client['subscription_end']) > time();
 
@@ -230,7 +235,7 @@ foreach ($clients as &$client) {
     $daysLeft        = ($endTimestamp - $now) / (60 * 60 * 24);
     $client['days_left'] = $daysLeft;
 
-    $client['is_active']  = ($client['deleted'] == 0 && $client['is_subscription_active']);
+    $client['is_active']  = ($client['deleted'] == 0 && $client['is_subscription_active'] && $client['active_token']);
     $client['data_clt']   = encryptData($client['id']);
     $client['end_period'] = substr($client['subscription_end'], 0, 10);
     $client['sh_id']      = encryptData($client['id']);

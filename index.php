@@ -6,6 +6,10 @@ require_once ("main_info.php");
 require_once "_no_git/secret_info.php";
 require_once("vendor/autoload.php");
 
+
+send_many_emails('dizel007@yandex.ru', 'tradestorm', 'Вход на сайт Трейдшторм, на базовую страницу', $mail_for_send_letter, $mail_pass);
+
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -141,7 +145,7 @@ try {
 
                     </div>
  
-                    <p>Создание отчётов по юнит-экономике в реальном времени</p>
+                    <p>Как смотреть и анализоровать каждый артикул позаказно</p>
                 </div>
 
 
@@ -244,14 +248,14 @@ try {
                 </div>
                 <div>
                     <h3>Контакты</h3>
-                    <a href="mailto:info@tradestorm.ru">info@tradestorm.ru</a>
+                    <a href="mailto:helpme@tradestorm.ru">helpme@tradestorm.ru</a>
                     <p>г. Екатеринбург, ул.Бебеля, 11Б<br> офис 2405</p>
                 </div>
                <div>
                     <h3>Реквизиты</h3>
                     <p>ИП Зелизко Дмитрий Иванович⁠</p>
                     <p>ИНН: 860223446952</p>
-                    <p>Адрес: Свердловская область, город Екатеринбург</p>
+                    <p>Адрес: Россия, Свердловская область, город Екатеринбург</p>
                 </div>
 
             </div>

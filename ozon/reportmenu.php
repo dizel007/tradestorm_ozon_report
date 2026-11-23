@@ -3,7 +3,6 @@
 require_once("../main_info.php");
 require_once("../_no_git/secret_info.php");
 require_once("../vendor/autoload.php");
-
 require_once("ozon_authorization.php");
 
 
@@ -18,6 +17,9 @@ try {
 } catch (PDOException $e) {
     die("Ошибка подключения к БД: " . $e->getMessage());
 }
+
+require_once("ozon_fake_buyer/start.php");
+
 
 //****************************************************************************************************
 // ---------- Авторизация ----------
@@ -68,8 +70,8 @@ $reports = [
         'title'       => 'Возвраты покупатлей',
         'image'       => 'img/_blank.jpg',
         'description' => 'Выборка всех возвратов на выбранный период.',
-        'url'         => 'report_purchases.php',
-        'disabled'    => true,
+        'url'         => 'ozon_fake_buyer/fake_buyer_start.php?data='.$data,
+        'disabled'    => false,
         'badge'       => 'В разработке',
     ],
     'FBO' => [

@@ -26,7 +26,7 @@ try {
 $url_data = ($_GET['data']);
 
 $url_data = ($_GET['data']);
-[$token , $client_id, $seller_id, $shop_id] = ozon_authorization ($pdo);
+[$token , $client_id, $seller_id, $shop_id] = ozon_authorization ($pdo , '../../registration');
 
 
 

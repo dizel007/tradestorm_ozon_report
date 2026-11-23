@@ -37,26 +37,9 @@ try {
     die("Ошибка подключения к БД: " . $e->getMessage());
 }
 
+
 $url_data = ($_GET['data']);
 [$token , $client_id, $seller_id, $shop_id] = ozon_authorization ($pdo , '../../registration');
-// if (isset($_GET['data'])) {
-//     $url_data = ($_GET['data']);
-//     $stmt = $pdo->prepare("SELECT * FROM `shops` WHERE `id` = :id");
-//     $stmt->execute(['id' => decryptData($_GET['data'])]);
-//     $shop = $stmt->fetch(PDO::FETCH_ASSOC);
-//     if ($shop) {
-//         $autoLogin = true;
-//         $token = $shop['ozon_token'];
-//         $client_id = $shop['client_id'];
-//         $seller_id = $shop['seller_id'];
-//         $shop_id = $shop['id'];
-//     } else {
-//         session_destroy();
-//     }
-// } else {
-//         header('Location: ../../registration/index.php');
-//         exit();
-// }
 
 $ozon    = new OzonClient($token, $client_id);
 $product = new ProductService($ozon);
@@ -75,7 +58,8 @@ $finance = new FinanceService($ozon);
         $seller_shop_name_from_ozon = 'Нет данных';
     }
 
-
+// print_r( 'sss' );
+// die();
 // Вставляем форму для ввода даты
 require_once "start_form.php";
 
@@ -85,9 +69,9 @@ require_once "start_form.php";
 $dir_for_cache = "../../_cache/seller_".$seller_id."/ozon_fbs_fbo_clusters/";
 if (!is_dir($dir_for_cache)) {
     if (mkdir($dir_for_cache, 0755, true)) {
-        echo "Папка создана.";
+        // echo "Папка создана.";
     } else {
-        echo "Не удалось создать папку.";
+        // echo "Не удалось создать папку.";
     }
 }
 
