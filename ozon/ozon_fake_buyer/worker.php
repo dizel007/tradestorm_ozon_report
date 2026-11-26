@@ -30,8 +30,8 @@ if (!empty($_SERVER['TOKEN'])) {
 }
 
 // Отправка письма о старте (если функция не настроена на VDS, она просто не сработает)
-$text = 'Зашли в воркер' . '->client_id:'. $client_id. ' seller_id:'. $seller_id. ' shop_id:'. $shop_id;
-@send_many_emails('dizel007@yandex.ru', SITE_NAME, $text , $mail_for_send_letter, $mail_pass);
+// $text = 'Зашли в воркер' . '->client_id:'. $client_id. ' seller_id:'. $seller_id. ' shop_id:'. $shop_id;
+// @send_many_emails('dizel007@yandex.ru', SITE_NAME, $text , $mail_for_send_letter, $mail_pass);
 
 // Подключение к БД
 try {  
@@ -138,10 +138,7 @@ while ($date_from < $today) {
         }
     }
 
-    // ВАЖНО: прибавляем 1 день, чтобы следующий период начался со следующего дня
-    // $date_from = date('Y-m-d', strtotime("$date_to +1 day"));
     $date_from = $date_to;
-
 }
 
 // Обновляем дату в БД

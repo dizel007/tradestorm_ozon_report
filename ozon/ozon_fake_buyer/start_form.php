@@ -6,7 +6,11 @@ $date_to   = $_GET['dateTo']   ?? date('Y-m-d');
 
  $stop_priznak_net_magazina = 0;
 
-
+$reportHref = 'search_fake_buyer.php?'.'data' => $url_data ?? ''],
+    '',
+    '&',
+    PHP_QUERY_RFC3986
+);
 
 
 echo <<<HTML
@@ -32,9 +36,9 @@ echo <<<HTML
    <input type="submit"  value="START">
 </form>
 <div style="max-width: 1000px; margin: 20px auto 0; text-align: right;">
-      <a href="search_fake_buyer.php?data=$url_data" class="report-link" target="_blank">
-        Поиск по ID покупателей с возвратами
-    </a>
+   <a href="search_fake_buyer.php?data=$reportHref" class="report-link" target="_blank">
+    Поиск по ID покупателей с возвратами
+</a>
 </div>
 
 HTML;

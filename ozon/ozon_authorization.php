@@ -35,22 +35,6 @@ if (!$autoLogin || !$user) {
     exit();
 }
 
-
-//  j1XNzL/NQfEEA9Fu+siVwTEOGsJ5DKiSAdf2uh9/VzxVoWhJzrx+s6mSdd0RpV4N
-//  j1XNzL%2FNQfEEA9Fu%2BsiVwTEOGsJ5DKiSAdf2uh9%2FVzxVoWhJzrx%2Bs6mSdd0RpV4N
-//  j1XNzL%2FNQfEEA9Fu%2BsiVwTEOGsJ5DKiSAdf2uh9%2FVzxVoWhJzrx%2Bs6mSdd0RpV4N
-//  j1XNzL%2FNQfEEA9Fu%2BsiVwTEOGsJ5DKiSAdf2uh9%2FVzxVoWhJzrx%2Bs6mSdd0RpV4N
-// echo "<pre>";
-// print_r($_GET);
-// $fff = decryptData('j1XNzL%252FNQfEEA9Fu%252BsiVwTEOGsJ5DKiSAdf2uh9%252FVzxVoWhJzrx%252Bs6mSdd0RpV4N');
-
-
-// echo "<br>";
-
-// print_r($fff);
-
-// die('ddddddddddd');
-
 /// получаем токен выбранного магазина
 if (isset($_GET['data'])) {
     $stmt = $pdo->prepare("SELECT * FROM `shops` WHERE `id` = :id");

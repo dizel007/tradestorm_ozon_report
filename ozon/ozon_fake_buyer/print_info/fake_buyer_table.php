@@ -107,7 +107,7 @@ unset($needLink);
 
             <?php if ($row['rowspan'] > 0): ?>
                 <td class="group-cell" rowspan="<?= $row['rowspan'] ?>">
-                    <a href="search_fake_buyer.php?data=<?= $url_data?>&search_id=<?= urlencode($row['group']) ?>" 
+                    <a href="search_fake_buyer.php?data=<?= urlencode($url_data) ?>&search_id=<?= urlencode($row['group']) ?>" 
                        class="group-link" target="_blank"
                        title="Посмотреть все заказы этого покупателя">
                         <?= htmlspecialchars($row['group'], ENT_QUOTES, 'UTF-8') ?>

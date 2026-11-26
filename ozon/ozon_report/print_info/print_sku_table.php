@@ -311,12 +311,19 @@ foreach ($sum_array_to_redakt as $sku_ozon => &$item_for_print) {
 
     // Название товара — обрезается до 2 строк, полное в title
     $name_ozon_safe = htmlspecialchars((string)$name_ozon, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+    // $rnd_perem = rand(1000,100000);
+    // $name_ozon_safe = 'Наименование товарв _ '.$rnd_perem;  /// *************************DELETE
+
+
     echo "<td><a class=\"tovar_name\" href=\"https://www.ozon.ru/product/$sku_ozon\" target=\"_blank\" title=\"{$name_ozon_safe}\">{$name_ozon_safe}</a></td>";
 
    if ( ($count_direct ==0) AND (($count_return =0)) ) {
       echo "<td>".$article_ozon . " <hr>". $sku_ozon . "</td>";
     
   } else {
+    // $article_ozon__ = 'арт.'.$rnd_perem;/// *************************DELETE
+    // $sku_ozon__ = 'SKU.'.$rnd_perem;/// *************************DELETE
   echo "<td>"
         . $article_ozon
         . " <hr>"

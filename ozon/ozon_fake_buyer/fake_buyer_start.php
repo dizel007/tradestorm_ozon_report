@@ -17,14 +17,9 @@ use App\Ozon\Service\FinanceService;
 set_time_limit(300);
 ini_set('memory_limit', '1024M');
 // Вставляем форму для ввода даты
-$url_data = urlencode($_GET['data']) ?? '';
-
-print_r($url_data);
-
-
+$url_data = ($_GET['data']) ?? '';
+ 
 [$token , $client_id, $seller_id, $shop_id] = ozon_authorization ($pdo , '../../registration');
-
-
 
 
 
@@ -32,19 +27,6 @@ print_r($url_data);
 /**********************************************************************************************************
  *     ***************    Получаем массив всех транзакций
  *********************************************************************************************************/
-// echo  "ПРОШЛИ КОННЕКТ<br>";
-// получаем токен запрашиваемого магазина
-
-
-// echo "<br>";
-// print_r ($token);
-// echo "<br>";
-// print_r ($client_id);
-// echo "<br>";
-// print_r ($seller_id);
-// echo "<br>";
-// print_r ($shop_id);
-
 
 $ozon    = new OzonClient($token, $client_id);
 $product = new ProductService($ozon);
@@ -133,10 +115,6 @@ foreach ($posting['posting']['products'] as $products) {
 
 }
 
-// echo "<pre>";
-// print_r($array_by_fake_users);
-// echo "</pre>";
-// die();
 
 if (isset($array_by_fake_users)) {
 foreach ($array_by_fake_users as $id_fake_buyer=> $orders) {
@@ -152,9 +130,6 @@ foreach ($array_by_fake_users as $id_fake_buyer=> $orders) {
     die('Нет данных за запрошенный промежуток времени');
 }
 
-
-// echo "<pre>";
-// print_r($array_fake_buyers );
 
 //===============================================================================================
 // цепляем иностарнные продажи *************************

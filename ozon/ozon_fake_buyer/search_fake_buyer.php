@@ -7,20 +7,13 @@ require_once "function_report/razbor_type_item.php";
 require_once("../ozon_authorization.php");
 
 
-
-
-use App\Ozon\OzonClient;
-use App\Ozon\Service\ProductService;
-use App\Ozon\Service\FinanceService;
-
-
 set_time_limit(300);
 ini_set('memory_limit', '1024M');
 // Вставляем форму для ввода даты
-$url_data = urlencode($_GET['data']) ?? '';
 
-print_r($url_data );
+[$token , $client_id, $seller_id, $shop_id] = ozon_authorization ($pdo , '../../registration');
 
+$url_data = ($_GET['data']) ?? '';
 
 // Получаем ID покупателя из формы (если форма отправлена)
 $search_id = isset($_GET['search_id']) ? trim($_GET['search_id']) : '';
@@ -122,9 +115,13 @@ if ($search_id !== '') {
 <div class="search-panel">
     <form method="GET" action="" class="search-form">
         <label for="search_id">Введите ID покупателя:</label>
+         <input hidden type ="text" name = "data" value="<?= $url_data ?>">
+
         <input type="text" id="search_id" name="search_id" 
                value="<?= htmlspecialchars($search_id, ENT_QUOTES, 'UTF-8') ?>" 
                placeholder="Например: 59743540" required>
+      
+
         <input type="submit" value="НАЙТИ">
     </form>
 </div>

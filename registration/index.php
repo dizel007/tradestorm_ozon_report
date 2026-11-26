@@ -211,6 +211,11 @@ if (isset($temp_priz_2['items'][0])) {$priznak++;}
                 <div style="text-align: right; margin-top: 10px;">
                     <a href="forgot_password.php" style="font-size: 0.9em; color: #007bff; text-decoration: none;">Забыли пароль?</a>
                 </div>
+
+
+
+
+
                 <button type="submit">Войти</button>
             </form>
         </div>
@@ -235,6 +240,22 @@ if (isset($temp_priz_2['items'][0])) {$priznak++;}
                     <label for="reg_token">Ozon Token (API-ключ):</label>
                     <input type="text" id="reg_token" name="token" required placeholder="токен с правами Admin read-only">
                 </div>
+
+                <!-- Согласие на обработку   -->
+
+                <div class="form-group">
+                    <!-- <label for="reg_token">Ozon Token (API-ключ):</label> -->
+                    <!-- <input type="text" id="reg_token" name="token" required placeholder="токен с правами Admin read-only"> -->
+                     <input type="checkbox" name="pd_consent" required>
+                    <span>
+                        Я даю <a href="../consent.html" target="_blank">согласие на обработку персональных данных</a>
+                        на условиях, изложенных в этом документе.
+                    </span>
+
+                </div>
+
+
+                
                 <button type="submit">Зарегистрироваться</button>
             </form>
 

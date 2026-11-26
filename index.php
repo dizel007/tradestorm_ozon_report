@@ -46,6 +46,11 @@ try {
 
     </style>
 </head>
+
+<?php require_once 'cookie_banner.php'; ?>
+<script type="text/javascript" src="js/script_video.js"></script>
+
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -261,8 +266,8 @@ try {
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 TradeStorm. Все права защищены.</p>
-                <a href="#">Политика конфиденциальности</a>
-                <a href="#">Договор оферты</a>
+                <a href="privacy.html">Политика конфиденциальности</a>
+                <!-- <a href="#">Договор оферты</a> -->
             </div>
         </div>
     </footer>

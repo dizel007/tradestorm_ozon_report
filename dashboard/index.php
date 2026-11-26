@@ -219,6 +219,8 @@ foreach ($clients as &$client) {
 
     if ($info && isset($info['company']['name'])) {
         $client['shop_name'] = $info['company']['name'] . " (" . $info['company']['legal_name'] . ")";
+
+        // $client['shop_name'] = "Ваша компания" ;  ///*******************************DELETE  */
         $client['active_token'] = true;
     } else {
         $client['shop_name'] = 'Не смогли получить данные. Возможно токен истек';

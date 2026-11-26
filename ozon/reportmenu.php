@@ -71,7 +71,7 @@ $reports = [
         'image'       => 'img/_blank.jpg',
         'description' => 'Выборка всех возвратов на выбранный период.',
         'url'         => 'ozon_fake_buyer/fake_buyer_start.php?data='.$data,
-        'disabled'    => false,
+        'disabled'    => true,
         'badge'       => 'В разработке',
     ],
     'FBO' => [

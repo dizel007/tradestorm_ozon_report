@@ -49,6 +49,7 @@ $finance = new FinanceService($ozon);
 
     if ($info && isset($info['company']['name'])) {
         $seller_shop_name_from_ozon  = $info['company']['name'] ;
+        // $seller_shop_name_from_ozon = "Ваша компания" ;  ///*******************************DELETE  */
     } else {
         $seller_shop_name_from_ozon = 'Нет данных';
     }
